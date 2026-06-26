@@ -1,0 +1,3536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* Times New Roman MT Semi Bold — system font stack */
+  @font-face {
+    font-family: 'TimesNRMT';
+    src: local('Times New Roman MT'), local('TimesNewRomanMT'), local('Times New Roman'), local('TimesNewRoman'), local('Times');
+    font-weight: 600;
+    font-style: normal;
+  }
+</style>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #023246;
+  --blue: #287094;
+  --blue-light: #5a9ab8;
+  --bg: #F6F6F6;
+  --silver: #D4D4CE;
+  --white: #ffffff;
+  --ink: #023246;
+  --muted: #6b7e87;
+  --border: #D4D4CE;
+  --error: #c0392b;
+  --success: #287094;
+  --sidebar-w: 260px;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-heading: 'Lora', Georgia, serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  font-weight: 600;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ─── UTILITIES ─────────────────────────────── */
+.hidden { display: none !important; }
+.mono { font-family: 'IBM Plex Mono', monospace; }
+.serif { font-family: var(--font-display); }
+input, textarea, select { font-family: var(--font-body); }
+button { font-family: var(--font-body); cursor: pointer; }
+
+/* ─── ROUTE VIEWS ───────────────────────────── */
+.view { display: none; min-height: 100vh; }
+.view.active { display: flex; }
+
+/* ─── AUTH PAGES ────────────────────────────── */
+.auth-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+@media (max-width: 768px) { .auth-layout { grid-template-columns: 1fr; } }
+
+.auth-left {
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 768px) { .auth-left { display: none; } }
+
+.auth-left-logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 2;
+}
+.auth-left-logo span { color: var(--blue); }
+
+.auth-left-tagline {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.5);
+  font-weight: 300;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 3rem;
+}
+
+/* Orbit in auth left */
+.auth-orb {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  z-index: 2;
+  margin: 0 auto;
+}
+.auth-orb-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(40,112,148,0.25);
+}
+.auth-orb-ring:nth-child(1) { animation: spin 18s linear infinite; }
+.auth-orb-ring:nth-child(2) {
+  inset: 18%;
+  border-color: rgba(40,112,148,0.2);
+  animation: spin 12s linear infinite reverse;
+}
+.auth-orb-ring:nth-child(3) {
+  inset: 34%;
+  border-color: rgba(212,212,206,0.35);
+  animation: spin 8s linear infinite;
+}
+.auth-orb-dot {
+  position: absolute;
+  width: 7px; height: 7px;
+  background: var(--blue);
+  border-radius: 50%;
+  top: -3.5px; left: 50%;
+  transform: translateX(-50%);
+}
+.auth-orb-center {
+  position: absolute;
+  inset: 38%;
+  border-radius: 50%;
+  background: var(--navy);
+  border: 1px solid rgba(40,112,148,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px rgba(40,112,148,0.3);
+}
+.auth-orb-center span {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--blue);
+  letter-spacing: 0.05em;
+}
+
+.auth-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 3rem;
+  background: var(--bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+.auth-card-logo span { color: var(--blue); }
+
+.auth-card-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+}
+
+.auth-google-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-google-btn:hover { border-color: var(--blue); box-shadow: 0 2px 8px rgba(40,112,148,0.1); }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.1em;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.form-group { margin-bottom: 1.2rem; }
+.form-label {
+  display: block;
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.form-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--blue); }
+.form-input::placeholder { color: var(--silver); }
+
+.form-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.btn-primary {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  font-size: 0.8rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+.btn-primary:hover { background: var(--blue); }
+
+.auth-switch {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.auth-switch a { color: var(--blue); text-decoration: none; font-weight: 500; }
+.auth-switch a:hover { text-decoration: underline; }
+
+/* ─── AUTHENTICATED LAYOUT ───────────────────── */
+.app-layout {
+  width: 100%;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 100;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.sidebar-logo {
+  padding: 1.8rem 1.6rem 1.4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+.sidebar-logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--white);
+}
+.sidebar-logo-text span { color: var(--blue); }
+
+.sidebar-project-ctx {
+  padding: 0.9rem 1.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.68rem;
+  font-family: 'IBM Plex Mono', monospace;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.sidebar-project-name {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.78rem;
+  margin-top: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+.sidebar-section-label {
+  padding: 1rem 1.6rem 0.4rem;
+  font-size: 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 1.6rem;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.sidebar-link:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+.sidebar-link.active { background: rgba(40,112,148,0.18); color: var(--white); border-left: 2px solid var(--blue); }
+.sidebar-link .s-icon { font-size: 0.85rem; opacity: 0.6; flex-shrink: 0; }
+.sidebar-link.active .s-icon { opacity: 1; }
+
+.sidebar-link .badge {
+  margin-left: auto;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  background: var(--blue);
+  color: white;
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.sidebar-bottom {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 1rem;
+}
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 2px;
+}
+.sidebar-user:hover { background: rgba(255,255,255,0.05); }
+.avatar {
+  width: 32px; height: 32px;
+  background: var(--blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-name { font-size: 0.8rem; color: rgba(255,255,255,0.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-email { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-family: 'IBM Plex Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* MAIN CONTENT */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  padding: 2rem 2.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.page-header-left {}
+.page-eyebrow {
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.3rem;
+}
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.15;
+}
+.page-sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.3rem; }
+.page-actions { display: flex; gap: 0.8rem; align-items: center; flex-shrink: 0; }
+
+.page-content { padding: 2rem 2.5rem; flex: 1; }
+
+/* BUTTONS */
+.btn {
+  padding: 0.65rem 1.3rem;
+  font-size: 0.75rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--blue); color: var(--blue); }
+.btn-dark {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+.btn-dark:hover { background: var(--blue); border-color: var(--blue); color: var(--white); }
+.btn-accent {
+  background: var(--blue);
+  color: var(--white);
+  border-color: var(--blue);
+}
+.btn-accent:hover { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.btn-sm { padding: 0.45rem 0.9rem; font-size: 0.68rem; }
+.btn-lg { padding: 0.9rem 2rem; font-size: 0.8rem; }
+
+/* CARDS */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+}
+.card-title {
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+/* GRID HELPERS */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+@media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+
+/* STAT CARD */
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 1.4rem 1.6rem;
+}
+.stat-card-label {
+  font-size: 0.62rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.stat-card-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+}
+.stat-card-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem; }
+.stat-icon { color: var(--blue); font-size: 0.75rem; }
+
+/* ─── DASHBOARD ──────────────────────────────── */
+.welcome-banner {
+  background: var(--navy);
+  padding: 2rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.welcome-text h2 {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.welcome-text p { color: rgba(255,255,255,0.45); font-size: 0.82rem; margin-top: 0.3rem; }
+
+.project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.2rem; }
+.project-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.project-card:hover { border-color: var(--blue); box-shadow: 0 4px 20px rgba(40,112,148,0.08); }
+.project-card-status {
+  font-size: 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  margin-bottom: 0.8rem;
+  display: inline-block;
+}
+.status-active { background: rgba(40,112,148,0.1); color: var(--blue); }
+.status-draft { background: rgba(212,212,206,0.4); color: var(--muted); }
+.status-complete { background: rgba(2,50,70,0.08); color: var(--navy); }
+.project-card-name {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.project-card-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+.project-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  color: rgba(2,50,70,0.35);
+}
+.progress-bar-wrap { margin: 0.8rem 0; }
+.progress-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.62rem;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.progress-bar {
+  height: 3px;
+  background: var(--silver);
+  position: relative;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--blue);
+  transition: width 0.6s ease;
+}
+
+.new-project-card {
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 180px;
+  gap: 0.8rem;
+}
+.new-project-card:hover { border-color: var(--blue); }
+.new-project-card .plus { font-size: 1.5rem; color: var(--blue); }
+.new-project-card span { font-size: 0.8rem; color: var(--muted); }
+
+/* Activity Feed */
+.activity-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-dot {
+  width: 8px; height: 8px;
+  background: var(--blue);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.activity-text { font-size: 0.8rem; color: var(--ink); line-height: 1.5; }
+.activity-time { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; color: var(--muted); margin-top: 0.2rem; }
+
+/* ─── NEW PROJECT PAGE ───────────────────────── */
+.new-project-form {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.form-section { margin-bottom: 2rem; }
+.form-section-title {
+  font-size: 0.62rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.form-field { margin-bottom: 1rem; }
+.form-field label {
+  display: block;
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.form-field input, .form-field select, .form-field textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--blue); }
+.form-field textarea { min-height: 90px; line-height: 1.6; }
+.form-field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7e87'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
+
+.field-hint { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
+
+/* ─── ANALYSIS / LOADING ─────────────────────── */
+.analysis-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 3rem;
+}
+.analysis-orb {
+  position: relative;
+  width: 200px; height: 200px;
+  margin: 0 auto 3rem;
+}
+.analysis-orb-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(40,112,148,0.25);
+  animation: spin 18s linear infinite;
+}
+.analysis-orb-ring:nth-child(2) {
+  inset: 15%;
+  border-color: rgba(40,112,148,0.2);
+  animation: spin 12s linear infinite reverse;
+}
+.analysis-orb-ring:nth-child(3) {
+  inset: 32%;
+  border-color: rgba(212,212,206,0.4);
+  animation: spin 7s linear infinite;
+}
+.analysis-orb-dot {
+  position: absolute;
+  width: 6px; height: 6px;
+  background: var(--blue);
+  border-radius: 50%;
+  top: -3px; left: 50%;
+  transform: translateX(-50%);
+}
+.analysis-orb-center {
+  position: absolute;
+  inset: 35%;
+  border-radius: 50%;
+  background: var(--navy);
+  border: 1px solid rgba(40,112,148,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px rgba(40,112,148,0.3);
+}
+.analysis-orb-center span {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--blue);
+}
+.analysis-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.analysis-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 2.5rem; }
+.analysis-steps { text-align: left; display: inline-block; min-width: 280px; }
+.analysis-step {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.55rem 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: color 0.3s;
+}
+.analysis-step.done { color: var(--navy); font-weight: 500; }
+.analysis-step.active { color: var(--blue); font-weight: 500; }
+.step-check {
+  width: 18px; height: 18px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+}
+.analysis-step.done .step-check { background: var(--blue); border-color: var(--blue); color: white; }
+.analysis-step.active .step-check { border-color: var(--blue); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(40,112,148,0.3); } 50% { box-shadow: 0 0 0 6px rgba(40,112,148,0); } }
+
+/* ─── PROJECT WORKSPACE ──────────────────────── */
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2rem 0;
+}
+
+/* Overview Grid */
+.overview-hero {
+  background: var(--navy);
+  padding: 2rem;
+  margin-bottom: 1.2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.overview-hero h3 {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 1rem;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+}
+.overview-hero p { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.7; }
+.confidence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  background: rgba(40,112,148,0.2);
+  border: 1px solid rgba(40,112,148,0.3);
+  color: var(--blue-light);
+  font-size: 0.7rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.1em;
+  margin-top: 1rem;
+}
+
+/* ─── MARKET RESEARCH ────────────────────────── */
+.market-hero {
+  background: var(--navy);
+  color: white;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background-color: rgba(255,255,255,0.08);
+}
+.market-hero-stat {
+  background: var(--navy);
+  padding: 1.5rem 2rem;
+  text-align: center;
+}
+.market-hero-stat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.market-hero-stat-label { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.4rem; }
+
+.trend-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.trend-item:last-child { border-bottom: none; }
+.trend-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--blue);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.trend-text { font-size: 0.82rem; color: var(--ink); line-height: 1.6; }
+
+/* Bar Chart */
+.bar-chart { display: flex; flex-direction: column; gap: 0.8rem; }
+.bar-row { display: flex; align-items: center; gap: 1rem; }
+.bar-label { width: 80px; font-size: 0.72rem; font-family: 'IBM Plex Mono', monospace; color: var(--muted); text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; height: 8px; background: var(--bg); border: 1px solid var(--border); position: relative; }
+.bar-fill { height: 100%; background: var(--blue); transition: width 0.8s ease; }
+.bar-val { width: 50px; font-size: 0.72rem; font-family: 'IBM Plex Mono', monospace; color: var(--navy); }
+
+/* ─── COMPETITORS ────────────────────────────── */
+.competitor-table { width: 100%; border-collapse: collapse; }
+.competitor-table th {
+  text-align: left;
+  font-size: 0.62rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.competitor-table td {
+  padding: 1rem;
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.competitor-table tr:last-child td { border-bottom: none; }
+.competitor-table tr:hover td { background: rgba(40,112,148,0.03); }
+.competitor-name { font-weight: 600; color: var(--navy); }
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.62rem;
+  font-family: 'IBM Plex Mono', monospace;
+  margin: 0.15rem 0.1rem;
+}
+.tag-blue { background: rgba(40,112,148,0.1); color: var(--blue); }
+.tag-red { background: rgba(192,57,43,0.08); color: #c0392b; }
+.tag-gray { background: rgba(212,212,206,0.5); color: var(--muted); }
+
+.gap-card {
+  border-left: 3px solid var(--blue);
+  padding: 1rem 1.2rem;
+  background: rgba(40,112,148,0.04);
+  margin-bottom: 0.8rem;
+}
+.gap-card-title { font-weight: 600; font-size: 0.85rem; color: var(--navy); margin-bottom: 0.3rem; }
+.gap-card-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+
+/* ─── PERSONAS ───────────────────────────────── */
+.persona-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.persona-header {
+  background: var(--navy);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.persona-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: white;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.persona-name-block {}
+.persona-name {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.persona-role { font-size: 0.7rem; color: rgba(255,255,255,0.45); margin-top: 0.15rem; font-family: 'IBM Plex Mono', monospace; }
+.persona-body { padding: 1.2rem 1.5rem; }
+.persona-section { margin-bottom: 1rem; }
+.persona-section-label {
+  font-size: 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.persona-items { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.persona-tag {
+  font-size: 0.68rem;
+  padding: 0.2rem 0.6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--ink);
+}
+.persona-pain { color: #c0392b; background: rgba(192,57,43,0.06); border-color: rgba(192,57,43,0.15); }
+.persona-goal { color: var(--blue); background: rgba(40,112,148,0.06); border-color: rgba(40,112,148,0.15); }
+
+/* Tech Usage Bar */
+.tech-bar-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.5rem; }
+.tech-bar-label { font-size: 0.7rem; width: 80px; flex-shrink: 0; color: var(--muted); }
+.tech-bar { flex: 1; height: 4px; background: var(--border); }
+.tech-bar-fill { height: 100%; background: var(--blue); }
+
+/* ─── MVP ────────────────────────────────────── */
+.mvp-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+.mvp-col { background: var(--white); }
+.mvp-col-header {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mvp-col-title {
+  font-size: 0.68rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mvp-col.must .mvp-col-title { color: var(--blue); }
+.mvp-col-count {
+  font-size: 0.68rem;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--muted);
+}
+.mvp-item {
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 0.8rem;
+}
+.mvp-item:last-child { border-bottom: none; }
+.mvp-priority {
+  font-size: 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 0.15rem 0.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.priority-p1 { background: rgba(40,112,148,0.12); color: var(--blue); }
+.priority-p2 { background: rgba(212,212,206,0.5); color: var(--muted); }
+.priority-p3 { background: rgba(2,50,70,0.06); color: var(--navy); }
+.mvp-item-text { font-size: 0.8rem; color: var(--ink); line-height: 1.5; }
+.mvp-item-detail { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+
+/* ─── PRD ────────────────────────────────────── */
+.prd-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+.prd-nav-item {
+  padding: 0.7rem 1.2rem;
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.prd-nav-item:hover { color: var(--navy); }
+.prd-nav-item.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+.prd-section { display: none; }
+.prd-section.active { display: block; }
+
+.prd-content {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  min-height: 300px;
+  outline: none;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+.prd-content h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  color: var(--navy);
+}
+.prd-content p { margin-bottom: 1rem; }
+.prd-content ul { padding-left: 1.4rem; margin-bottom: 1rem; }
+.prd-content li { margin-bottom: 0.4rem; }
+
+.user-story {
+  border: 1px solid var(--border);
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  background: var(--bg);
+}
+.user-story-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+.user-story-id { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; color: var(--blue); }
+.user-story-text { font-size: 0.82rem; color: var(--ink); }
+.user-story-ac { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px solid var(--border); }
+
+/* ─── ROADMAP ────────────────────────────────── */
+.roadmap-timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+.roadmap-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--blue), var(--silver));
+}
+.roadmap-phase {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-left: 1.5rem;
+}
+.roadmap-phase::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 4px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--blue);
+}
+.roadmap-phase-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+.roadmap-phase-num {
+  font-size: 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.1em;
+  color: var(--blue);
+}
+.roadmap-phase-title {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.roadmap-phase-duration {
+  font-size: 0.62rem;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--muted);
+  margin-left: auto;
+}
+.roadmap-tasks { display: flex; flex-direction: column; gap: 0.5rem; }
+.roadmap-task {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.7rem 1rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+.task-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--silver); flex-shrink: 0; margin-top: 5px; }
+
+/* ─── LEGAL ──────────────────────────────────── */
+.legal-score {
+  background: var(--navy);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 1.5rem;
+}
+.legal-score-circle {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--blue);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.legal-score-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+}
+.legal-score-label { font-size: 0.55rem; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; }
+.legal-score-text h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--white); margin-bottom: 0.3rem; }
+.legal-score-text p { font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.checklist-item:last-child { border-bottom: none; }
+.checklist-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 1px; }
+.checklist-icon.ok { color: var(--blue); }
+.checklist-icon.warn { color: #e67e22; }
+.checklist-icon.risk { color: #c0392b; }
+.checklist-text { font-size: 0.82rem; color: var(--ink); }
+.checklist-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+
+/* ─── REPORT ─────────────────────────────────── */
+.report-toc-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.report-toc-item:hover { color: var(--blue); }
+.report-toc-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--blue); width: 30px; flex-shrink: 0; }
+.report-preview {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 3rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.report-preview h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.report-preview h2 {
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 1.2rem;
+  color: var(--navy);
+  margin: 1.5rem 0 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+.report-preview p { font-size: 0.83rem; color: var(--ink); line-height: 1.8; margin-bottom: 0.8rem; }
+.report-meta { font-size: 0.68rem; font-family: 'IBM Plex Mono', monospace; color: var(--muted); margin-bottom: 2rem; display: flex; gap: 1.5rem; }
+
+/* ─── PROFILE & SETTINGS ─────────────────────── */
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.settings-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+.settings-tab {
+  padding: 0.7rem 1.2rem;
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.settings-tab:hover { color: var(--navy); }
+.settings-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.settings-section { display: none; }
+.settings-section.active { display: block; }
+
+/* ─── ANIMATIONS ─────────────────────────────── */
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fade-in 0.3s ease forwards; }
+
+/* ─── TOAST ──────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--navy);
+  color: var(--white);
+  padding: 0.8rem 1.2rem;
+  font-size: 0.78rem;
+  font-family: 'IBM Plex Mono', monospace;
+  z-index: 9999;
+  transform: translateY(100px);
+  transition: transform 0.3s ease;
+  border-left: 3px solid var(--blue);
+}
+.toast.show { transform: translateY(0); }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .mvp-columns { grid-template-columns: 1fr; }
+  .market-hero { grid-template-columns: 1fr; }
+  .overview-hero { grid-template-columns: 1fr; }
+  .profile-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .page-header { padding: 1.5rem; }
+  .page-content { padding: 1.5rem; }
+  .page-title { font-size: 1.4rem; }
+}
+
+/* ═══════════════════════════════════════════════════
+   VISUAL DNA REFINEMENT — inherit landing page language
+   ═══════════════════════════════════════════════════ */
+
+/* ── NOISE TEXTURE (matches landing page) ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ── PAGE HEADER — bigger, more breathing room ── */
+.page-header {
+  padding: 3rem 3.5rem 2.5rem !important;
+  border-bottom: 1px solid rgba(2,50,70,0.1) !important;
+  background: var(--bg) !important;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(40,112,148,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.page-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.18em !important;
+  color: var(--blue) !important;
+  margin-bottom: 0.6rem !important;
+}
+.page-eyebrow::before {
+  content: '';
+  width: 1.5rem;
+  height: 1px;
+  background: var(--blue);
+  display: inline-block;
+}
+.page-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: clamp(2rem, 3.5vw, 3rem) !important;
+  font-weight: 300 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--navy) !important;
+  line-height: 1.05 !important;
+  margin-bottom: 0.6rem !important;
+}
+.page-title em { font-style: italic; color: var(--blue); }
+.page-sub {
+  font-size: 0.82rem !important;
+  color: var(--muted) !important;
+  line-height: 1.8 !important;
+  max-width: 60ch !important;
+  margin-top: 0 !important;
+}
+
+/* ── CONTENT AREA — more generous padding ── */
+.page-content { padding: 2.5rem 3.5rem !important; }
+
+/* ── SIDEBAR — more refined ── */
+.sidebar { border-right: 1px solid rgba(255,255,255,0.04) !important; }
+.sidebar-logo { padding: 2rem 1.8rem 1.6rem !important; }
+.sidebar-logo-text { font-size: 1.4rem !important; letter-spacing: -0.02em; }
+.sidebar-section-label {
+  padding: 1.4rem 1.8rem 0.5rem !important;
+  font-size: 0.55rem !important;
+  letter-spacing: 0.2em !important;
+  color: rgba(255,255,255,0.18) !important;
+}
+.sidebar-link {
+  padding: 0.7rem 1.8rem !important;
+  font-size: 0.8rem !important;
+  color: rgba(255,255,255,0.38) !important;
+  font-family: var(--font-body) !important;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: all 0.2s ease !important;
+}
+.sidebar-link:hover {
+  background: rgba(255,255,255,0.04) !important;
+  color: rgba(255,255,255,0.75) !important;
+  padding-left: 2rem !important;
+}
+.sidebar-link.active {
+  background: rgba(40,112,148,0.12) !important;
+  color: rgba(255,255,255,0.95) !important;
+  border-left: 2px solid var(--blue) !important;
+  padding-left: calc(1.8rem - 2px) !important;
+}
+.sidebar-link .s-icon { opacity: 0.5 !important; font-size: 0.75rem !important; }
+.sidebar-link.active .s-icon { opacity: 0.9 !important; }
+.sidebar-link:hover .s-icon { opacity: 0.7 !important; }
+
+/* ── CARDS — less border, more breath ── */
+.card {
+  background: var(--white) !important;
+  border: 1px solid rgba(2,50,70,0.08) !important;
+  padding: 2rem !important;
+  box-shadow: 0 1px 3px rgba(2,50,70,0.04) !important;
+}
+.card-title {
+  font-size: 0.58rem !important;
+  letter-spacing: 0.18em !important;
+  color: rgba(107,126,135,0.7) !important;
+  margin-bottom: 1.4rem !important;
+}
+
+/* ── STAT CARDS — more spacious ── */
+.stat-card {
+  background: var(--white) !important;
+  border: 1px solid rgba(2,50,70,0.08) !important;
+  padding: 2rem !important;
+  box-shadow: 0 1px 3px rgba(2,50,70,0.04) !important;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.stat-card:hover { border-color: rgba(40,112,148,0.2) !important; box-shadow: 0 4px 20px rgba(40,112,148,0.06) !important; }
+.stat-card-label {
+  font-size: 0.58rem !important;
+  letter-spacing: 0.18em !important;
+  color: rgba(107,126,135,0.7) !important;
+  margin-bottom: 1rem !important;
+}
+.stat-card-value {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 2.8rem !important;
+  font-weight: 300 !important;
+  line-height: 1 !important;
+  color: var(--navy) !important;
+}
+.stat-card-value span { color: var(--blue); }
+.stat-card-sub { font-size: 0.7rem !important; margin-top: 0.6rem !important; }
+
+/* ── PROJECT CARDS — more elegant ── */
+.project-card {
+  padding: 2rem !important;
+  border: 1px solid rgba(2,50,70,0.08) !important;
+  box-shadow: 0 1px 3px rgba(2,50,70,0.03) !important;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s !important;
+}
+.project-card:hover {
+  border-color: rgba(40,112,148,0.25) !important;
+  box-shadow: 0 8px 32px rgba(40,112,148,0.08) !important;
+  transform: translateY(-2px) !important;
+}
+.project-card-name {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.3rem !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+  margin-bottom: 0.6rem !important;
+}
+.project-card-desc { font-size: 0.8rem !important; line-height: 1.7 !important; margin-bottom: 1.2rem !important; }
+.progress-bar { height: 2px !important; background: rgba(2,50,70,0.06) !important; }
+
+/* ── DASHBOARD WELCOME BANNER — full landing page energy ── */
+.welcome-banner {
+  min-height: 280px !important;
+  padding: 4rem 3.5rem !important;
+  position: relative;
+  overflow: hidden;
+  background: var(--navy) !important;
+  align-items: center !important;
+}
+.welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -30%; right: -5%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(40,112,148,0.18) 0%, transparent 65%);
+  border-radius: 50%;
+  animation: pulse-glow-d 6s ease-in-out infinite;
+  pointer-events: none;
+}
+.welcome-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,0.015) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,0.015) 40px);
+  pointer-events: none;
+}
+@keyframes pulse-glow-d {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.7; }
+}
+.welcome-text h2 {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: clamp(2rem, 3.5vw, 3.2rem) !important;
+  font-weight: 300 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.1 !important;
+  color: var(--white) !important;
+}
+.welcome-text h2 em { font-style: italic; color: rgba(90,154,184,0.9); }
+.welcome-text p {
+  font-size: 0.85rem !important;
+  color: rgba(255,255,255,0.38) !important;
+  margin-top: 0.8rem !important;
+  line-height: 1.7 !important;
+  max-width: 42ch !important;
+}
+
+/* ── OVERVIEW HERO — executive summary feel ── */
+.overview-hero {
+  background: var(--navy) !important;
+  padding: 3rem !important;
+  margin-bottom: 1.5rem !important;
+  position: relative;
+  overflow: hidden;
+}
+.overview-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%; right: -10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(40,112,148,0.15) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.overview-hero h3 {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 0.6rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.3) !important;
+  margin-bottom: 1rem !important;
+}
+.overview-hero p {
+  font-size: 0.92rem !important;
+  color: rgba(255,255,255,0.65) !important;
+  line-height: 1.8 !important;
+}
+.confidence-badge {
+  border: 1px solid rgba(40,112,148,0.25) !important;
+  color: var(--blue-light) !important;
+  font-size: 0.65rem !important;
+  padding: 0.4rem 1rem !important;
+  margin-top: 1.5rem !important;
+  letter-spacing: 0.1em !important;
+}
+
+/* ── BUTTONS — match landing page ── */
+.btn {
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.1em !important;
+  padding: 0.7rem 1.4rem !important;
+  border: 1px solid rgba(2,50,70,0.15) !important;
+  background: var(--white) !important;
+  transition: all 0.2s ease !important;
+}
+.btn:hover { border-color: var(--blue) !important; color: var(--blue) !important; }
+.btn-dark { background: var(--navy) !important; color: var(--white) !important; border-color: var(--navy) !important; }
+.btn-dark:hover { background: var(--blue) !important; border-color: var(--blue) !important; }
+.btn-lg { padding: 0.9rem 2rem !important; font-size: 0.72rem !important; }
+
+/* ── ROADMAP TIMELINE ── */
+.roadmap-timeline::before { background: linear-gradient(to bottom, var(--blue), rgba(212,212,206,0.3)) !important; }
+.roadmap-phase::before { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--blue) !important; }
+.roadmap-phase-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+}
+.roadmap-task {
+  padding: 0.9rem 1.2rem !important;
+  border: 1px solid rgba(2,50,70,0.08) !important;
+  font-size: 0.82rem !important;
+  line-height: 1.6 !important;
+}
+
+/* ── PERSONAS ── */
+.persona-card { border: 1px solid rgba(2,50,70,0.08) !important; box-shadow: 0 1px 3px rgba(2,50,70,0.04) !important; }
+.persona-header { padding: 2rem !important; }
+.persona-avatar { width: 56px !important; height: 56px !important; font-size: 1.1rem !important; border: 2px solid rgba(255,255,255,0.15) !important; }
+.persona-name {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 1.15rem !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+}
+.persona-body { padding: 1.8rem 2rem !important; }
+
+/* ── MVP COLUMNS ── */
+.mvp-col-header { padding: 1.2rem 1.5rem !important; }
+.mvp-item { padding: 1rem 1.5rem !important; }
+.mvp-item-text { font-size: 0.85rem !important; }
+
+/* ── COMPETITOR TABLE ── */
+.competitor-table th {
+  font-size: 0.58rem !important;
+  letter-spacing: 0.18em !important;
+  padding: 0.8rem 1.2rem !important;
+  background: rgba(246,246,246,0.8) !important;
+  color: rgba(107,126,135,0.7) !important;
+}
+.competitor-table td { padding: 1.2rem !important; font-size: 0.82rem !important; }
+.gap-card { padding: 1.2rem 1.5rem !important; margin-bottom: 1rem !important; border-left-width: 2px !important; }
+.gap-card-title { font-family: 'Lora','Georgia',serif !important; font-size: 0.9rem !important; font-weight: 700 !important; }
+.gap-card-desc { font-size: 0.8rem !important; line-height: 1.7 !important; margin-top: 0.4rem !important; }
+
+/* ── PRD ── */
+.prd-content { padding: 2.5rem !important; font-size: 0.9rem !important; line-height: 1.9 !important; border: 1px solid rgba(2,50,70,0.08) !important; }
+.prd-nav-item { padding: 0.8rem 1.4rem !important; font-size: 0.68rem !important; }
+.user-story { padding: 1.2rem 1.4rem !important; border: 1px solid rgba(2,50,70,0.08) !important; background: rgba(246,246,246,0.6) !important; }
+
+/* ── LEGAL ── */
+.legal-score { padding: 2.5rem 3rem !important; }
+.legal-score-circle { width: 90px !important; height: 90px !important; }
+.legal-score-num { font-family: 'Playfair Display',Georgia,serif !important; font-size: 1.8rem !important; font-weight: 300 !important; }
+
+/* ── REPORT ── */
+.report-preview { padding: 4rem !important; border: 1px solid rgba(2,50,70,0.08) !important; box-shadow: 0 4px 40px rgba(2,50,70,0.06) !important; }
+.report-preview h1 { font-size: 2.4rem !important; font-weight: 300 !important; letter-spacing: -0.02em !important; }
+.report-preview h2 { font-size: 1.1rem !important; font-weight: 400 !important; letter-spacing: -0.01em !important; }
+.report-preview p { font-size: 0.88rem !important; line-height: 1.9 !important; }
+
+/* ── MARKET RESEARCH HERO ── */
+.market-hero {
+  background-color: var(--navy) !important;
+  margin-bottom: 2rem !important;
+  position: relative;
+  overflow: hidden;
+}
+.market-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(40,112,148,0.2) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.market-hero-stat { padding: 2rem 2.5rem !important; }
+.market-hero-stat-val { font-size: 2.8rem !important; font-weight: 300 !important; }
+.market-hero-stat-label { font-size: 0.58rem !important; letter-spacing: 0.18em !important; }
+
+/* ── ACTIVITY FEED ── */
+.activity-item { padding: 1rem 0 !important; border-bottom: 1px solid rgba(2,50,70,0.07) !important; }
+.activity-text { font-size: 0.82rem !important; line-height: 1.6 !important; }
+
+/* ── NEW PROJECT CARD ── */
+.new-project-card {
+  min-height: 220px !important;
+  border: 1px dashed rgba(2,50,70,0.15) !important;
+  transition: all 0.3s ease !important;
+}
+.new-project-card:hover { border-color: var(--blue) !important; background: rgba(40,112,148,0.02) !important; }
+
+/* ── FORM FIELDS ── */
+.form-field input, .form-field select, .form-field textarea {
+  padding: 0.9rem 1.1rem !important;
+  border: 1px solid rgba(2,50,70,0.12) !important;
+  font-size: 0.9rem !important;
+}
+.new-project-form { max-width: 680px !important; }
+
+/* ── PROFILE & SETTINGS ── */
+.settings-tab { padding: 0.8rem 1.4rem !important; font-size: 0.68rem !important; letter-spacing: 0.08em !important; }
+
+/* ── ANIMATION ── */
+@keyframes fade-up-d {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fade-up-d 0.35s ease forwards !important; }
+
+/* ── BAR CHART ── */
+.bar-track { height: 6px !important; background: rgba(2,50,70,0.06) !important; border: none !important; }
+.bar-fill { background: linear-gradient(to right, var(--blue), var(--blue-light)) !important; }
+.bar-label { font-size: 0.68rem !important; }
+
+/* ── TREND ITEMS ── */
+.trend-item { padding: 1.1rem 0 !important; border-bottom: 1px solid rgba(2,50,70,0.07) !important; }
+.trend-text { font-size: 0.85rem !important; line-height: 1.7 !important; }
+.trend-num { color: var(--blue) !important; font-size: 0.7rem !important; }
+
+/* ── CHECKLIST ── */
+.checklist-item { padding: 1rem 0 !important; border-bottom: 1px solid rgba(2,50,70,0.07) !important; }
+.checklist-text { font-size: 0.85rem !important; }
+.checklist-note { font-size: 0.72rem !important; color: var(--muted) !important; margin-top: 0.3rem !important; }
+
+</style>
+
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  LOGIN VIEW                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="view active" id="view-login">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="auth-orb">
+        <div class="auth-orb-ring"><div class="auth-orb-dot"></div></div>
+        <div class="auth-orb-ring"><div class="auth-orb-dot"></div></div>
+        <div class="auth-orb-ring"><div class="auth-orb-dot"></div></div>
+        <div class="auth-orb-center"><span>AURA</span></div>
+      </div>
+      <div class="auth-left-logo" style="margin-top:2rem;">AU<span>R</span>A</div>
+      <div class="auth-left-tagline">Your AI Product Manager.<br>From idea to impact.</div>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;margin-top:1rem;">
+        <div style="font-size:0.72rem;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,0.2);letter-spacing:0.1em;text-align:center;">TRUSTED BY</div>
+        <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;">
+          <span style="font-size:0.7rem;color:rgba(255,255,255,0.25);font-family:'IBM Plex Mono',monospace;">500+ STARTUPS</span>
+          <span style="font-size:0.7rem;color:rgba(255,255,255,0.25);font-family:'IBM Plex Mono',monospace;">200+ NGOS</span>
+          <span style="font-size:0.7rem;color:rgba(255,255,255,0.25);font-family:'IBM Plex Mono',monospace;">50+ ENTERPRISES</span>
+        </div>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-card">
+        <span class="auth-card-logo">AU<span>R</span>A</span>
+        <p class="auth-card-sub">Sign in to your account</p>
+        <button class="auth-google-btn" onclick="handleGoogleAuth()">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.31z"/></svg>
+          Continue with Google
+        </button>
+        <div class="auth-divider">or</div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="login-email" placeholder="you@company.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="login-password" placeholder="••••••••">
+        </div>
+        <button class="btn-primary" onclick="handleLogin()">Sign In →</button>
+        <div class="auth-switch">Don't have an account? <a href="#" onclick="navigate('signup')">Sign up free</a></div>
+        <div style="text-align:center;margin-top:0.8rem;">
+          <a href="landing.html" style="font-size:0.75rem;color:var(--muted);text-decoration:none;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">← Back to website</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SIGNUP VIEW                                -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="view" id="view-signup">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="auth-orb">
+        <div class="auth-orb-ring"><div class="auth-orb-dot"></div></div>
+        <div class="auth-orb-ring"><div class="auth-orb-dot"></div></div>
+        <div class="auth-orb-ring"><div class="auth-orb-dot"></div></div>
+        <div class="auth-orb-center"><span>AURA</span></div>
+      </div>
+      <div class="auth-left-logo" style="margin-top:2rem;">AU<span>R</span>A</div>
+      <div class="auth-left-tagline">Start turning your ideas<br>into execution-ready products.</div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-card">
+        <span class="auth-card-logo">AU<span>R</span>A</span>
+        <p class="auth-card-sub">Create your free account</p>
+        <button class="auth-google-btn" onclick="handleGoogleAuth()">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.31z"/></svg>
+          Continue with Google
+        </button>
+        <div class="auth-divider">or</div>
+        <div class="form-input-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" type="text" placeholder="Priya">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" type="text" placeholder="Sharma">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" placeholder="you@company.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" placeholder="Min. 8 characters">
+        </div>
+        <button class="btn-primary" onclick="handleSignup()">Create Account →</button>
+        <div class="auth-switch">Already have an account? <a href="#" onclick="navigate('login')">Sign in</a></div>
+        <div style="text-align:center;margin-top:0.8rem;">
+          <a href="landing.html" style="font-size:0.75rem;color:var(--muted);text-decoration:none;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">← Back to website</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  APP SHELL (sidebar + main)                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="view" id="view-app" style="flex-direction:row;">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a class="sidebar-logo" href="#" onclick="navigate('dashboard')">
+      <div class="sidebar-logo-text">AU<span>R</span>A</div>
+    </a>
+
+    <!-- Project context -->
+    <div class="sidebar-project-ctx" id="sidebar-project-ctx" style="display:none;">
+      <div>Current Project</div>
+      <div class="sidebar-project-name" id="sidebar-project-name">—</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+      <button class="sidebar-link" onclick="navigate('dashboard')" id="slink-dashboard">
+        <span class="s-icon">⊞</span> Dashboard
+      </button>
+      <button class="sidebar-link" onclick="navigate('new-project')" id="slink-new-project">
+        <span class="s-icon">＋</span> New Project
+      </button>
+
+      <div class="sidebar-section-label" id="project-nav-label" style="display:none;">Project</div>
+      <button class="sidebar-link" onclick="navigate('project-overview')" id="slink-project-overview" style="display:none;">
+        <span class="s-icon">◎</span> Overview
+      </button>
+      <button class="sidebar-link" onclick="navigate('market-research')" id="slink-market-research" style="display:none;">
+        <span class="s-icon">◈</span> Market Research
+      </button>
+      <button class="sidebar-link" onclick="navigate('competitors')" id="slink-competitors" style="display:none;">
+        <span class="s-icon">⧖</span> Competitors
+      </button>
+      <button class="sidebar-link" onclick="navigate('personas')" id="slink-personas" style="display:none;">
+        <span class="s-icon">◐</span> Personas
+      </button>
+      <button class="sidebar-link" onclick="navigate('mvp')" id="slink-mvp" style="display:none;">
+        <span class="s-icon">◧</span> MVP
+      </button>
+      <button class="sidebar-link" onclick="navigate('prd')" id="slink-prd" style="display:none;">
+        <span class="s-icon">▤</span> PRD
+      </button>
+      <button class="sidebar-link" onclick="navigate('roadmap')" id="slink-roadmap" style="display:none;">
+        <span class="s-icon">◫</span> Roadmap
+      </button>
+      <button class="sidebar-link" onclick="navigate('legal')" id="slink-legal" style="display:none;">
+        <span class="s-icon">◻</span> Legal
+      </button>
+      <button class="sidebar-link" onclick="navigate('report')" id="slink-report" style="display:none;">
+        <span class="s-icon">◱</span> Final Report <span class="badge">PDF</span>
+      </button>
+
+      <div class="sidebar-section-label">Account</div>
+      <button class="sidebar-link" onclick="navigate('profile')" id="slink-profile">
+        <span class="s-icon">○</span> Profile
+      </button>
+      <button class="sidebar-link" onclick="navigate('settings')" id="slink-settings">
+        <span class="s-icon">⚙</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-user" onclick="navigate('profile')">
+        <div class="avatar" id="sidebar-avatar">PS</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebar-uname">Priya Sharma</div>
+          <div class="sidebar-user-email" id="sidebar-uemail">priya@example.com</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.4rem;padding:0 0.6rem 0.4rem;margin-top:0.3rem;">
+        <a href="landing.html" style="flex:1;display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.45rem 0.6rem;font-size:0.62rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;color:rgba(255,255,255,0.25);text-decoration:none;border:1px solid rgba(255,255,255,0.06);transition:all 0.2s;" onmouseover="this.style.color='rgba(255,255,255,0.6)';this.style.borderColor='rgba(255,255,255,0.15)';" onmouseout="this.style.color='rgba(255,255,255,0.25)';this.style.borderColor='rgba(255,255,255,0.06)';">← WEBSITE</a>
+        <button onclick="logout()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.45rem 0.6rem;font-size:0.62rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;color:rgba(255,255,255,0.25);background:none;border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color='rgba(192,57,43,0.8)';this.style.borderColor='rgba(192,57,43,0.2)';" onmouseout="this.style.color='rgba(255,255,255,0.25)';this.style.borderColor='rgba(255,255,255,0.06)';">LOG OUT</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main-content">
+
+    <!-- ─── DASHBOARD ─────────────────────── -->
+    <section id="page-dashboard" style="display:none;">
+      <div class="welcome-banner">
+        <div class="welcome-text" style="position:relative;z-index:2;">
+          <div style="font-size:0.6rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem;"><span style="display:inline-block;width:1.5rem;height:1px;background:rgba(255,255,255,0.2);"></span>Dashboard</div>
+          <h2>Welcome back, <em id="welcome-name">Priya</em>.</h2>
+          <p>Continue building products with confidence. Your ideas are taking shape.</p>
+          <div style="display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap;">
+            <button class="btn btn-lg" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.8);" onclick="navigate('new-project')">+ New Project</button>
+            <button class="btn btn-lg" style="background:transparent;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);" onclick="navigate('report')">View Reports</button>
+          </div>
+        </div>
+        <!-- Orbit visual -->
+        <div style="position:relative;z-index:2;flex-shrink:0;display:flex;align-items:center;justify-content:center;opacity:0.7;" aria-hidden="true">
+          <div style="position:relative;width:220px;height:220px;">
+            <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(40,112,148,0.3);animation:spin 20s linear infinite;"><div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:#287094;"></div></div>
+            <div style="position:absolute;inset:15%;border-radius:50%;border:1px solid rgba(40,112,148,0.2);animation:spin 14s linear infinite reverse;"><div style="position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:#5a9ab8;"></div></div>
+            <div style="position:absolute;inset:30%;border-radius:50%;border:1px solid rgba(212,212,206,0.2);animation:spin 9s linear infinite;"><div style="position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#D4D4CE;"></div></div>
+            <div style="position:absolute;inset:40%;border-radius:50%;background:linear-gradient(135deg,#023246,#012030);border:1px solid rgba(40,112,148,0.4);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(40,112,148,0.3);">
+              <span style="font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:1rem;color:#F6F6F6;letter-spacing:-0.02em;">A</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="grid-4" style="margin-bottom:2.5rem;">
+          <div class="stat-card">
+            <div class="stat-card-label">Projects</div>
+            <div class="stat-card-value">4<span style="font-size:1.4rem;">+</span></div>
+            <div class="stat-card-sub">3 active · 1 complete</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Reports Generated</div>
+            <div class="stat-card-value">12</div>
+            <div class="stat-card-sub">Last: 2 days ago</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Personas Created</div>
+            <div class="stat-card-value">18</div>
+            <div class="stat-card-sub">Across all projects</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Hours Saved</div>
+            <div class="stat-card-value">94<span style="font-size:1.4rem;">h</span></div>
+            <div class="stat-card-sub">vs. manual research</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;" id="dashboard-main-grid">
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+              <div>
+                <div style="font-size:0.58rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;"><span style="display:inline-block;width:1rem;height:1px;background:var(--blue);"></span>Projects</div>
+                <h3 style="font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:300;color:var(--navy);letter-spacing:-0.01em;">Your Work</h3>
+              </div>
+              <button class="btn btn-sm" onclick="navigate('new-project')">+ New Project</button>
+            </div>
+            <div class="project-grid" id="project-grid"></div>
+          </div>
+          <div>
+            <div style="margin-bottom:1.5rem;">
+              <div style="font-size:0.58rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;"><span style="display:inline-block;width:1rem;height:1px;background:var(--blue);"></span>Timeline</div>
+              <h3 style="font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:300;color:var(--navy);letter-spacing:-0.01em;">Recent Activity</h3>
+            </div>
+            <div class="card">
+              <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>
+                  <div class="activity-text">Generated PRD for <strong>EduTrack AI</strong></div>
+                  <div class="activity-time">2 hours ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>
+                  <div class="activity-text">Completed competitor analysis — 6 competitors found</div>
+                  <div class="activity-time">Yesterday</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>
+                  <div class="activity-text">Created 4 user personas for <strong>HealthBridge</strong></div>
+                  <div class="activity-time">2 days ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>
+                  <div class="activity-text">New project created: <strong>AgriSense</strong></div>
+                  <div class="activity-time">3 days ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>
+                  <div class="activity-text">Exported Final Report — EduTrack AI</div>
+                  <div class="activity-time">4 days ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── NEW PROJECT ────────────────────── -->
+    <section id="page-new-project" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Projects</div>
+          <div class="page-title">Start <em>Building</em></div>
+          <div class="page-sub">Describe your idea. AURA will analyze it and generate a complete product strategy — in under a minute.</div>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="new-project-form">
+          <div class="form-section">
+            <div class="form-section-title">Project Basics</div>
+            <div class="form-field">
+              <label>Project Name</label>
+              <input type="text" id="np-name" placeholder="e.g. EduTrack AI">
+            </div>
+            <div class="form-input-row">
+              <div class="form-field">
+                <label>Industry</label>
+                <select id="np-industry">
+                  <option value="">Select industry</option>
+                  <option>EdTech</option>
+                  <option>HealthTech</option>
+                  <option>FinTech</option>
+                  <option>AgriTech</option>
+                  <option>CleanTech</option>
+                  <option>SaaS / Productivity</option>
+                  <option>E-commerce</option>
+                  <option>NGO / Social Impact</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Target Audience</label>
+                <input type="text" id="np-audience" placeholder="e.g. College students in India">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Your Idea</div>
+            <div class="form-field">
+              <label>Product Idea</label>
+              <textarea id="np-idea" placeholder="Describe your product idea in a few sentences..."></textarea>
+              <div class="field-hint">Be as specific as possible. Include what it does and who it's for.</div>
+            </div>
+            <div class="form-field">
+              <label>Problem Statement</label>
+              <textarea id="np-problem" placeholder="What problem does this solve?"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Vision & Goals</div>
+            <div class="form-field">
+              <label>Vision</label>
+              <textarea id="np-vision" placeholder="What does success look like in 3–5 years?"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Primary Goal</label>
+              <input type="text" id="np-goal" placeholder="e.g. Reach 10,000 active users in year 1">
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1rem;padding-top:1rem;">
+            <button class="btn btn-dark btn-lg" style="flex:1;" onclick="startAnalysis()">Analyze Idea →</button>
+            <button class="btn" onclick="navigate('dashboard')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ANALYSIS ──────────────────────── -->
+    <section id="page-analysis" style="display:none;">
+      <div class="analysis-view">
+        <div class="analysis-orb">
+          <div class="analysis-orb-ring"><div class="analysis-orb-dot"></div></div>
+          <div class="analysis-orb-ring"><div class="analysis-orb-dot"></div></div>
+          <div class="analysis-orb-ring"><div class="analysis-orb-dot"></div></div>
+          <div class="analysis-orb-center"><span>AURA</span></div>
+        </div>
+        <div style="font-size:0.6rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;color:var(--blue);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;justify-content:center;"><span style="display:inline-block;width:1.5rem;height:1px;background:var(--blue);"></span>AI Analysis<span style="display:inline-block;width:1.5rem;height:1px;background:var(--blue);"></span></div>
+        <div class="analysis-title">Building Your <em style="font-style:italic;color:var(--blue);">Blueprint</em></div>
+        <div class="analysis-sub">AURA is generating your complete product strategy — market research, personas, MVP, PRD, roadmap and more.</div>
+        <div class="analysis-steps" id="analysis-steps">
+          <div class="analysis-step" id="astep-0"><div class="step-check">○</div> Understanding Idea</div>
+          <div class="analysis-step" id="astep-1"><div class="step-check">○</div> Market Research</div>
+          <div class="analysis-step" id="astep-2"><div class="step-check">○</div> Competitor Analysis</div>
+          <div class="analysis-step" id="astep-3"><div class="step-check">○</div> User Personas</div>
+          <div class="analysis-step" id="astep-4"><div class="step-check">○</div> MVP Planning</div>
+          <div class="analysis-step" id="astep-5"><div class="step-check">○</div> PRD Generation</div>
+          <div class="analysis-step" id="astep-6"><div class="step-check">○</div> Roadmap Creation</div>
+          <div class="analysis-step" id="astep-7"><div class="step-check">○</div> Legal Readiness</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PROJECT OVERVIEW ──────────────── -->
+    <section id="page-project-overview" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project</div>
+          <div class="page-title" id="po-title">EduTrack <em>AI</em></div>
+          <div class="page-sub">EdTech · College students in India · Confidence Score 87/100</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn" onclick="navigate('report')">View Report</button>
+          <button class="btn btn-dark" onclick="navigate('report')">Export PDF</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="overview-hero">
+          <div style="position:relative;z-index:2;">
+            <h3>Problem Statement</h3>
+            <p id="po-problem" style="font-size:1rem;color:rgba(255,255,255,0.8);line-height:1.75;font-family:'Playfair Display',Georgia,serif;font-weight:300;letter-spacing:-0.01em;">Students in India lack structured tools to track academic progress, identify skill gaps, and receive personalized learning recommendations aligned with industry demand.</p>
+            <div class="confidence-badge" style="margin-top:2rem;">◎ Confidence Score: 87 / 100</div>
+          </div>
+          <div style="position:relative;z-index:2;">
+            <h3>Recommended Solution</h3>
+            <p style="font-size:0.9rem;color:rgba(255,255,255,0.5);line-height:1.8;">An AI-driven platform that maps student competencies against job market requirements, delivers personalized study plans, and tracks learning velocity over time.</p>
+            <div style="margin-top:2rem;display:flex;flex-direction:column;gap:0.6rem;">
+              <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.72rem;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,0.35);"><span style="width:4px;height:4px;background:var(--blue);border-radius:50%;flex-shrink:0;"></span>Target: 42M college students</div>
+              <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.72rem;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,0.35);"><span style="width:4px;height:4px;background:var(--blue);border-radius:50%;flex-shrink:0;"></span>Market: $8.2B India EdTech</div>
+              <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.72rem;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,0.35);"><span style="width:4px;height:4px;background:var(--blue);border-radius:50%;flex-shrink:0;"></span>Revenue: B2C subscription + B2B institutional</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-4" style="margin-bottom:1.5rem;">
+          <div class="stat-card">
+            <div class="stat-card-label">Market Size</div>
+            <div class="stat-card-value">$8.2B</div>
+            <div class="stat-card-sub">India EdTech by 2025</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Target Users</div>
+            <div class="stat-card-value">42M</div>
+            <div class="stat-card-sub">College students in India</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Competitors</div>
+            <div class="stat-card-value">6</div>
+            <div class="stat-card-sub">Direct · 3 indirect</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">MVP Features</div>
+            <div class="stat-card-value">12</div>
+            <div class="stat-card-sub">8 must-have · 4 next</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Market Opportunity</div>
+            <p style="font-size:0.82rem;color:var(--ink);line-height:1.7;margin-bottom:1rem;">The Indian EdTech market is growing at 39% CAGR. Personalized learning is an underserved segment with significant whitespace, particularly for tier-2 and tier-3 cities.</p>
+            <button class="btn btn-sm" onclick="navigate('market-research')">View Full Research →</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Next Steps</div>
+            <div class="activity-item"><div class="activity-dot"></div><div class="activity-text">Complete competitor deep-dive</div></div>
+            <div class="activity-item"><div class="activity-dot"></div><div class="activity-text">Review generated personas</div></div>
+            <div class="activity-item"><div class="activity-dot"></div><div class="activity-text">Validate MVP feature list</div></div>
+            <div class="activity-item" style="border:none;"><div class="activity-dot"></div><div class="activity-text">Review PRD and roadmap</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── MARKET RESEARCH ───────────────── -->
+    <section id="page-market-research" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-title">Market <em>Intelligence</em></div>
+          <div class="page-sub">Industry insights, market sizing, growth trends and opportunity analysis — generated from your product idea.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-sm" onclick="showToast('Refreshing market data...')">↻ Refresh</button>
+          <button class="btn btn-dark btn-sm" onclick="showToast('Exporting market report...')">Export</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="market-hero">
+          <div class="market-hero-stat">
+            <div class="market-hero-stat-val">$8.2B</div>
+            <div class="market-hero-stat-label">TAM · Total Addressable</div>
+          </div>
+          <div class="market-hero-stat">
+            <div class="market-hero-stat-val">$2.1B</div>
+            <div class="market-hero-stat-label">SAM · Serviceable</div>
+          </div>
+          <div class="market-hero-stat">
+            <div class="market-hero-stat-val">$180M</div>
+            <div class="market-hero-stat-label">SOM · Obtainable</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:1.5rem;">
+          <div class="card">
+            <div class="card-title">Growth Rate by Segment</div>
+            <div class="bar-chart">
+              <div class="bar-row"><div class="bar-label">EdTech</div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><div class="bar-val">39% CAGR</div></div>
+              <div class="bar-row"><div class="bar-label">AI Tools</div><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div><div class="bar-val">47% CAGR</div></div>
+              <div class="bar-row"><div class="bar-label">Personalized</div><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><div class="bar-val">33% CAGR</div></div>
+              <div class="bar-row"><div class="bar-label">B2C SaaS</div><div class="bar-track"><div class="bar-fill" style="width:52%"></div></div><div class="bar-val">26% CAGR</div></div>
+              <div class="bar-row"><div class="bar-label">B2B Inst.</div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><div class="bar-val">22% CAGR</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Industry Trends</div>
+            <div class="trend-item"><div class="trend-num">01</div><div class="trend-text">AI-powered personalized learning paths are seeing 3× higher engagement than static content</div></div>
+            <div class="trend-item"><div class="trend-num">02</div><div class="trend-text">Tier-2 city penetration growing at 55% YoY — massively underserved by current players</div></div>
+            <div class="trend-item"><div class="trend-num">03</div><div class="trend-text">Skill-gap tracking linked to job placement is the #1 requested feature in student surveys</div></div>
+            <div class="trend-item" style="border:none;"><div class="trend-num">04</div><div class="trend-text">Mobile-first learning adoption crossed 76% among 18–24 age group in 2024</div></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Opportunities</div>
+            <div class="gap-card"><div class="gap-card-title">Underserved Tier-2 Cities</div><div class="gap-card-desc">No major player has a strong tier-2/3 strategy. 68% of India's college students are outside top metros.</div></div>
+            <div class="gap-card"><div class="gap-card-title">Placement-Linked Learning</div><div class="gap-card-desc">Students are highly motivated by job outcomes. An AI that maps skills to job requirements commands premium pricing.</div></div>
+            <div class="gap-card" style="margin-bottom:0;"><div class="gap-card-title">Institutional B2B Play</div><div class="gap-card-desc">Universities pay ₹50K–₹5L/year for placement analytics. A white-label product extends addressable market significantly.</div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Threats &amp; Risks</div>
+            <div class="gap-card" style="border-color:#c0392b;background:rgba(192,57,43,0.03);">
+              <div class="gap-card-title" style="color:#c0392b;">High Competition</div>
+              <div class="gap-card-desc">Byju's, Unacademy, and Coursera have massive marketing budgets and brand recognition. Differentiation is critical.</div>
+            </div>
+            <div class="gap-card" style="border-color:#e67e22;background:rgba(230,126,34,0.03);">
+              <div class="gap-card-title" style="color:#e67e22;">User Retention</div>
+              <div class="gap-card-desc">EdTech products have historically high churn (avg 68% after 30 days). Strong habit loops are essential.</div>
+            </div>
+            <div class="gap-card" style="border-color:#e67e22;background:rgba(230,126,34,0.03);margin-bottom:0;">
+              <div class="gap-card-title" style="color:#e67e22;">AI Data Dependency</div>
+              <div class="gap-card-desc">Model quality depends on quality training data. Cold-start problem in first 6 months may impact accuracy.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── COMPETITORS ───────────────────── -->
+    <section id="page-competitors" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-title">Competitive <em>Landscape</em></div>
+          <div class="page-sub">Consulting-grade competitor research. 6 direct competitors identified, 3 market gaps surfaced.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-dark btn-sm" onclick="showToast('Exporting competitor report...')">Export</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="card" style="margin-bottom:1.5rem;overflow-x:auto;">
+          <table class="competitor-table">
+            <thead>
+              <tr>
+                <th>Competitor</th>
+                <th>Pricing</th>
+                <th>Strengths</th>
+                <th>Weaknesses</th>
+                <th>Market Position</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="competitor-name">Byju's</div><div style="font-size:0.7rem;color:var(--muted);">India · VC-backed</div></td>
+                <td><span class="tag tag-blue">₹1,200/mo</span></td>
+                <td><span class="tag tag-gray">Brand recognition</span> <span class="tag tag-gray">Content library</span></td>
+                <td><span class="tag tag-red">Not AI-driven</span> <span class="tag tag-red">High churn</span></td>
+                <td>Market leader</td>
+              </tr>
+              <tr>
+                <td><div class="competitor-name">Unacademy</div><div style="font-size:0.7rem;color:var(--muted);">India · Public</div></td>
+                <td><span class="tag tag-blue">₹800/mo</span></td>
+                <td><span class="tag tag-gray">Live classes</span> <span class="tag tag-gray">Educator network</span></td>
+                <td><span class="tag tag-red">No personalization</span> <span class="tag tag-red">Exam-only focus</span></td>
+                <td>Strong #2</td>
+              </tr>
+              <tr>
+                <td><div class="competitor-name">Coursera</div><div style="font-size:0.7rem;color:var(--muted);">Global · Public</div></td>
+                <td><span class="tag tag-blue">$49/mo</span></td>
+                <td><span class="tag tag-gray">University certs</span> <span class="tag tag-gray">Global brand</span></td>
+                <td><span class="tag tag-red">Expensive</span> <span class="tag tag-red">Not India-specific</span></td>
+                <td>Premium segment</td>
+              </tr>
+              <tr>
+                <td><div class="competitor-name">Skill-Lync</div><div style="font-size:0.7rem;color:var(--muted);">India · Startup</div></td>
+                <td><span class="tag tag-blue">₹30K one-time</span></td>
+                <td><span class="tag tag-gray">Placement focus</span> <span class="tag tag-gray">Industry projects</span></td>
+                <td><span class="tag tag-red">High price</span> <span class="tag tag-red">Niche audience</span></td>
+                <td>Engineering niche</td>
+              </tr>
+              <tr>
+                <td><div class="competitor-name">Duolingo</div><div style="font-size:0.7rem;color:var(--muted);">Global · Public</div></td>
+                <td><span class="tag tag-blue">Free / $7/mo</span></td>
+                <td><span class="tag tag-gray">Gamification</span> <span class="tag tag-gray">Retention loops</span></td>
+                <td><span class="tag tag-red">Language only</span> <span class="tag tag-red">No depth</span></td>
+                <td>Language leader</td>
+              </tr>
+              <tr>
+                <td><div class="competitor-name">Khan Academy</div><div style="font-size:0.7rem;color:var(--muted);">Global · Non-profit</div></td>
+                <td><span class="tag tag-gray">Free</span></td>
+                <td><span class="tag tag-gray">Trusted brand</span> <span class="tag tag-gray">Quality content</span></td>
+                <td><span class="tag tag-red">No AI personalization</span> <span class="tag tag-red">US-centric</span></td>
+                <td>Academic base</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-bottom:0.8rem;font-family:'Lora','Georgia',serif;font-weight:700;font-size:1rem;color:var(--navy);">Market Gap Analysis</div>
+        <div class="gap-card"><div class="gap-card-title">Gap 1 — AI-Driven Skill Gap Tracking</div><div class="gap-card-desc">No competitor offers real-time AI analysis of a student's skills vs live job market demand. This is your primary differentiator.</div></div>
+        <div class="gap-card"><div class="gap-card-title">Gap 2 — Affordable Placement Intelligence for Tier-2 India</div><div class="gap-card-desc">All major players are priced out of tier-2/3 city budgets. A ₹99–299/mo product targeting this segment has no real competition.</div></div>
+        <div class="gap-card" style="margin-bottom:0;"><div class="gap-card-title">Gap 3 — Institutional White-Label Analytics</div><div class="gap-card-desc">Universities and colleges lack tools to track student placement readiness at scale. No SaaS product fills this B2B gap affordably.</div></div>
+      </div>
+    </section>
+
+    <!-- ─── PERSONAS ───────────────────────── -->
+    <section id="page-personas" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-title">User <em>Personas</em></div>
+          <div class="page-sub">4 richly defined user archetypes, built from your target audience and market intelligence.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-dark btn-sm" onclick="showToast('Exporting personas...')">Export</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="grid-2">
+          <!-- Persona 1 -->
+          <div class="persona-card">
+            <div class="persona-header">
+              <div class="persona-avatar">RK</div>
+              <div class="persona-name-block">
+                <div class="persona-name">Rahul Kumar</div>
+                <div class="persona-role">3rd Year CS Student · Tier-2 City · Age 21</div>
+              </div>
+            </div>
+            <div class="persona-body">
+              <div class="persona-section">
+                <div class="persona-section-label">Goals</div>
+                <div class="persona-items">
+                  <span class="persona-tag persona-goal">Land a product role</span>
+                  <span class="persona-tag persona-goal">Build a strong portfolio</span>
+                  <span class="persona-tag persona-goal">Beat campus competition</span>
+                </div>
+              </div>
+              <div class="persona-section">
+                <div class="persona-section-label">Pain Points</div>
+                <div class="persona-items">
+                  <span class="persona-tag persona-pain">Doesn't know skill gaps</span>
+                  <span class="persona-tag persona-pain">Scattered resources</span>
+                  <span class="persona-tag persona-pain">No mentor access</span>
+                </div>
+              </div>
+              <div class="persona-section">
+                <div class="persona-section-label">Tech Usage</div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Mobile</div><div class="tech-bar"><div class="tech-bar-fill" style="width:95%"></div></div></div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Laptop</div><div class="tech-bar"><div class="tech-bar-fill" style="width:70%"></div></div></div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Apps</div><div class="tech-bar"><div class="tech-bar-fill" style="width:85%"></div></div></div>
+              </div>
+              <div class="persona-section" style="margin-bottom:0;">
+                <div class="persona-section-label">Motivation</div>
+                <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"I want to know exactly what I need to learn to get hired — not just random YouTube tutorials."</div>
+              </div>
+            </div>
+          </div>
+          <!-- Persona 2 -->
+          <div class="persona-card">
+            <div class="persona-header">
+              <div class="persona-avatar">SP</div>
+              <div class="persona-name-block">
+                <div class="persona-name">Shreya Patel</div>
+                <div class="persona-role">Final Year MBA · Metro City · Age 24</div>
+              </div>
+            </div>
+            <div class="persona-body">
+              <div class="persona-section">
+                <div class="persona-section-label">Goals</div>
+                <div class="persona-items">
+                  <span class="persona-tag persona-goal">Switch to tech from finance</span>
+                  <span class="persona-tag persona-goal">Upskill efficiently</span>
+                  <span class="persona-tag persona-goal">Track progress visually</span>
+                </div>
+              </div>
+              <div class="persona-section">
+                <div class="persona-section-label">Pain Points</div>
+                <div class="persona-items">
+                  <span class="persona-tag persona-pain">Time-constrained</span>
+                  <span class="persona-tag persona-pain">No structured roadmap</span>
+                  <span class="persona-tag persona-pain">Course overload</span>
+                </div>
+              </div>
+              <div class="persona-section">
+                <div class="persona-section-label">Tech Usage</div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Mobile</div><div class="tech-bar"><div class="tech-bar-fill" style="width:75%"></div></div></div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Laptop</div><div class="tech-bar"><div class="tech-bar-fill" style="width:90%"></div></div></div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Apps</div><div class="tech-bar"><div class="tech-bar-fill" style="width:65%"></div></div></div>
+              </div>
+              <div class="persona-section" style="margin-bottom:0;">
+                <div class="persona-section-label">Motivation</div>
+                <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"Give me a clear 3-month plan and I'll execute it. I just need someone to cut through the noise."</div>
+              </div>
+            </div>
+          </div>
+          <!-- Persona 3 -->
+          <div class="persona-card">
+            <div class="persona-header">
+              <div class="persona-avatar">AV</div>
+              <div class="persona-name-block">
+                <div class="persona-name">Arjun Verma</div>
+                <div class="persona-role">Placement Officer · College · Age 38</div>
+              </div>
+            </div>
+            <div class="persona-body">
+              <div class="persona-section">
+                <div class="persona-section-label">Goals</div>
+                <div class="persona-items">
+                  <span class="persona-tag persona-goal">Improve placement %</span>
+                  <span class="persona-tag persona-goal">Track student readiness</span>
+                  <span class="persona-tag persona-goal">Report to management</span>
+                </div>
+              </div>
+              <div class="persona-section">
+                <div class="persona-section-label">Pain Points</div>
+                <div class="persona-items">
+                  <span class="persona-tag persona-pain">No data visibility</span>
+                  <span class="persona-tag persona-pain">Manual tracking</span>
+                  <span class="persona-tag persona-pain">No early warning</span>
+                </div>
+              </div>
+              <div class="persona-section">
+                <div class="persona-section-label">Tech Usage</div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Desktop</div><div class="tech-bar"><div class="tech-bar-fill" style="width:88%"></div></div></div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Excel</div><div class="tech-bar"><div class="tech-bar-fill" style="width:95%"></div></div></div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Mobile</div><div class="tech-bar"><div class="tech-bar-fill" style="width:40%"></div></div></div>
+              </div>
+              <div class="persona-section" style="margin-bottom:0;">
+                <div class="persona-section-label">Motivation</div>
+                <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"I need a dashboard that tells me which students are at risk of not getting placed — before companies visit."</div>
+              </div>
+            </div>
+          </div>
+          <!-- Persona 4 -->
+          <div class="persona-card">
+            <div class="persona-header">
+              <div class="persona-avatar">NM</div>
+              <div class="persona-name-block">
+                <div class="persona-name">Neha Malhotra</div>
+                <div class="persona-role">Working Professional · Self-learner · Age 27</div>
+              </div>
+            </div>
+            <div class="persona-body">
+              <div class="persona-section">
+                <div class="persona-section-label">Goals</div>
+                <div class="persona-items">
+                  <span class="persona-tag persona-goal">Senior promotion</span>
+                  <span class="persona-tag persona-goal">Learn AI/ML basics</span>
+                  <span class="persona-tag persona-goal">Budget under ₹500/mo</span>
+                </div>
+              </div>
+              <div class="persona-section">
+                <div class="persona-section-label">Pain Points</div>
+                <div class="persona-items">
+                  <span class="persona-tag persona-pain">No time evenings</span>
+                  <span class="persona-tag persona-pain">Generic content</span>
+                  <span class="persona-tag persona-pain">No accountability</span>
+                </div>
+              </div>
+              <div class="persona-section">
+                <div class="persona-section-label">Tech Usage</div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Mobile</div><div class="tech-bar"><div class="tech-bar-fill" style="width:92%"></div></div></div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Laptop</div><div class="tech-bar"><div class="tech-bar-fill" style="width:60%"></div></div></div>
+                <div class="tech-bar-row"><div class="tech-bar-label">Audio</div><div class="tech-bar"><div class="tech-bar-fill" style="width:78%"></div></div></div>
+              </div>
+              <div class="persona-section" style="margin-bottom:0;">
+                <div class="persona-section-label">Motivation</div>
+                <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"I learn in 15-minute slots. I need content that fits my life, not a full bootcamp I'll never finish."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── MVP ───────────────────────────── -->
+    <section id="page-mvp" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-title">MVP <em>Blueprint</em></div>
+          <div class="page-sub">AI-prioritized feature planning across three strategic release tiers.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-dark btn-sm" onclick="showToast('Exporting MVP plan...')">Export</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="mvp-columns">
+          <div class="mvp-col must">
+            <div class="mvp-col-header">
+              <div class="mvp-col-title">Must Have</div>
+              <div class="mvp-col-count">8 features</div>
+            </div>
+            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">AI Skill Gap Analyzer</div><div class="mvp-item-detail">Maps student profile to job listings in real-time</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Personalized Study Path Generator</div><div class="mvp-item-detail">Week-by-week learning plan based on gap analysis</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Progress Dashboard</div><div class="mvp-item-detail">Visual competency tracker with completion %</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Job Role Matching</div><div class="mvp-item-detail">Match student to top 5 roles based on current skill level</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Resource Curator</div><div class="mvp-item-detail">Surfaces free + paid resources for each skill</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Streak & Habit System</div><div class="mvp-item-detail">Daily learning goals and streak tracking</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Profile Builder</div><div class="mvp-item-detail">Exportable skill resume for job applications</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Mobile-First Interface</div><div class="mvp-item-detail">PWA or native app for on-the-go learning</div></div></div>
+          </div>
+          <div class="mvp-col">
+            <div class="mvp-col-header">
+              <div class="mvp-col-title">Should Have</div>
+              <div class="mvp-col-count">6 features</div>
+            </div>
+            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Peer Benchmark Mode</div><div class="mvp-item-detail">See how you compare vs similar students</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Mock Interview Prep</div><div class="mvp-item-detail">AI-generated questions for target role</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">College Integration</div><div class="mvp-item-detail">Placement officer dashboard for institutions</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Notification Engine</div><div class="mvp-item-detail">Daily nudges, deadline alerts, streak reminders</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Certification Tracker</div><div class="mvp-item-detail">Track and verify completed certifications</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Referral Program</div><div class="mvp-item-detail">Growth loop: invite friends, unlock features</div></div></div>
+          </div>
+          <div class="mvp-col">
+            <div class="mvp-col-header">
+              <div class="mvp-col-title">Future Features</div>
+              <div class="mvp-col-count">5 features</div>
+            </div>
+            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">Mentorship Marketplace</div><div class="mvp-item-detail">Book 1:1 calls with industry professionals</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">Live Cohort Classes</div><div class="mvp-item-detail">Group sessions with peers and instructors</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">Employer Portal</div><div class="mvp-item-detail">Companies discover pre-screened talent</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">AI Content Generator</div><div class="mvp-item-detail">Auto-generate quizzes and practice problems</div></div></div>
+            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">Global Expansion</div><div class="mvp-item-detail">Multi-language support for SEA markets</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PRD ───────────────────────────── -->
+    <section id="page-prd" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-title">Product Requirements <em>Document</em></div>
+          <div class="page-sub">A living product specification document. Click any section to edit and make it your own.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-sm" onclick="showToast('Changes saved.')">Save</button>
+          <button class="btn btn-dark btn-sm" onclick="showToast('Downloading PRD...')">Download PRD</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="prd-nav" id="prd-nav">
+          <div class="prd-nav-item active" onclick="switchPRD('summary',this)">Executive Summary</div>
+          <div class="prd-nav-item" onclick="switchPRD('objectives',this)">Objectives</div>
+          <div class="prd-nav-item" onclick="switchPRD('features',this)">Features</div>
+          <div class="prd-nav-item" onclick="switchPRD('stories',this)">User Stories</div>
+          <div class="prd-nav-item" onclick="switchPRD('metrics',this)">Success Metrics</div>
+        </div>
+
+        <div class="prd-section active" id="prd-summary">
+          <div class="prd-content" contenteditable="true">
+            <h3>Executive Summary</h3>
+            <p>EduTrack AI is an AI-powered learning companion designed to help Indian college students identify skill gaps, receive personalized study roadmaps, and track their placement readiness in real-time. The platform targets the underserved tier-2 and tier-3 city student population, offering an affordable subscription (₹99–299/mo) with measurable placement outcomes.</p>
+            <p>The product addresses a critical pain point: students know they need to upskill but lack clarity on what to learn, in what order, and whether they're progressing. EduTrack AI solves this with job-market-linked AI that translates ambition into a structured, trackable action plan.</p>
+            <p><strong>Target Launch:</strong> Q3 2025 · <strong>Initial Market:</strong> India Tier-2 cities · <strong>Revenue Model:</strong> B2C subscription + B2B institutional licensing</p>
+          </div>
+        </div>
+        <div class="prd-section" id="prd-objectives">
+          <div class="prd-content" contenteditable="true">
+            <h3>Product Objectives</h3>
+            <ul>
+              <li>Achieve 10,000 active users within 6 months of launch</li>
+              <li>Maintain 30-day retention above 45% (vs industry avg 32%)</li>
+              <li>Generate ₹1Cr ARR by month 12</li>
+              <li>Onboard 20 colleges on the institutional dashboard by Q4 2025</li>
+              <li>Measure and report measurable skill improvement for 80% of active users</li>
+            </ul>
+            <h3>Out of Scope (v1)</h3>
+            <ul>
+              <li>Live instructor-led classes</li>
+              <li>Job application management</li>
+              <li>Employer-facing hiring tools</li>
+            </ul>
+          </div>
+        </div>
+        <div class="prd-section" id="prd-features">
+          <div class="prd-content" contenteditable="true">
+            <h3>Core Features — v1</h3>
+            <ul>
+              <li><strong>AI Skill Gap Analyzer:</strong> NLP-based analysis of student profile vs top 50 job descriptions in target role</li>
+              <li><strong>Personalized Study Path:</strong> Week-by-week plan generated from gap score, available time, and deadline</li>
+              <li><strong>Progress Dashboard:</strong> Radar chart of competency areas, completion tracking, streak counter</li>
+              <li><strong>Job Role Matching:</strong> Top 5 matched roles with fit % and gap breakdown per role</li>
+              <li><strong>Resource Curator:</strong> Curated free + paid resources for each skill, ranked by quality and student ratings</li>
+              <li><strong>Mobile PWA:</strong> Offline-capable progressive web app for Android and iOS</li>
+            </ul>
+          </div>
+        </div>
+        <div class="prd-section" id="prd-stories">
+          <div class="prd-content" style="padding-bottom:1rem;">
+            <h3 style="margin-bottom:1.2rem;">User Stories</h3>
+            <div class="user-story">
+              <div class="user-story-header"><span class="user-story-id">US-001</span></div>
+              <div class="user-story-text">As a <strong>student</strong>, I want to see which skills I'm missing for my target role, so I know exactly what to learn first.</div>
+              <div class="user-story-ac">AC: Given a student profile and target role, when analysis runs, then display top 5 skill gaps ranked by impact with resource links.</div>
+            </div>
+            <div class="user-story">
+              <div class="user-story-header"><span class="user-story-id">US-002</span></div>
+              <div class="user-story-text">As a <strong>student</strong>, I want a weekly study plan tailored to my schedule, so I can learn consistently without overwhelm.</div>
+              <div class="user-story-ac">AC: Given availability and deadline, generate a day-by-day plan with estimated completion time per task.</div>
+            </div>
+            <div class="user-story">
+              <div class="user-story-header"><span class="user-story-id">US-003</span></div>
+              <div class="user-story-text">As a <strong>placement officer</strong>, I want to see which students are at risk of not being placement-ready, so I can intervene early.</div>
+              <div class="user-story-ac">AC: Dashboard shows red/amber/green status for all enrolled students with drill-down to individual skill reports.</div>
+            </div>
+            <div class="user-story">
+              <div class="user-story-header"><span class="user-story-id">US-004</span></div>
+              <div class="user-story-text">As a <strong>student</strong>, I want to see my progress over time as a visual chart, so I feel motivated by my improvement.</div>
+              <div class="user-story-ac">AC: Show weekly competency radar chart that evolves as students complete modules. Show % growth vs onboarding baseline.</div>
+            </div>
+          </div>
+        </div>
+        <div class="prd-section" id="prd-metrics">
+          <div class="prd-content" contenteditable="true">
+            <h3>Success Metrics</h3>
+            <ul>
+              <li><strong>Activation:</strong> % of signups who complete skill assessment within 24hrs → Target: 60%</li>
+              <li><strong>Engagement:</strong> Daily Active Users / Monthly Active Users → Target: 0.35</li>
+              <li><strong>Retention:</strong> 30-day retention → Target: 45%</li>
+              <li><strong>Revenue:</strong> MRR at month 6 → Target: ₹8L</li>
+              <li><strong>Placement Impact:</strong> % of active users reporting improved placement outcomes → Target: 70%</li>
+              <li><strong>NPS:</strong> Net Promoter Score → Target: 45+</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ROADMAP ────────────────────────── -->
+    <section id="page-roadmap" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-title">Product <em>Roadmap</em></div>
+          <div class="page-sub">A 5-phase strategic execution plan — from initial research through to market scale.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-sm" onclick="showToast('Roadmap exported.')">Export Roadmap</button>
+          <button class="btn btn-dark btn-sm" onclick="showToast('Downloading PDF...')">Download PDF</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="grid-2">
+          <div class="roadmap-timeline">
+            <div class="roadmap-phase">
+              <div class="roadmap-phase-header">
+                <div class="roadmap-phase-num">PHASE 01</div>
+                <div class="roadmap-phase-title">Research & Validation</div>
+                <div class="roadmap-phase-duration">Weeks 1–4</div>
+              </div>
+              <div class="roadmap-tasks">
+                <div class="roadmap-task"><div class="task-dot"></div>Conduct 50+ user interviews with students and placement officers</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Validate problem-solution fit with 3 colleges</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Finalize tech stack and architecture decisions</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Set up analytics and tracking infrastructure</div>
+              </div>
+            </div>
+            <div class="roadmap-phase">
+              <div class="roadmap-phase-header">
+                <div class="roadmap-phase-num">PHASE 02</div>
+                <div class="roadmap-phase-title">MVP Build</div>
+                <div class="roadmap-phase-duration">Weeks 5–12</div>
+              </div>
+              <div class="roadmap-tasks">
+                <div class="roadmap-task"><div class="task-dot"></div>Build AI skill gap analyzer (v1 model)</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Develop personalized study path engine</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Design and build progress dashboard</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Mobile PWA development and testing</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Payment integration (Razorpay)</div>
+              </div>
+            </div>
+            <div class="roadmap-phase">
+              <div class="roadmap-phase-header">
+                <div class="roadmap-phase-num">PHASE 03</div>
+                <div class="roadmap-phase-title">Closed Beta</div>
+                <div class="roadmap-phase-duration">Weeks 13–16</div>
+              </div>
+              <div class="roadmap-tasks">
+                <div class="roadmap-task"><div class="task-dot"></div>Onboard 500 beta users from 3 partner colleges</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Gather feedback and iterate on core AI accuracy</div>
+                <div class="roadmap-task"><div class="task-dot"></div>A/B test onboarding flows for activation</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Stabilize infrastructure for 5,000 concurrent users</div>
+              </div>
+            </div>
+            <div class="roadmap-phase">
+              <div class="roadmap-phase-header">
+                <div class="roadmap-phase-num">PHASE 04</div>
+                <div class="roadmap-phase-title">Public Launch</div>
+                <div class="roadmap-phase-duration">Month 5</div>
+              </div>
+              <div class="roadmap-tasks">
+                <div class="roadmap-task"><div class="task-dot"></div>Product Hunt + LinkedIn launch campaign</div>
+                <div class="roadmap-task"><div class="task-dot"></div>College ambassador program rollout</div>
+                <div class="roadmap-task"><div class="task-dot"></div>PR outreach to EdTech media</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Target: 5,000 signups in month 1</div>
+              </div>
+            </div>
+            <div class="roadmap-phase" style="margin-bottom:0;">
+              <div class="roadmap-phase-header">
+                <div class="roadmap-phase-num">PHASE 05</div>
+                <div class="roadmap-phase-title">Scale & Institutional</div>
+                <div class="roadmap-phase-duration">Month 6–12</div>
+              </div>
+              <div class="roadmap-tasks">
+                <div class="roadmap-task"><div class="task-dot"></div>Launch placement officer dashboard (B2B)</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Sign 20 institutional contracts</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Peer benchmarking and referral program</div>
+                <div class="roadmap-task"><div class="task-dot"></div>Fundraising: Series A preparation</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" style="margin-bottom:1.2rem;">
+              <div class="card-title">Timeline Overview</div>
+              <div class="bar-chart">
+                <div class="bar-row"><div class="bar-label">Research</div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><div class="bar-val">4w</div></div>
+                <div class="bar-row"><div class="bar-label">Build</div><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><div class="bar-val">8w</div></div>
+                <div class="bar-row"><div class="bar-label">Beta</div><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><div class="bar-val">4w</div></div>
+                <div class="bar-row"><div class="bar-label">Launch</div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><div class="bar-val">2w</div></div>
+                <div class="bar-row"><div class="bar-label">Scale</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="bar-val">24w+</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Key Milestones</div>
+              <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Week 4 — Problem-solution fit validated</div></div></div>
+              <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Week 12 — MVP complete and live</div></div></div>
+              <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Week 16 — 500 beta users onboarded</div></div></div>
+              <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Month 5 — Public launch</div></div></div>
+              <div class="activity-item" style="border:none;"><div class="activity-dot"></div><div><div class="activity-text">Month 12 — ₹1Cr ARR milestone</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── LEGAL ─────────────────────────── -->
+    <section id="page-legal" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-title">Legal <em>Readiness</em></div>
+          <div class="page-sub">IP protection overview, trademark checklist, copyright assessment and patent readiness scoring.</div>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="legal-score" style="margin-bottom:1.5rem;">
+          <div class="legal-score-circle">
+            <div class="legal-score-num">74</div>
+            <div class="legal-score-label">/ 100</div>
+          </div>
+          <div class="legal-score-text">
+            <h3>IP Readiness Score: Good</h3>
+            <p>Your product has a solid legal foundation with a few action items to address before launch. Priority: trademark registration and privacy policy.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Trademark Checklist</div>
+            <div class="checklist-item"><div class="checklist-icon ok">✓</div><div><div class="checklist-text">Brand name "EduTrack AI" — No conflicts found</div><div class="checklist-note">Searched Indian trademark database. Clear to file.</div></div></div>
+            <div class="checklist-item"><div class="checklist-icon warn">!</div><div><div class="checklist-text">Logo trademark — Not yet filed</div><div class="checklist-note">File with IP India before public launch. Estimated cost: ₹4,500 per class.</div></div></div>
+            <div class="checklist-item"><div class="checklist-icon warn">!</div><div><div class="checklist-text">Domain variants — Not secured</div><div class="checklist-note">Secure .in, .co, and common misspellings.</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Copyright Checklist</div>
+            <div class="checklist-item"><div class="checklist-icon ok">✓</div><div><div class="checklist-text">Original content — Copyright exists automatically</div><div class="checklist-note">All original code, copy, and design is protected from creation.</div></div></div>
+            <div class="checklist-item"><div class="checklist-icon ok">✓</div><div><div class="checklist-text">Third-party resources — Verify licenses</div><div class="checklist-note">Ensure all curated resources are linked (not hosted) or licensed.</div></div></div>
+            <div class="checklist-item"><div class="checklist-icon risk">✕</div><div><div class="checklist-text">Privacy Policy — Missing</div><div class="checklist-note">Required before collecting any user data. Critical blocker.</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Patent Readiness</div>
+            <div class="checklist-item"><div class="checklist-icon ok">✓</div><div><div class="checklist-text">Core AI methodology — Potentially patentable</div><div class="checklist-note">The skill-gap-to-job-match algorithm may qualify. Consult a patent attorney.</div></div></div>
+            <div class="checklist-item"><div class="checklist-icon warn">!</div><div><div class="checklist-text">Prior art search — Not completed</div><div class="checklist-note">Conduct search before investing in patent filing.</div></div></div>
+            <div class="checklist-item" style="border:none;"><div class="checklist-icon warn">!</div><div><div class="checklist-text">Provisional patent — Consider filing early</div><div class="checklist-note">Secures your priority date for 12 months while you refine the product.</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Useful Resources</div>
+            <div class="checklist-item"><div class="checklist-icon ok">→</div><div><div class="checklist-text">IP India — Official trademark portal</div><div class="checklist-note">ipindia.gov.in</div></div></div>
+            <div class="checklist-item"><div class="checklist-icon ok">→</div><div><div class="checklist-text">Startup India — IP support scheme</div><div class="checklist-note">80% rebate on patent filing for recognized startups</div></div></div>
+            <div class="checklist-item" style="border:none;"><div class="checklist-icon ok">→</div><div><div class="checklist-text">DPIIT Recognition — Apply for startup tax benefits</div><div class="checklist-note">Required for Startup India IP scheme eligibility</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── REPORT ────────────────────────── -->
+    <section id="page-report" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-title">The Final <em>Blueprint</em></div>
+          <div class="page-sub">Your complete product strategy — market research, personas, MVP, PRD, roadmap and legal readiness in one executive document.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-sm" onclick="showToast('Link copied to clipboard.')">Share</button>
+          <button class="btn btn-sm" onclick="showToast('Downloading Roadmap...')">Download Roadmap</button>
+          <button class="btn btn-dark btn-sm" onclick="showToast('Generating PDF...')">Download PDF</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:2rem;">
+          <div>
+            <div class="card-title" style="margin-bottom:0.6rem;">Contents</div>
+            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">01</div> Executive Summary</div>
+            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">02</div> Market Research</div>
+            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">03</div> Competitor Analysis</div>
+            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">04</div> User Personas</div>
+            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">05</div> MVP Plan</div>
+            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">06</div> PRD</div>
+            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">07</div> Roadmap</div>
+            <div class="report-toc-item" style="border:none;" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">08</div> Legal</div>
+          </div>
+          <div class="report-preview">
+            <div class="report-meta"><span>EduTrack AI</span><span>Generated by AURA</span><span>June 2025</span></div>
+            <h1>EduTrack AI — Product Strategy Report</h1>
+            <h2>01 — Executive Summary</h2>
+            <p>EduTrack AI is an AI-driven learning companion for Indian college students, designed to identify skill gaps, deliver personalized study plans, and track placement readiness in real time. The platform addresses a $8.2B market growing at 39% CAGR, with significant whitespace in tier-2 cities and institutional analytics.</p>
+            <h2>02 — Market Research</h2>
+            <p>The India EdTech market is projected to reach $8.2B by 2025. AI personalization tools are growing at 47% CAGR. Key opportunities exist in tier-2 city penetration, placement-linked learning, and institutional B2B analytics — all underserved by current players.</p>
+            <h2>03 — Competitor Analysis</h2>
+            <p>Six direct competitors analyzed: Byju's (market leader, no AI personalization), Unacademy (strong distribution, exam-only focus), Coursera (premium, US-centric), Skill-Lync (placement focus, high cost), Duolingo (retention excellence, language only), Khan Academy (trusted, no AI). Three clear market gaps identified.</p>
+            <h2>04 — User Personas</h2>
+            <p>Four primary personas identified: Rahul Kumar (tier-2 CS student seeking placement clarity), Shreya Patel (MBA career-switcher needing structure), Arjun Verma (placement officer needing data), and Neha Malhotra (working professional with limited time).</p>
+            <h2>05 — MVP Plan</h2>
+            <p>8 must-have features for v1: AI Skill Gap Analyzer, Personalized Study Path, Progress Dashboard, Job Role Matching, Resource Curator, Streak System, Profile Builder, and Mobile PWA. Total estimated build time: 8 weeks with a 3-person team.</p>
+            <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--muted);font-family:'IBM Plex Mono',monospace;">Generated by AURA · AI Unified Roadmap Assistant · aura.ai</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PROFILE ────────────────────────── -->
+    <section id="page-profile" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Account</div>
+          <div class="page-title">Your <em>Profile</em></div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-dark btn-sm" onclick="showToast('Profile saved.')">Save Changes</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="profile-grid">
+          <div class="card">
+            <div class="card-title">Profile Information</div>
+            <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;">
+              <div class="avatar" style="width:56px;height:56px;font-size:1rem;">PS</div>
+              <button class="btn btn-sm">Change Photo</button>
+            </div>
+            <div class="form-field"><label>First Name</label><input type="text" value="Priya"></div>
+            <div class="form-field"><label>Last Name</label><input type="text" value="Sharma"></div>
+            <div class="form-field"><label>Email</label><input type="email" value="priya@example.com"></div>
+            <div class="form-field"><label>Organization</label><input type="text" value="AURA Technologies"></div>
+            <div class="form-field" style="margin-bottom:0;"><label>Role</label>
+              <select><option selected>Product Manager</option><option>Founder</option><option>Developer</option><option>Designer</option></select>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" style="margin-bottom:1.2rem;">
+              <div class="card-title">Usage Statistics</div>
+              <div class="grid-2">
+                <div class="stat-card" style="border:none;padding:0.5rem 0;">
+                  <div class="stat-card-label">Projects Created</div>
+                  <div class="stat-card-value" style="font-size:1.5rem;">4</div>
+                </div>
+                <div class="stat-card" style="border:none;padding:0.5rem 0;">
+                  <div class="stat-card-label">Reports Generated</div>
+                  <div class="stat-card-value" style="font-size:1.5rem;">12</div>
+                </div>
+                <div class="stat-card" style="border:none;padding:0.5rem 0;">
+                  <div class="stat-card-label">Personas Created</div>
+                  <div class="stat-card-value" style="font-size:1.5rem;">18</div>
+                </div>
+                <div class="stat-card" style="border:none;padding:0.5rem 0;">
+                  <div class="stat-card-label">Last Active</div>
+                  <div class="stat-card-value" style="font-size:1.5rem;">2h</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:1.2rem;">
+              <div class="card-title">Connected Accounts</div>
+              <div class="checklist-item">
+                <div style="width:24px;height:24px;"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.31z"/></svg></div>
+                <div><div class="checklist-text">Google Account — priya@example.com</div><div class="checklist-note">Connected · Used for login</div></div>
+                <button class="btn btn-sm" style="margin-left:auto;">Disconnect</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Security</div>
+              <div style="display:flex;flex-direction:column;gap:0.8rem;">
+                <button class="btn" onclick="showToast('Password reset email sent.')">Change Password</button>
+                <button class="btn" style="color:#c0392b;border-color:rgba(192,57,43,0.2);" onclick="showToast('Account deletion requires email confirmation.')">Delete Account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SETTINGS ───────────────────────── -->
+    <section id="page-settings" style="display:none;">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-eyebrow">Account</div>
+          <div class="page-title">Workspace <em>Settings</em></div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-dark btn-sm" onclick="showToast('Settings saved.')">Save Changes</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="settings-tabs" id="settings-tabs">
+          <button class="settings-tab active" onclick="switchSettings('general',this)">General</button>
+          <button class="settings-tab" onclick="switchSettings('notifications',this)">Notifications</button>
+          <button class="settings-tab" onclick="switchSettings('integrations',this)">Integrations</button>
+          <button class="settings-tab" onclick="switchSettings('privacy',this)">Privacy</button>
+          <button class="settings-tab" onclick="switchSettings('appearance',this)">Appearance</button>
+        </div>
+
+        <div class="settings-section active" id="settings-general" style="max-width:540px;">
+          <div class="form-field"><label>Display Name</label><input type="text" value="Priya Sharma"></div>
+          <div class="form-field"><label>Default Industry</label><select><option>EdTech</option><option>HealthTech</option><option>FinTech</option></select></div>
+          <div class="form-field"><label>Default Currency</label><select><option>INR (₹)</option><option>USD ($)</option><option>EUR (€)</option></select></div>
+          <div class="form-field"><label>Language</label><select><option>English</option><option>Hindi</option></select></div>
+        </div>
+        <div class="settings-section" id="settings-notifications" style="max-width:540px;">
+          <div class="card" style="margin-bottom:1rem;">
+            <div class="card-title">Email Notifications</div>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+              <label style="display:flex;align-items:center;gap:1rem;font-size:0.82rem;cursor:pointer;"><input type="checkbox" checked> Project analysis complete</label>
+              <label style="display:flex;align-items:center;gap:1rem;font-size:0.82rem;cursor:pointer;"><input type="checkbox" checked> Report ready for download</label>
+              <label style="display:flex;align-items:center;gap:1rem;font-size:0.82rem;cursor:pointer;"><input type="checkbox"> Weekly activity digest</label>
+              <label style="display:flex;align-items:center;gap:1rem;font-size:0.82rem;cursor:pointer;"><input type="checkbox"> Product updates &amp; tips</label>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section" id="settings-integrations">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title">Notion</div>
+              <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Export roadmaps and PRDs directly to your Notion workspace.</p>
+              <button class="btn btn-sm" onclick="showToast('Connecting to Notion...')">Connect Notion</button>
+            </div>
+            <div class="card">
+              <div class="card-title">Jira</div>
+              <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Push MVP features and user stories directly to your Jira board.</p>
+              <button class="btn btn-sm" onclick="showToast('Connecting to Jira...')">Connect Jira</button>
+            </div>
+            <div class="card">
+              <div class="card-title">Slack</div>
+              <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Get project update notifications in your Slack channels.</p>
+              <button class="btn btn-sm" onclick="showToast('Connecting to Slack...')">Connect Slack</button>
+            </div>
+            <div class="card">
+              <div class="card-title">Google Drive</div>
+              <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Save all reports and exports to your Google Drive automatically.</p>
+              <button class="btn btn-sm" onclick="showToast('Connecting to Google Drive...')">Connect Drive</button>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section" id="settings-privacy" style="max-width:540px;">
+          <div class="card">
+            <div class="card-title">Data &amp; Privacy</div>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+              <label style="display:flex;align-items:center;gap:1rem;font-size:0.82rem;cursor:pointer;"><input type="checkbox" checked> Allow AURA to use my data to improve AI models</label>
+              <label style="display:flex;align-items:center;gap:1rem;font-size:0.82rem;cursor:pointer;"><input type="checkbox"> Share anonymized usage analytics</label>
+            </div>
+            <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;gap:0.8rem;">
+              <button class="btn btn-sm" onclick="showToast('Downloading your data...')">Export My Data</button>
+              <button class="btn btn-sm" onclick="showToast('Request submitted.')">Delete All Data</button>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section" id="settings-appearance" style="max-width:540px;">
+          <div class="card">
+            <div class="card-title">Appearance</div>
+            <div class="form-field"><label>Theme</label>
+              <select><option>Light (default)</option><option>System</option><option>Dark (coming soon)</option></select>
+            </div>
+            <div class="form-field" style="margin-bottom:0;"><label>Sidebar Density</label>
+              <select><option>Comfortable</option><option>Compact</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// ─── STATE ────────────────────────────────────────
+const state = {
+  currentView: 'login',
+  currentPage: '',
+  user: { name: 'Priya Sharma', email: 'priya@example.com', initials: 'PS', firstName: 'Priya' },
+  projects: [],
+  currentProject: null,
+};
+
+// ─── NAVIGATION ───────────────────────────────────
+function navigate(page) {
+  // Auth pages
+  if (['login', 'signup'].includes(page)) {
+    showView(page);
+    return;
+  }
+
+  // Show app shell
+  showView('app');
+  showPage(page);
+  updateSidebarActive(page);
+
+  // Show/hide project nav
+  const projectPages = ['project-overview','market-research','competitors','personas','mvp','prd','roadmap','legal','report'];
+  const isProjectPage = projectPages.includes(page);
+  document.querySelectorAll('[id^="slink-project-overview"], [id^="slink-market-research"], [id^="slink-competitors"], [id^="slink-personas"], [id^="slink-mvp"], [id^="slink-prd"], [id^="slink-roadmap"], [id^="slink-legal"], [id^="slink-report"]').forEach(el => {
+    el.style.display = isProjectPage || state.currentProject ? 'flex' : 'none';
+  });
+  document.getElementById('project-nav-label').style.display = isProjectPage || state.currentProject ? 'block' : 'none';
+  document.getElementById('sidebar-project-ctx').style.display = isProjectPage || state.currentProject ? 'block' : 'none';
+
+  state.currentPage = page;
+}
+
+function showView(viewName) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + viewName).classList.add('active');
+  state.currentView = viewName;
+}
+
+function showPage(pageName) {
+  document.querySelectorAll('.main section').forEach(s => s.style.display = 'none');
+  const el = document.getElementById('page-' + pageName);
+  if (el) { el.style.display = 'block'; el.classList.add('fade-in'); setTimeout(() => el.classList.remove('fade-in'), 400); }
+}
+
+function updateSidebarActive(page) {
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  const slink = document.getElementById('slink-' + page);
+  if (slink) slink.classList.add('active');
+}
+
+// ─── AUTH ─────────────────────────────────────────
+async function handleLogin() {
+
+  const email =
+    document.getElementById('login-email').value;
+
+  const password =
+    document.getElementById('login-password').value;
+
+  if (!email) {
+    showToast('Please enter your email.');
+    return;
+  }
+
+  if (!password) {
+    showToast('Please enter your password.');
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:5000/api/auth/login",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          email,
+          password
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showToast(data.error || "Login failed");
+      return;
+    }
+
+    localStorage.setItem(
+      "token",
+      data.token
+    );
+
+    state.user = {
+      name: data.user.name,
+      firstName: data.user.name.split(" ")[0],
+      email: data.user.email,
+      initials: data.user.name
+        .substring(0, 2)
+        .toUpperCase()
+    };
+
+    saveSession();
+
+    showToast("Login successful");
+
+    loginSuccess();
+
+  } catch (error) {
+
+    console.error(error);
+
+    showToast(
+      "Cannot connect to backend"
+    );
+  }
+}
+
+async function handleSignup() {
+
+  const first =
+    document.querySelector(
+      '#view-signup input[placeholder="Priya"]'
+    )?.value || '';
+
+  const last =
+    document.querySelector(
+      '#view-signup input[placeholder="Sharma"]'
+    )?.value || '';
+
+  const email =
+    document.querySelector(
+      '#view-signup input[type="email"]'
+    )?.value || '';
+
+  const password =
+    document.querySelector(
+      '#view-signup input[type="password"]'
+    )?.value || '';
+
+  const fullName =
+    `${first} ${last}`.trim();
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:5000/api/auth/register",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          name: fullName,
+          email,
+          password
+        })
+      }
+    );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      showToast(
+        data.error || "Signup failed"
+      );
+      return;
+    }
+
+    showToast(
+      "Account created successfully"
+    );
+
+    navigate('login');
+
+  } catch (error) {
+
+    console.error(error);
+
+    showToast(
+      "Cannot connect to backend"
+    );
+  }
+}
+
+function handleGoogleAuth() {
+  // Keep defaults, just log in
+  saveSession();
+  loginSuccess();
+}
+
+function saveSession() {
+  try {
+    sessionStorage.setItem('aura_session', JSON.stringify({
+      user: state.user,
+      loggedIn: true,
+      ts: Date.now()
+    }));
+  } catch(e) {}
+}
+
+function getStoredUser() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem('aura_session') || 'null');
+    if (s && s.loggedIn && s.user) return s.user;
+  } catch(e) {}
+  return null;
+}
+
+function logout() {
+  try { sessionStorage.removeItem('aura_session'); } catch(e) {}
+  // Fade out and go back to landing page
+  document.body.style.transition = 'opacity 0.4s';
+  document.body.style.opacity = '0';
+  setTimeout(() => { window.location.href = 'landing.html'; }, 420);
+}
+
+async function loginSuccess() {
+
+  document.getElementById('sidebar-avatar').textContent =
+    state.user.initials;
+
+  document.getElementById('sidebar-uname').textContent =
+    state.user.name;
+
+  document.getElementById('sidebar-uemail').textContent =
+    state.user.email;
+
+  document.getElementById('welcome-name').textContent =
+    state.user.firstName;
+
+  await loadProjects();
+
+  navigate('dashboard');
+}
+
+async function loadProjects() {
+
+  const token =
+    localStorage.getItem("token");
+
+  if (!token) return;
+
+  try {
+
+    const response =
+      await fetch(
+        "http://localhost:5000/api/ideas",
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    const ideas =
+      await response.json();
+
+    state.projects =
+      ideas.map(idea => ({
+
+        id: idea.id,
+
+        name: idea.title,
+
+        desc: idea.solution,
+
+        status: "active",
+
+        progress: 0,
+
+        updated: new Date(
+          idea.created_at
+        ).toLocaleDateString(),
+
+        industry: "Startup"
+
+      }));
+
+    renderProjectGrid();
+
+  } catch (error) {
+
+    console.error(
+      "Failed loading projects",
+      error
+    );
+  }
+}
+
+// ─── PROJECT GRID ─────────────────────────────────
+function renderProjectGrid() {
+  const grid = document.getElementById('project-grid');
+  grid.innerHTML = '';
+  state.projects.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.onclick = () => openProject(p);
+    card.innerHTML = `
+      <div class="project-card-status status-${p.status}">${p.status}</div>
+      <div class="project-card-name">${p.name}</div>
+      <div class="project-card-desc">${p.desc}</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-label"><span>Progress</span><span>${p.progress}%</span></div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width:${p.progress}%"></div></div>
+      </div>
+      <div class="project-card-meta"><span>${p.industry}</span><span>Updated ${p.updated}</span></div>
+    `;
+    grid.appendChild(card);
+  });
+  // Add new project card
+  const np = document.createElement('div');
+  np.className = 'new-project-card';
+  np.onclick = () => navigate('new-project');
+  np.innerHTML = `<div class="plus">+</div><span>Start a new project</span>`;
+  grid.appendChild(np);
+}
+
+// ─── OPEN PROJECT ─────────────────────────────────
+function openProject(project) {
+  state.currentProject = project;
+  document.getElementById('sidebar-project-name').textContent = project.name;
+
+  // Show all project nav items
+  ['project-overview','market-research','competitors','personas','mvp','prd','roadmap','legal','report'].forEach(id => {
+    const el = document.getElementById('slink-' + id);
+    if (el) el.style.display = 'flex';
+  });
+  document.getElementById('project-nav-label').style.display = 'block';
+  document.getElementById('sidebar-project-ctx').style.display = 'block';
+
+  navigate('project-overview');
+}
+
+// ─── NEW PROJECT / ANALYSIS ───────────────────────
+async function startAnalysis() {
+  const name = document.getElementById('np-name').value || 'New Project';
+  const idea =
+document.getElementById('np-idea').value;
+
+const industry =
+document.getElementById('np-industry').value;
+
+const audience =
+document.getElementById('np-audience').value;
+
+const token =
+localStorage.getItem('token');
+if (!token) {
+
+  showToast(
+    "Please login first"
+  );
+
+  return;
+}
+try {
+
+  const response =
+    await fetch(
+      "http://localhost:5000/api/ideas",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+
+          "Authorization":
+            `Bearer ${token}`
+        },
+
+        body: JSON.stringify({
+
+          title: name,
+
+          problem:
+            `${audience} face challenges in ${industry}`,
+
+          solution:
+            idea
+
+        })
+      }
+    );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+
+    showToast(
+      data.error ||
+      "Failed to save idea"
+    );
+
+    return;
+  }
+
+  console.log(
+    "Idea saved:",
+    data
+  );
+
+} catch (error) {
+
+  console.error(error);
+
+  showToast(
+    "Backend connection failed"
+  );
+
+  return;
+}
+  navigate('analysis');
+  runAnalysisSteps(() => {
+    // Create project and open
+    const newProject = {
+      id: state.projects.length + 1,
+      name: name,
+      desc: document.getElementById('np-idea').value || 'AI-powered product idea.',
+      status: 'active',
+      progress: 0,
+      updated: 'just now',
+      industry: document.getElementById('np-industry').value || 'SaaS',
+    };
+    state.projects.unshift(newProject);
+    openProject(newProject);
+    renderProjectGrid();
+  });
+}
+
+function runAnalysisSteps(callback) {
+  const steps = document.querySelectorAll('[id^="astep-"]');
+  let i = 0;
+  function next() {
+    if (i > 0) {
+      steps[i-1].classList.remove('active');
+      steps[i-1].classList.add('done');
+      steps[i-1].querySelector('.step-check').textContent = '✓';
+    }
+    if (i < steps.length) {
+      steps[i].classList.add('active');
+      i++;
+      setTimeout(next, 900 + Math.random() * 400);
+    } else {
+      setTimeout(callback, 500);
+    }
+  }
+  // Reset
+  steps.forEach(s => { s.className = 'analysis-step'; s.querySelector('.step-check').textContent = '○'; });
+  next();
+}
+
+// ─── PRD TABS ─────────────────────────────────────
+function switchPRD(id, el) {
+  document.querySelectorAll('.prd-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.prd-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('prd-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ─── SETTINGS TABS ────────────────────────────────
+function switchSettings(id, el) {
+  document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('settings-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ─── TOAST ────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── INIT ─────────────────────────────────────────
+window.onload = function() {
+  const hash   = window.location.hash.replace('#', '');
+  const stored = getStoredUser();
+
+  // Pre-fill email from landing page CTA if available
+  try {
+    const pre = sessionStorage.getItem('aura_prefill_email');
+    if (pre) {
+      const emailFields = document.querySelectorAll('#view-signup input[type="email"], #view-login input[type="email"]');
+      emailFields.forEach(f => { f.value = pre; });
+      sessionStorage.removeItem('aura_prefill_email');
+    }
+  } catch(e) {}
+
+  // If already logged in (same session), go straight to dashboard
+if (stored) {
+
+  state.user = stored;
+
+  showEntryAnimation(async () => {
+
+    loginSuccess();
+
+  });
+
+  return;
+}
+
+  if (hash === 'signup') {
+    showEntryAnimation(() => navigate('signup'));
+  } else if (hash === 'login' || hash === '') {
+    showEntryAnimation(() => navigate('login'));
+  } else {
+    navigate('login');
+  }
+};
+
+function showEntryAnimation(callback) {
+  const el = document.createElement('div');
+  el.id = 'entry-loader';
+  el.style.cssText = 'position:fixed;inset:0;background:#023246;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.5s ease;opacity:1;';
+  el.innerHTML = `
+    <div style="position:relative;width:130px;height:130px;margin-bottom:1.8rem;">
+      <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(40,112,148,0.3);animation:lo-spin-e 18s linear infinite;"></div>
+      <div style="position:absolute;inset:18%;border-radius:50%;border:1px solid rgba(40,112,148,0.2);animation:lo-spin-e 12s linear infinite reverse;"></div>
+      <div style="position:absolute;inset:34%;border-radius:50%;background:#023246;border:1px solid rgba(40,112,148,0.5);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(40,112,148,0.4);">
+        <span style="font-family:'Playfair Display',Georgia,serif;font-size:0.7rem;font-weight:800;color:#287094;letter-spacing:0.04em;">AURA</span>
+      </div>
+      <div style="position:absolute;inset:0;border-radius:50%;animation:lo-spin-e 18s linear infinite;">
+        <div style="position:absolute;top:-3.5px;left:50%;transform:translateX(-50%);width:7px;height:7px;background:#287094;border-radius:50%;"></div>
+      </div>
+    </div>
+    <div style="font-family:'Playfair Display',Georgia,serif;font-size:1.3rem;font-weight:700;color:#F6F6F6;margin-bottom:0.3rem;">Welcome to AURA</div>
+    <div style="font-family:'TimesNRMT','Times New Roman MT','Times New Roman',Times,serif;font-weight:600;font-size:0.78rem;color:rgba(246,246,246,0.35);letter-spacing:0.05em;">Your AI Product Manager</div>
+  `;
+  const style = document.createElement('style');
+  style.textContent = '@keyframes lo-spin-e { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }';
+  document.head.appendChild(style);
+  document.body.appendChild(el);
+  setTimeout(() => {
+    el.style.opacity = '0';
+    setTimeout(() => { el.remove(); callback(); }, 480);
+  }, 1100);
+}
+</script>
+</body>
+</html>
