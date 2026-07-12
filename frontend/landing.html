@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA — AI Unified Roadmap Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600;700&family=Lora:wght@400;600;700&family=Playfair+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* Times New Roman MT Semi Bold — use system stack */
+  @font-face {
+    font-family: 'TimesNRMT';
+    src: local('Times New Roman MT'), local('TimesNewRomanMT'), local('Times New Roman'), local('TimesNewRoman'), local('Times');
+    font-weight: 600;
+    font-style: normal;
+  }
+</style>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #023246;
+    --paper: #F6F6F6;
+    --gold: #287094;
+    --gold-light: #5a9ab8;
+    --teal: #287094;
+    --teal-light: #5a9ab8;
+    --rust: #287094;
+    --muted: #6b7e87;
+    --border: rgba(2,50,70,0.12);
+    --card-bg: rgba(246,246,246,0.6);
+    --silver: #D4D4CE;
+    --blue-mid: #287094;
+    --dark-navy: #023246;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-heading: 'Lora', Georgia, serif;
+    --font-body: 'Inter', sans-serif;
+  }
+ 
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), opacity 0.3s;
+    opacity: 0.6;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem 4rem;
+    background: rgba(246,246,246,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s ease;
+  }
+  nav.scrolled { padding: 1rem 4rem; }
+  .nav-logo {
+    font-family: "Cinzel", serif;
+    font-weight: 700;
+    font-size: 1.7rem;
+    letter-spacing: 0.14em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+ 
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.4rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    cursor: none;
+    transition: background 0.2s, transform 0.2s;
+    text-decoration: none;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--ink); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(10,10,15,0.04) 80px),
+      repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(10,10,15,0.04) 80px);
+    pointer-events: none;
+  }
+  .hero-accent {
+    position: absolute;
+    top: 15%; right: -5%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(40,112,148,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse-glow 6s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+  }
+
+  .hero-left { position: relative; z-index: 2; }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fade-up 0.8s 0.2s ease forwards;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 2rem;
+    height: 1px;
+    background: var(--gold);
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(3.2rem, 6vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fade-up 0.8s 0.4s ease forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .hero-desc {
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 42ch;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fade-up 0.8s 0.6s ease forwards;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    opacity: 0;
+    animation: fade-up 0.8s 0.8s ease forwards;
+  }
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    cursor: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold); color: var(--paper); transform: translateY(-2px); }
+  .btn-ghost {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    cursor: none;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--gold); transform: translateY(-2px); }
+
+  .hero-right {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    animation: fade-in 1.2s 0.6s ease forwards;
+  }
+  .hero-orb {
+    width: 380px; height: 380px;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .orb-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+  }
+  .orb-ring-1 {
+    width: 100%; height: 100%;
+    border-color: rgba(40,112,148,0.25);
+    animation: spin 20s linear infinite;
+  }
+  .orb-ring-2 {
+    width: 78%; height: 78%;
+    border-color: rgba(2,50,70,0.2);
+    animation: spin 14s linear infinite reverse;
+  }
+  .orb-ring-3 {
+    width: 56%; height: 56%;
+    border-color: rgba(212,212,206,0.4);
+    animation: spin 9s linear infinite;
+  }
+  .orb-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    top: -4px; left: 50%;
+    transform: translateX(-50%);
+  }
+  .orb-ring-1 .orb-dot { background: var(--gold); }
+  .orb-ring-2 .orb-dot { background: var(--teal); }
+  .orb-ring-3 .orb-dot { background: var(--rust); }
+  .orb-center {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--dark-navy) 0%, #012030 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 60px rgba(40,112,148,0.3), 0 0 120px rgba(40,112,148,0.1);
+  }
+  .orb-label {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: #F6F6F6;
+    letter-spacing: -0.02em;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .orb-tags {
+    position: absolute;
+    inset: 0;
+  }
+  .orb-tag {
+    position: absolute;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.6rem;
+  }
+  .orb-tag:nth-child(1) { top: 8%; right: -2%; }
+  .orb-tag:nth-child(2) { bottom: 20%; right: -10%; }
+  .orb-tag:nth-child(3) { bottom: 8%; left: 5%; }
+  .orb-tag:nth-child(4) { top: 20%; left: -8%; }
+
+  /* SCROLL INDICATOR */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fade-in 1s 1.5s ease forwards;
+  }
+  .scroll-text { font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--blue-mid), transparent);
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+  @keyframes scroll-pulse {
+    0%,100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.4; transform: scaleY(0.6); }
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  .stat-item { display: flex; flex-direction: column; gap: 0.3rem; }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat-num span { color: var(--gold); }
+  .stat-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+  /* SECTIONS */
+  section { padding: 7rem 4rem; }
+  .section-header { margin-bottom: 4rem; }
+  .section-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .section-tag::before { content: ''; width: 2rem; height: 1px; background: var(--gold); }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 4vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  /* PROBLEM SECTION */
+  .problem-section { background: var(--ink); color: var(--paper); }
+  .problem-section .section-tag { color: var(--gold-light); }
+  .problem-section .section-tag::before { background: var(--gold-light); }
+  .problem-section .section-title { color: var(--paper); }
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 4rem;
+  }
+  .problem-card {
+    padding: 2.5rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .problem-card:hover { background: rgba(255,255,255,0.07); }
+  .problem-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    transform-origin: left;
+  }
+  .problem-card:hover::before { transform: scaleX(1); }
+  .problem-num {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 4rem;
+    font-weight: 300;
+    color: rgba(40,112,148,0.2);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .problem-title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--paper);
+  }
+  .problem-desc { font-size: 0.78rem; line-height: 1.7; color: rgba(245,242,236,0.5); }
+
+  /* HOW IT WORKS */
+  .process-section { background: var(--paper); }
+  .process-timeline {
+    position: relative;
+    margin-top: 4rem;
+  }
+  .process-line {
+    position: absolute;
+    left: 2.5rem;
+    top: 2rem;
+    bottom: 2rem;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--blue-mid), var(--silver), var(--blue-mid));
+  }
+  .process-step {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .process-step.visible { opacity: 1; transform: translateX(0); }
+  .step-num-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+  }
+  .step-num {
+    width: 3rem; height: 3rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lora', 'Georgia', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--gold);
+    position: relative;
+    z-index: 2;
+  }
+  .step-content { padding-top: 0.5rem; }
+  .step-tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .step-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .step-desc { font-size: 0.78rem; line-height: 1.8; color: var(--muted); }
+  .step-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .step-feature {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .step-feature:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* FEATURES GRID */
+  .features-section { background: #eef0f2; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+  }
+  .feature-card {
+    padding: 2.5rem;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(10,10,15,0.08); }
+  .feature-card.accent { background: var(--ink); color: var(--paper); }
+  .feature-card.accent .feature-desc { color: rgba(245,242,236,0.55); }
+  .feature-icon {
+    width: 2.5rem; height: 2.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .feature-icon svg { width: 100%; height: 100%; }
+  .feature-name {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .feature-desc { font-size: 0.77rem; line-height: 1.8; color: var(--muted); }
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--blue-mid), var(--silver));
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    transform-origin: left;
+  }
+  .feature-card:hover::after { transform: scaleX(1); }
+
+  /* PERSONAS */
+  .personas-section { background: var(--paper); }
+  .personas-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+  .persona-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+    cursor: none;
+    transition: all 0.3s;
+    overflow: hidden;
+  }
+  .persona-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(40,112,148,0.08), rgba(212,212,206,0.1));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .persona-card:hover::before { opacity: 1; }
+  .persona-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+    background: var(--paper);
+    transition: border-color 0.3s;
+  }
+  .persona-card:hover .persona-avatar { border-color: var(--gold); }
+  .persona-role {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+  .persona-name {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .persona-pain { font-size: 0.73rem; line-height: 1.7; color: var(--muted); }
+  .persona-quote {
+    font-family: 'Lora', 'Georgia', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--ink);
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  /* ROADMAP VISUAL */
+  .roadmap-section { background: var(--ink); overflow: hidden; }
+  .roadmap-section .section-tag { color: var(--gold-light); }
+  .roadmap-section .section-tag::before { background: var(--gold-light); }
+  .roadmap-section .section-title { color: var(--paper); }
+  .roadmap-canvas {
+    margin-top: 4rem;
+    position: relative;
+    padding: 2rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow-x: auto;
+  }
+  .roadmap-phases {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    min-width: 800px;
+  }
+  .roadmap-phase {
+    background: var(--ink);
+    padding: 0;
+    overflow: hidden;
+  }
+  .phase-header {
+    padding: 1.2rem 1.5rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .phase-header.ph1 { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .phase-header.ph2 { background: rgba(42,127,127,0.15); color: var(--teal-light); }
+  .phase-header.ph3 { background: rgba(184,92,56,0.15); color: #d97b5a; }
+  .phase-header.ph4 { background: rgba(245,242,236,0.08); color: var(--paper); }
+  .phase-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ph1 .phase-dot { background: var(--gold); }
+  .ph2 .phase-dot { background: var(--teal-light); }
+  .ph3 .phase-dot { background: #d97b5a; }
+  .ph4 .phase-dot { background: var(--paper); }
+  .phase-items { padding: 1rem 1.5rem; }
+  .phase-item {
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.7rem;
+    color: rgba(245,242,236,0.6);
+    transition: all 0.2s;
+    cursor: none;
+  }
+  .phase-item:hover {
+    border-color: rgba(201,168,76,0.3);
+    color: var(--paper);
+    background: rgba(201,168,76,0.05);
+  }
+  .phase-item-title { font-weight: 500; color: rgba(245,242,236,0.9); margin-bottom: 0.2rem; }
+  .phase-item-sub { font-size: 0.62rem; color: rgba(245,242,236,0.4); }
+
+  /* TESTIMONIALS */
+  .testimonials-section { background: var(--paper); }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+  }
+  .testimonial-card {
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    position: relative;
+    transition: transform 0.3s;
+  }
+  .testimonial-card:hover { transform: translateY(-4px); }
+  .testimonial-quote-mark {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 5rem;
+    font-weight: 300;
+    color: var(--gold-light);
+    line-height: 0.5;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+  }
+  .testimonial-text {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+  }
+  .testimonial-author { display: flex; align-items: center; gap: 1rem; }
+  .author-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+  .author-info .name {
+    font-family: 'Lora', 'Georgia', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .author-info .role { font-size: 0.68rem; color: var(--muted); }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: var(--ink);
+    text-align: center;
+    padding: 8rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 50%, rgba(42,127,127,0.1) 0%, transparent 50%);
+  }
+  .cta-section .section-tag { color: var(--gold-light); justify-content: center; }
+  .cta-section .section-tag::before { background: var(--gold-light); }
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 300;
+    color: var(--paper);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 1.5rem 0 1rem;
+    position: relative;
+  }
+  .cta-title em { font-style: italic; color: var(--gold); }
+  .cta-desc {
+    font-size: 0.82rem;
+    color: rgba(245,242,236,0.5);
+    max-width: 48ch;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+    position: relative;
+  }
+  .cta-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .cta-input {
+    flex: 1;
+    padding: 0.9rem 1.2rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-right: none;
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .cta-input::placeholder { color: rgba(245,242,236,0.3); }
+  .cta-input:focus { border-color: var(--gold); }
+  .cta-submit {
+    padding: 0.9rem 1.5rem;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--gold);
+    cursor: none;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .cta-submit:hover { background: var(--gold-light); }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 4rem;
+  }
+  .footer-brand .logo {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--paper);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  
+  .footer-brand p { font-size: 0.75rem; color: rgba(245,242,236,0.4); line-height: 1.7; max-width: 30ch; }
+  .footer-col h4 {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+  .footer-col a {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(245,242,236,0.4);
+    text-decoration: none;
+    margin-bottom: 0.6rem;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--paper); }
+  .footer-bottom {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 1.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-bottom p { font-size: 0.68rem; color: rgba(245,242,236,0.25); }
+
+  /* ANIMATIONS */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* MARQUEE */
+  .marquee-section {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--paper);
+  }
+  .marquee-track {
+    display: inline-flex;
+    gap: 3rem;
+    animation: marquee 25s linear infinite;
+  }
+  .marquee-item {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+  .marquee-item .dot { color: var(--gold); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    nav { padding: 1.2rem 2rem; }
+    .hero { grid-template-columns: 1fr; padding: 8rem 2rem 4rem; text-align: center; }
+    .hero-desc { max-width: 100%; }
+    .hero-actions { justify-content: center; }
+    .hero-right { margin-top: 3rem; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 2rem; }
+    section { padding: 5rem 2rem; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .personas-grid { grid-template-columns: repeat(2, 1fr); }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr 1fr; gap: 2rem; padding: 3rem 2rem; }
+    .roadmap-phases { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .personas-grid { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .hero-orb { width: 260px; height: 260px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">AURA</a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">Process</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#personas">Who It's For</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#testimonials">Stories</a></li>
+  </ul>
+  <div style="display: flex; align-items: center; gap: 1.5rem;">
+    <a href="#" class="nav-signin-link" onclick="launchApp(event)" style="font-family: var(--font-body); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseenter="this.style.color='var(--ink)'" onmouseleave="this.style.color='var(--muted)'">Sign In</a>
+    <a href="#" class="nav-cta" id="nav-login-btn" onclick="launchApp(event)">Start Building</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-lines"></div>
+  <div class="hero-accent"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">AI Unified Roadmap Assistant</div>
+    <h1 class="hero-title">
+      Transform <em>raw ideas</em><br>
+      into execution&#8209;ready<br>
+      products.
+    </h1>
+    <p class="hero-desc">AURA is the AI-powered product companion that guides innovators, startups, and NGOs through every stage — from market research to launch-ready roadmaps — in a fraction of the time.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary" onclick="launchApp(event)">Start Building →</a>
+      <a href="#how-it-works" class="btn-ghost">See How It Works</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-orb">
+      <div class="orb-ring orb-ring-1"><div class="orb-dot"></div></div>
+      <div class="orb-ring orb-ring-2"><div class="orb-dot"></div></div>
+      <div class="orb-ring orb-ring-3"><div class="orb-dot"></div></div>
+      <div class="orb-center">
+        <span class="orb-label">AURA</span>
+      </div>
+      <div class="orb-tags">
+        <div class="orb-tag">Market Research</div>
+        <div class="orb-tag">PRD Drafting</div>
+        <div class="orb-tag">User Personas</div>
+        <div class="orb-tag">Competitor Intel</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span class="scroll-text">Explore</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Market Research <span class="dot">◆</span></span>
+    <span class="marquee-item">Competitor Analysis <span class="dot">◆</span></span>
+    <span class="marquee-item">User Persona Creation <span class="dot">◆</span></span>
+    <span class="marquee-item">Feature Prioritization <span class="dot">◆</span></span>
+    <span class="marquee-item">PRD Drafting <span class="dot">◆</span></span>
+    <span class="marquee-item">Roadmap Planning <span class="dot">◆</span></span>
+    <span class="marquee-item">Stakeholder Alignment <span class="dot">◆</span></span>
+    <span class="marquee-item">Go-To-Market Strategy <span class="dot">◆</span></span>
+    <span class="marquee-item">Market Research <span class="dot">◆</span></span>
+    <span class="marquee-item">Competitor Analysis <span class="dot">◆</span></span>
+    <span class="marquee-item">User Persona Creation <span class="dot">◆</span></span>
+    <span class="marquee-item">Feature Prioritization <span class="dot">◆</span></span>
+    <span class="marquee-item">PRD Drafting <span class="dot">◆</span></span>
+    <span class="marquee-item">Roadmap Planning <span class="dot">◆</span></span>
+    <span class="marquee-item">Stakeholder Alignment <span class="dot">◆</span></span>
+    <span class="marquee-item">Go-To-Market Strategy <span class="dot">◆</span></span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item reveal">
+    <div class="stat-num">10<span>×</span></div>
+    <div class="stat-label">Faster than traditional PM cycles</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-1">
+    <div class="stat-num">6</div>
+    <div class="stat-label">Core PM workflows automated</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-2">
+    <div class="stat-num">500<span>+</span></div>
+    <div class="stat-label">Teams in early access</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-3">
+    <div class="stat-num">92<span>%</span></div>
+    <div class="stat-label">Reported clarity improvement</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem-section">
+  <div class="section-header">
+    <div class="section-tag reveal">The Problem</div>
+    <h2 class="section-title reveal reveal-delay-1">Great ideas die in the <em>gap</em><br>between vision and execution.</h2>
+  </div>
+  <div class="problem-grid">
+    <div class="problem-card reveal">
+      <div class="problem-num">01</div>
+      <div class="problem-title">No Structured Framework</div>
+      <div class="problem-desc">Students and first-time founders lack the product management foundation to translate ideas into buildable specs.</div>
+    </div>
+    <div class="problem-card reveal reveal-delay-1">
+      <div class="problem-num">02</div>
+      <div class="problem-title">Market Blindness</div>
+      <div class="problem-desc">Without competitor analysis and user research, teams build for problems that don't exist or markets that are already saturated.</div>
+    </div>
+    <div class="problem-card reveal reveal-delay-2">
+      <div class="problem-num">03</div>
+      <div class="problem-title">Prioritization Paralysis</div>
+      <div class="problem-desc">Feature lists grow unbounded with no clear framework for what to build first, leading to scope creep and stalled progress.</div>
+    </div>
+    <div class="problem-card reveal reveal-delay-3">
+      <div class="problem-num">04</div>
+      <div class="problem-title">Documentation Debt</div>
+      <div class="problem-desc">PRDs written in silos, updated inconsistently, and disconnected from the actual roadmap create misalignment across teams.</div>
+    </div>
+    <div class="problem-card reveal reveal-delay-1">
+      <div class="problem-num">05</div>
+      <div class="problem-title">Stakeholder Misalignment</div>
+      <div class="problem-desc">Without a shared source of truth, NGOs and startup teams waste cycles in meetings rather than building.</div>
+    </div>
+    <div class="problem-card reveal reveal-delay-2">
+      <div class="problem-num">06</div>
+      <div class="problem-title">Inaccessible PM Tools</div>
+      <div class="problem-desc">Enterprise product management tools are expensive, bloated, and designed for teams of 50 — not scrappy innovators of 3.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="process-section" id="how-it-works">
+  <div class="section-header">
+    <div class="section-tag reveal">How AURA Works</div>
+    <h2 class="section-title reveal reveal-delay-1">Six-stage pipeline from<br><em>idea to launch.</em></h2>
+  </div>
+  <div class="process-timeline">
+    <div class="process-line"></div>
+    <div class="process-step" data-step>
+      <div class="step-num-wrap">
+        <div class="step-num">1</div>
+      </div>
+      <div class="step-content">
+        <span class="step-tag">Discovery</span>
+        <h3 class="step-title">Market Research & Landscape Mapping</h3>
+        <p class="step-desc">AURA scans the competitive landscape, identifies TAM/SAM/SOM, and surfaces market trends relevant to your idea — in minutes, not weeks.</p>
+        <div class="step-features">
+          <span class="step-feature">TAM/SAM/SOM Analysis</span>
+          <span class="step-feature">Trend Detection</span>
+          <span class="step-feature">Market Gap Finder</span>
+          <span class="step-feature">Industry Reports</span>
+        </div>
+      </div>
+    </div>
+    <div class="process-step" data-step>
+      <div class="step-num-wrap">
+        <div class="step-num">2</div>
+      </div>
+      <div class="step-content">
+        <span class="step-tag">Intelligence</span>
+        <h3 class="step-title">Competitor Analysis & Positioning</h3>
+        <p class="step-desc">Deep dive into competitor strengths, weaknesses, pricing models, and user reviews to carve out your unique positioning.</p>
+        <div class="step-features">
+          <span class="step-feature">SWOT Generation</span>
+          <span class="step-feature">Pricing Matrix</span>
+          <span class="step-feature">Feature Comparison</span>
+          <span class="step-feature">Positioning Map</span>
+        </div>
+      </div>
+    </div>
+    <div class="process-step" data-step>
+      <div class="step-num-wrap">
+        <div class="step-num">3</div>
+      </div>
+      <div class="step-content">
+        <span class="step-tag">Empathy</span>
+        <h3 class="step-title">User Persona Creation</h3>
+        <p class="step-desc">AI-synthesized personas grounded in real behavioral data — not archetypes. Understand motivations, pain points, and jobs-to-be-done.</p>
+        <div class="step-features">
+          <span class="step-feature">JTBD Framework</span>
+          <span class="step-feature">Pain Point Mapping</span>
+          <span class="step-feature">Persona Validation</span>
+          <span class="step-feature">Empathy Maps</span>
+        </div>
+      </div>
+    </div>
+    <div class="process-step" data-step>
+      <div class="step-num-wrap">
+        <div class="step-num">4</div>
+      </div>
+      <div class="step-content">
+        <span class="step-tag">Strategy</span>
+        <h3 class="step-title">Feature Prioritization</h3>
+        <p class="step-desc">Apply proven frameworks — MoSCoW, RICE, Kano — with AI-assisted scoring to separate must-haves from nice-to-haves.</p>
+        <div class="step-features">
+          <span class="step-feature">RICE Scoring</span>
+          <span class="step-feature">MoSCoW Analysis</span>
+          <span class="step-feature">Kano Model</span>
+          <span class="step-feature">Effort/Impact Matrix</span>
+        </div>
+      </div>
+    </div>
+    <div class="process-step" data-step>
+      <div class="step-num-wrap">
+        <div class="step-num">5</div>
+      </div>
+      <div class="step-content">
+        <span class="step-tag">Documentation</span>
+        <h3 class="step-title">PRD Drafting</h3>
+        <p class="step-desc">Generate structured Product Requirements Documents from your inputs — complete with user stories, acceptance criteria, and technical constraints.</p>
+        <div class="step-features">
+          <span class="step-feature">User Stories</span>
+          <span class="step-feature">Acceptance Criteria</span>
+          <span class="step-feature">Edge Case Coverage</span>
+          <span class="step-feature">Export to Notion/Jira</span>
+        </div>
+      </div>
+    </div>
+    <div class="process-step" data-step>
+      <div class="step-num-wrap">
+        <div class="step-num">6</div>
+      </div>
+      <div class="step-content">
+        <span class="step-tag">Execution</span>
+        <h3 class="step-title">Roadmap Planning</h3>
+        <p class="step-desc">Visual, timeline-based roadmaps with sprint planning, milestone tracking, and dependency mapping — ready to share with stakeholders.</p>
+        <div class="step-features">
+          <span class="step-feature">Sprint Planning</span>
+          <span class="step-feature">Milestone Tracking</span>
+          <span class="step-feature">Dependency Map</span>
+          <span class="step-feature">Stakeholder View</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="section-header">
+    <div class="section-tag reveal">Capabilities</div>
+    <h2 class="section-title reveal reveal-delay-1">Everything a PM team does.<br><em>Automated.</em></h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M12 20h16M20 12v16" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="20" cy="20" r="4" fill="#c9a84c" opacity="0.3"/>
+        </svg>
+      </div>
+      <div class="feature-name">AI Research Engine</div>
+      <div class="feature-desc">Synthesizes market data, competitor intelligence, and trend signals into actionable insights for your specific niche.</div>
+    </div>
+    <div class="feature-card accent reveal reveal-delay-1">
+      <div class="feature-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="8" width="32" height="24" rx="2" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M12 16h16M12 20h10M12 24h14" stroke="#c9a84c" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="feature-name">Smart PRD Generator</div>
+      <div class="feature-desc">From bullet points to complete product requirements documents. AURA structures, fills gaps, and ensures nothing is missed.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 32L20 8l12 24" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M12 24h16" stroke="#c9a84c" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="feature-name">Prioritization Framework</div>
+      <div class="feature-desc">Multi-framework scoring with RICE, MoSCoW, and Kano models. Visualize trade-offs with interactive matrices.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="14" r="6" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M8 34c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#c9a84c" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="feature-name">Persona Studio</div>
+      <div class="feature-desc">AI-generated user personas with JTBD mapping, behavioral clustering, and empathy maps grounded in real patterns.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="6" width="10" height="10" stroke="#c9a84c" stroke-width="1.5"/>
+          <rect x="24" y="6" width="10" height="10" stroke="#c9a84c" stroke-width="1.5"/>
+          <rect x="6" y="24" width="10" height="10" stroke="#c9a84c" stroke-width="1.5"/>
+          <rect x="24" y="24" width="10" height="10" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M16 11h8M11 16v8M29 16v8M16 29h8" stroke="#c9a84c" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="feature-name">Roadmap Planner</div>
+      <div class="feature-desc">Visual timeline with sprint planning, dependencies, and milestone tracking. Export to Linear, Jira, or Notion instantly.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 30L20 10l10 20" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="20" cy="10" r="3" fill="#c9a84c"/>
+          <circle cx="10" cy="30" r="3" fill="#2a7f7f"/>
+          <circle cx="30" cy="30" r="3" fill="#b85c38"/>
+        </svg>
+      </div>
+      <div class="feature-name">Competitor Intelligence</div>
+      <div class="feature-desc">Live SWOT analysis, pricing benchmarks, and feature gap identification to sharpen your positioning strategy.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAS -->
+<section class="personas-section" id="personas">
+  <div class="section-header">
+    <div class="section-tag reveal">Built For</div>
+    <h2 class="section-title reveal reveal-delay-1">Designed for every kind<br>of <em>builder.</em></h2>
+  </div>
+  <div class="personas-grid">
+    <div class="persona-card reveal">
+      <div class="persona-avatar">🎓</div>
+      <div class="persona-role">Student Innovator</div>
+      <div class="persona-name">The First-Timer</div>
+      <div class="persona-pain">No PM background, big idea, unsure where to start. AURA provides the scaffolding that turns coursework inspiration into structured products.</div>
+      <div class="persona-quote">"I had an idea for months but didn't know how to make it real."</div>
+    </div>
+    <div class="persona-card reveal reveal-delay-1">
+      <div class="persona-avatar">🚀</div>
+      <div class="persona-role">Early-Stage Startup</div>
+      <div class="persona-name">The Lean Founder</div>
+      <div class="persona-pain">Building with a team of three, no dedicated PM, and wearing twelve hats. AURA is the product co-founder they can't afford to hire yet.</div>
+      <div class="persona-quote">"We were building features nobody asked for. AURA changed that."</div>
+    </div>
+    <div class="persona-card reveal reveal-delay-2">
+      <div class="persona-avatar">🌍</div>
+      <div class="persona-role">NGO & Social Impact</div>
+      <div class="persona-name">The Change Maker</div>
+      <div class="persona-pain">Mission-driven teams with tight budgets and no tech background. AURA helps translate social needs into fundable, buildable digital solutions.</div>
+      <div class="persona-quote">"Grant writers loved our suddenly-structured product proposal."</div>
+    </div>
+    <div class="persona-card reveal reveal-delay-3">
+      <div class="persona-avatar">💡</div>
+      <div class="persona-role">Serial Entrepreneur</div>
+      <div class="persona-name">The Fast Validator</div>
+      <div class="persona-pain">Needs to validate a new vertical quickly before committing resources. AURA compresses 8 weeks of research into 48 hours.</div>
+      <div class="persona-quote">"I killed two bad ideas before spending a dollar. That's ROI."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP VISUAL -->
+<section class="roadmap-section" id="roadmap">
+  <div class="section-header">
+    <div class="section-tag reveal">Live Preview</div>
+    <h2 class="section-title reveal reveal-delay-1">See your product <em>roadmap</em><br>take shape in real time.</h2>
+  </div>
+  <div class="roadmap-canvas reveal">
+    <div class="roadmap-phases">
+      <div class="roadmap-phase">
+        <div class="phase-header ph1"><div class="phase-dot"></div>Phase 1 — Foundation</div>
+        <div class="phase-items">
+          <div class="phase-item">
+            <div class="phase-item-title">Market Research Brief</div>
+            <div class="phase-item-sub">Week 1 · AI Generated</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-title">Competitor SWOT</div>
+            <div class="phase-item-sub">Week 1 · Auto-populated</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-title">User Persona Set</div>
+            <div class="phase-item-sub">Week 2 · 3 personas</div>
+          </div>
+        </div>
+      </div>
+      <div class="roadmap-phase">
+        <div class="phase-header ph2"><div class="phase-dot"></div>Phase 2 — Strategy</div>
+        <div class="phase-items">
+          <div class="phase-item">
+            <div class="phase-item-title">Feature Backlog (RICE)</div>
+            <div class="phase-item-sub">Week 3 · 24 features scored</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-title">MVP Definition</div>
+            <div class="phase-item-sub">Week 3 · MoSCoW filtered</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-title">Technical Constraints</div>
+            <div class="phase-item-sub">Week 4 · Documented</div>
+          </div>
+        </div>
+      </div>
+      <div class="roadmap-phase">
+        <div class="phase-header ph3"><div class="phase-dot"></div>Phase 3 — Build</div>
+        <div class="phase-items">
+          <div class="phase-item">
+            <div class="phase-item-title">PRD v1.0 Draft</div>
+            <div class="phase-item-sub">Week 5 · Full document</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-title">Sprint 1 Planning</div>
+            <div class="phase-item-sub">Week 5 · 12 user stories</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-title">Alpha Milestone</div>
+            <div class="phase-item-sub">Week 8 · Core loop</div>
+          </div>
+        </div>
+      </div>
+      <div class="roadmap-phase">
+        <div class="phase-header ph4"><div class="phase-dot"></div>Phase 4 — Launch</div>
+        <div class="phase-items">
+          <div class="phase-item">
+            <div class="phase-item-title">GTM Strategy</div>
+            <div class="phase-item-sub">Week 10 · Channel plan</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-title">Beta Cohort Setup</div>
+            <div class="phase-item-sub">Week 11 · 50 users</div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-title">Public Launch</div>
+            <div class="phase-item-sub">Week 14 · 🚀</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div class="section-header">
+    <div class="section-tag reveal">From Our Community</div>
+    <h2 class="section-title reveal reveal-delay-1">Builders who found<br>their <em>north star.</em></h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal">
+      <div class="testimonial-quote-mark">"</div>
+      <div class="testimonial-text">AURA turned three weeks of research into a two-hour session. Our PRD was investor-ready before we even had a prototype.</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">🧑</div>
+        <div class="author-info">
+          <div class="name">Arjun Mehta</div>
+          <div class="role">Co-founder, FinEdge (Mumbai)</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="testimonial-quote-mark">"</div>
+      <div class="testimonial-text">As an NGO, we couldn't afford a product consultant. AURA gave us a structured roadmap that helped us secure a government grant.</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">👩</div>
+        <div class="author-info">
+          <div class="name">Priya Soni</div>
+          <div class="role">Program Director, LearnBridge</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="testimonial-quote-mark">"</div>
+      <div class="testimonial-text">I've shipped 4 products. AURA is the first tool that actually understands the chaos of early-stage building and imposes the right order.</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">🧔</div>
+        <div class="author-info">
+          <div class="name">Siddharth Kumar</div>
+          <div class="role">Serial Entrepreneur, Bangalore</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="get-access">
+  <div class="cta-bg"></div>
+  <div class="section-tag reveal">Early Access</div>
+  <h2 class="cta-title reveal reveal-delay-1">Your next product starts<br>with a single <em>prompt.</em></h2>
+  <p class="cta-desc reveal reveal-delay-2">Join 500+ innovators, founders, and NGOs building smarter with AURA. Early access is free.</p>
+  <div class="cta-form reveal reveal-delay-3">
+    <input class="cta-input" type="email" placeholder="your@email.com" id="emailInput">
+    <button class="cta-submit" onclick="launchFromEmail()">Get Access →</button>
+  </div>
+  <p id="signup-msg" style="margin-top:1rem;font-size:0.75rem;color:var(--gold-light);opacity:0;transition:opacity 0.3s;"></p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+   <span class="logo">AURA</span>
+    <p>AI Unified Roadmap Assistant — transforming how innovators build products, one roadmap at a time.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Product</h4>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#roadmap">Roadmap Preview</a>
+    <a href="#get-access">Early Access</a>
+  </div>
+  <div class="footer-col">
+    <h4>Company</h4>
+    <a href="#">About</a>
+    <a href="#">Blog</a>
+    <a href="#">Careers</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-col">
+    <h4>Resources</h4>
+    <a href="#">PM Glossary</a>
+    <a href="#">Templates</a>
+    <a href="#">Community</a>
+    <a href="#">Documentation</a>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2025 AURA. All rights reserved.</p>
+  <p>Privacy Policy · Terms of Service</p>
+</div>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 5 + 'px';
+    cursor.style.top = my - 5 + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+  document.querySelectorAll('a, button, .feature-card, .persona-card, .problem-card, .phase-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2)';
+      ring.style.transform = 'scale(1.5)';
+      ring.style.opacity = '0.3';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      ring.style.transform = 'scale(1)';
+      ring.style.opacity = '0.6';
+    });
+  });
+
+  // NAV SCROLL
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('nav');
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // INTERSECTION OBSERVER
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.querySelectorAll('[data-step]').forEach(el => observer.observe(el));
+  document.querySelectorAll('[data-step]').forEach(el => el.classList.add('process-step'));
+
+  // STAT COUNTER ANIMATION
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const nums = entry.target.querySelectorAll('.stat-num');
+        nums.forEach(num => {
+          const text = num.textContent;
+          const match = text.match(/(\d+)/);
+          if (match) {
+            const target = parseInt(match[1]);
+            const suffix = text.replace(/\d+/, '');
+            let current = 0;
+            const increment = target / 40;
+            const timer = setInterval(() => {
+              current = Math.min(current + increment, target);
+              num.innerHTML = Math.floor(current) + suffix;
+              if (current >= target) clearInterval(timer);
+            }, 30);
+          }
+        });
+        statObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.stats-bar').forEach(el => statObserver.observe(el));
+
+  // SIGNUP
+  function handleSignup() {
+    const input = document.getElementById('emailInput');
+    const msg = document.getElementById('signup-msg');
+    if (input.value && input.value.includes('@')) {
+      msg.textContent = '✓ You\'re on the list! We\'ll be in touch soon.';
+      msg.style.opacity = '1';
+      input.value = '';
+      setTimeout(() => { msg.style.opacity = '0'; }, 4000);
+    } else {
+      input.style.borderColor = '#b85c38';
+      setTimeout(() => { input.style.borderColor = 'rgba(255,255,255,0.12)'; }, 2000);
+    }
+  }
+  document.getElementById('emailInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleSignup();
+  });
+
+  // ── APP LAUNCH WITH LOADING SCREEN ──────────────────────────────
+  function launchApp(e) {
+    if (e) e.preventDefault();
+    try { sessionStorage.removeItem('aura_prefill_email'); } catch(ex) {}
+    showLaunchLoader('login');
+  }
+  function launchFromEmail() {
+    const input = document.getElementById('emailInput');
+    if (input.value && input.value.includes('@')) {
+      try { sessionStorage.setItem('aura_prefill_email', input.value); } catch(e) {}
+      showLaunchLoader('signup');
+    } else {
+      input.style.borderColor = '#b85c38';
+      setTimeout(() => { input.style.borderColor = 'rgba(255,255,255,0.12)'; }, 2000);
+    }
+  }
+
+  function showLaunchLoader(dest) {
+    const overlay = document.getElementById('launch-overlay');
+    overlay.style.display = 'flex';
+    // force reflow then animate in
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+    });
+
+    // Run steps
+    const steps = overlay.querySelectorAll('.lo-step');
+    let i = 0;
+    function tick() {
+      if (i > 0) {
+        steps[i-1].classList.remove('lo-active');
+        steps[i-1].classList.add('lo-done');
+        steps[i-1].querySelector('.lo-check').textContent = '✓';
+      }
+      if (i < steps.length) {
+        steps[i].classList.add('lo-active');
+        i++;
+        setTimeout(tick, 700 + Math.random() * 300);
+      } else {
+        // All done — fade out and navigate
+        setTimeout(() => {
+          overlay.style.opacity = '0';
+          setTimeout(() => { window.location.href = 'dashboard.html#' + dest; }, 500);
+        }, 400);
+      }
+    }
+    tick();
+  }
+</script>
+
+<!-- ── LAUNCH LOADING OVERLAY ─────────────────────────────────── -->
+<div id="launch-overlay" style="
+  display:none;
+  opacity:0;
+  position:fixed;
+  inset:0;
+  background:#023246;
+  z-index:9999;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  transition:opacity 0.4s ease;
+">
+  <!-- Orbit -->
+  <div style="position:relative;width:180px;height:180px;margin-bottom:2.5rem;">
+    <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(40,112,148,0.3);animation:lo-spin 18s linear infinite;"></div>
+    <div style="position:absolute;inset:15%;border-radius:50%;border:1px solid rgba(40,112,148,0.2);animation:lo-spin 12s linear infinite reverse;"></div>
+    <div style="position:absolute;inset:32%;border-radius:50%;border:1px solid rgba(212,212,206,0.2);animation:lo-spin 7s linear infinite;"></div>
+    <div style="
+      position:absolute;inset:36%;
+      border-radius:50%;
+      background:#023246;
+      border:1px solid rgba(40,112,148,0.5);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 0 40px rgba(40,112,148,0.4);
+    ">
+      <span style="font-family:var(--font-display);font-size:0.75rem;font-weight:800;color:#287094;letter-spacing:0.05em;">AURA</span>
+    </div>
+    <!-- Orbiting dot -->
+    <div style="position:absolute;inset:0;border-radius:50%;animation:lo-spin 18s linear infinite;">
+      <div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:8px;height:8px;background:#287094;border-radius:50%;"></div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:#F6F6F6;margin-bottom:0.4rem;">Preparing your workspace</div>
+  <div style="font-family:var(--font-body);font-weight:500;font-size:0.8rem;color:rgba(246,246,246,0.4);margin-bottom:2.5rem;letter-spacing:0.05em;">This will only take a moment</div>
+
+  <div style="display:flex;flex-direction:column;gap:0;min-width:260px;">
+    <div class="lo-step" data-step="0">
+      <div class="lo-check">○</div>
+      <span>Initializing AI engine</span>
+    </div>
+    <div class="lo-step" data-step="1">
+      <div class="lo-check">○</div>
+      <span>Loading your projects</span>
+    </div>
+    <div class="lo-step" data-step="2">
+      <div class="lo-check">○</div>
+      <span>Setting up workspace</span>
+    </div>
+    <div class="lo-step" data-step="3">
+      <div class="lo-check">○</div>
+      <span>Almost ready</span>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes lo-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+.lo-step {
+  display:flex;
+  align-items:center;
+  gap:0.9rem;
+  padding:0.6rem 0;
+  font-family:var(--font-heading);
+  font-weight:700;
+  font-size:0.82rem;
+  color:rgba(246,246,246,0.25);
+  transition:color 0.3s;
+}
+.lo-check {
+  width:20px;height:20px;
+  border-radius:50%;
+  border:1px solid rgba(246,246,246,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.65rem;
+  flex-shrink:0;
+  transition:all 0.3s;
+}
+.lo-step.lo-active { color:#F6F6F6; }
+.lo-step.lo-active .lo-check {
+  border-color:#287094;
+  box-shadow:0 0 0 4px rgba(40,112,148,0.2);
+  animation:lo-pulse 1s infinite;
+}
+.lo-step.lo-done { color:rgba(246,246,246,0.6); }
+.lo-step.lo-done .lo-check {
+  background:#287094;
+  border-color:#287094;
+  color:#fff;
+}
+@keyframes lo-pulse {
+  0%,100% { box-shadow:0 0 0 0 rgba(40,112,148,0.3); }
+  50% { box-shadow:0 0 0 6px rgba(40,112,148,0); }
+}
+</style>
+</body>
+</html>
