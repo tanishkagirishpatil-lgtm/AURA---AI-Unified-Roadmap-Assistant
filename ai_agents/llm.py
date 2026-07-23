@@ -13,7 +13,7 @@ print("GROQ KEY LOADED ✔")
 
 llm = ChatGroq(
     api_key=api_key,
-    model="llama-3.1-8b-instant",
-    temperature=0.2,
-    max_tokens=800
+    model="llama-3.3-70b-versatile",
+    temperature=0.4,
+    max_tokens=4000
 )

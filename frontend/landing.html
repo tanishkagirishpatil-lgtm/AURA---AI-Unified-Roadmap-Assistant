@@ -966,10 +966,10 @@
     <li><a href="#testimonials">Stories</a></li>
   </ul>
   <div style="display: flex; align-items: center; gap: 1.5rem;">
-    <a href="#" class="nav-signin-link" onclick="launchApp(event)" style="font-family: var(--font-body); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseenter="this.style.color='var(--ink)'" onmouseleave="this.style.color='var(--muted)'">Sign In</a>
     <a href="#" class="nav-cta" id="nav-login-btn" onclick="launchApp(event)">Start Building</a>
   </div>
 </nav>
+    <a href="#" class="nav-signin-link" onclick="launchApp(event)" style="font-family: var(--font-body); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseenter="this.style.color='var(--ink)'" onmouseleave="this.style.color='var(--muted)'">START BUILDING</a>
 
 <!-- HERO -->
 <section class="hero" id="home">
@@ -1621,7 +1621,7 @@
         // All done — fade out and navigate
         setTimeout(() => {
           overlay.style.opacity = '0';
-          setTimeout(() => { window.location.href = 'dashboard.html#' + dest; }, 500);
+          setTimeout(() => { window.location.href = 'dashboard_updated.html#' + dest; }, 500);
         }, 400);
       }
     }

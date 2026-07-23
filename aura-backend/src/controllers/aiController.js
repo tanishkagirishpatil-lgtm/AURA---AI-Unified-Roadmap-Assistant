@@ -44,6 +44,24 @@ const runAI = async (req, res) => {
 
     console.log("✅ AI complete");
 
+    // 🔥 The Python process can exit with code 0 but still report an
+    // internal failure (e.g. one of the agents threw an exception).
+    // Check that explicitly instead of assuming success.
+    if (!result || result.success === false) {
+      console.error("❌ AI pipeline reported failure:", result?.error);
+      return res.status(500).json({
+        success: false,
+        error: result?.error || "AI pipeline failed with no error message"
+      });
+    }
+
+    // Save the AI results back to the idea row so the dashboard
+    // reflects real data on reload (instead of null/0%)
+    await db.execute(
+      "UPDATE ideas SET ai_results = ? WHERE id = ?",
+      [JSON.stringify(result), ideaId]
+    );
+
     return res.json({
       success: true,
       data: result

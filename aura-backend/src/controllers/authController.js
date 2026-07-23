@@ -51,8 +51,94 @@ exports.register = async (req, res) => {
 };
 
 // =====================
-// LOGIN
+// GOOGLE LOGIN
 // =====================
+exports.googleAuth = async (req, res) => {
+  try {
+    const { access_token } = req.body;
+
+    if (!access_token) {
+      return res.status(400).json({
+        error: "access_token is required"
+      });
+    }
+
+    // Verify the token by asking Google directly who it belongs to.
+    // This is the real verification step — we never trust the
+    // frontend's claim about who the user is.
+    const profileRes = await fetch(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+    );
+
+    if (!profileRes.ok) {
+      return res.status(401).json({
+        error: "Invalid or expired Google access token"
+      });
+    }
+
+    const profile = await profileRes.json();
+    const { email, name } = profile;
+
+    if (!email) {
+      return res.status(400).json({
+        error: "Google account did not return an email address"
+      });
+    }
+
+    // Find or create the user
+    const [existingUsers] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
+    let user;
+
+    if (existingUsers.length > 0) {
+      user = existingUsers[0];
+    } else {
+      // New Google-only account — set a random, never-used password
+      // hash since the column is NOT NULL and this user will only
+      // ever log in via Google.
+      const crypto = require("crypto");
+      const randomPassword = crypto.randomBytes(32).toString("hex");
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+      const [result] = await db.query(
+        "INSERT INTO users (name, email, hashed_password) VALUES (?, ?, ?)",
+        [name || email.split("@")[0], email, hashedPassword]
+      );
+
+      user = {
+        id: result.insertId,
+        name: name || email.split("@")[0],
+        email
+      };
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      message: "Google login successful",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;

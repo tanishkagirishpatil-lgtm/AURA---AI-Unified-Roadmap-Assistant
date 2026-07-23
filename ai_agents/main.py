@@ -17,6 +17,9 @@ def main():
         market_result  = result.get("market_result")
         competitor_result = result.get("competitor_result")
         idea_result    = result.get("idea_result")
+        persona_result = result.get("persona_result")
+        prd_result     = result.get("prd_result")
+        legal_result   = result.get("legal_result")
 
         output = {
             "success": True,
@@ -25,6 +28,9 @@ def main():
                 "market":     market_result.model_dump()     if hasattr(market_result, "model_dump")     else market_result,
                 "competitor": competitor_result.model_dump() if hasattr(competitor_result, "model_dump") else competitor_result,
                 "roadmap":    roadmap_result.model_dump()    if hasattr(roadmap_result, "model_dump")    else roadmap_result,
+                "personas":   persona_result.model_dump()    if hasattr(persona_result, "model_dump")    else persona_result,
+                "prd":        prd_result.model_dump()        if hasattr(prd_result, "model_dump")        else prd_result,
+                "legal":      legal_result.model_dump()      if hasattr(legal_result, "model_dump")      else legal_result,
             }
         }
 

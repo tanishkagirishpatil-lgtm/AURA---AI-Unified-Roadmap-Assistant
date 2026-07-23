@@ -7,3 +7,6 @@ class StartupState(TypedDict):
     market_result: Any
     competitor_result: Any
     roadmap_result: Any
+    persona_result: Any
+    prd_result: Any
+    legal_result: Any

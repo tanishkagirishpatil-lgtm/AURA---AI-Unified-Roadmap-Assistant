@@ -4,71 +4,67 @@ const path = require("path");
 const runPythonAI = (ideaData) => {
   return new Promise((resolve, reject) => {
 
-    const pythonProjectPath = path.join(
-      "C:", "Users", "vedan", "Desktop", "Python", "AURA"
-    );
+    const pythonProjectPath =
+      process.env.AI_PROJECT_PATH ||
+      path.join(__dirname, "..", "..", "..");
 
-    // Build a single text string for Python from the object
+    const pythonBin =
+      process.env.PYTHON_BIN ||
+      (process.platform === "win32" ? "python" : "python3");
+
     const ideaText = typeof ideaData === 'string'
       ? ideaData
       : `Project: ${ideaData.title}. Industry: ${ideaData.industry}. Audience: ${ideaData.audience}. Problem: ${ideaData.problem}. Vision: ${ideaData.vision}. Goal: ${ideaData.goal}`;
 
     console.log("🐍 Spawning Python at:", pythonProjectPath);
-    console.log("🐍 Idea text:", ideaText);
+    console.log("🐍 Using interpreter:", pythonBin);
 
     const pythonProcess = spawn(
-      "python",
+      pythonBin,
       ["-m", "ai_agents.main", ideaText],
       { cwd: pythonProjectPath }
     );
 
     let output = "";
     let errorOutput = "";
+    let settled = false;
 
-    pythonProcess.stdout.on("data", (data) => {
-      output += data.toString();
-    });
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      pythonProcess.kill();
+      reject("Timeout after 240s");
+    }, 240000);
 
+    pythonProcess.stdout.on("data", (data) => { output += data.toString(); });
     pythonProcess.stderr.on("data", (data) => {
       errorOutput += data.toString();
       console.log("🐍 Python log:", data.toString());
     });
 
     pythonProcess.on("error", (err) => {
-      console.error("❌ Spawn error:", err);
-      return reject(err.message);
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(err.message);
     });
 
     pythonProcess.on("close", (code) => {
-      console.log("🐍 Python exited with code:", code);
-      console.log("📤 Raw output:", output);
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
 
-      if (code !== 0) {
-        return reject(errorOutput || "Python process failed");
-      }
+      if (code !== 0) return reject(errorOutput || "Python process failed");
 
       try {
         const lines = output.split('\n').map(l => l.trim()).filter(Boolean);
         const jsonLine = lines.reverse().find(l => l.startsWith('{') && l.endsWith('}'));
-
-        if (!jsonLine) {
-          return reject("No JSON line found in Python output");
-        }
-
-        const parsed = JSON.parse(jsonLine);
-        return resolve(parsed);
-
+        if (!jsonLine) return reject("No JSON line found in Python output");
+        return resolve(JSON.parse(jsonLine));
       } catch (err) {
-        console.error("❌ JSON Parse error:", err);
-        return reject("JSON Parse Failed: " + err.message);
+        reject("JSON Parse Failed: " + err.message);
       }
     });
-
-    // Kill after 90 seconds
-    setTimeout(() => {
-      pythonProcess.kill();
-      reject("Timeout after 90s");
-    }, 90000);
 
   });
 };

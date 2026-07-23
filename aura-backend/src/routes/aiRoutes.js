@@ -2,13 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 const { runAI } = require("../controllers/aiController");
+const authMiddleware = require("../middleware/authMiddleware");
 
-// test route
 router.get("/test", (req, res) => {
     res.json({ message: "AI route working" });
 });
 
-// main AI endpoint
-router.post("/run", runAI);
+router.post("/run", authMiddleware, runAI);
 
 module.exports = router;

@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AURA — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   /* Times New Roman MT Semi Bold — system font stack */
   @font-face {
@@ -26,7 +26,7 @@
 --silver: #D4D4CE;
 --white: #ffffff;
 --ink: #023246;
---muted: #6b7e87;
+--muted: #4d5e67;
 --border: #D4D4CE;
   --error: #c0392b;
   --success: #287094;
@@ -168,28 +168,31 @@ button { font-family: var(--font-body); cursor: pointer; }
     position:absolute;
     inset:0;
     border-radius:50%;
-    border:1.2px solid rgba(255,255,255,.16);
+    border:1.5px solid rgba(255,255,255,.32);
 }
 .auth-orb-ring:nth-child(1) { 
   animation: spin 18s linear infinite; 
 }
 .auth-orb-ring:nth-child(2) {
   inset:18%;
-    border-color:rgba(255,255,255,.14);
+    border-color:rgba(255,255,255,.26);
   animation: spin 12s linear infinite reverse;
 }
 .auth-orb-ring:nth-child(3) {
-  inset: 34%;
-  border-color: rgba(255,255,255,0.12);
+  inset: 26%;
+  border-color: rgba(255,255,255,0.20);
   animation: spin 8s linear infinite;
 }
 .auth-orb-dot{
     position:absolute;
+    top:-5px;
+    left:50%;
+    transform:translateX(-50%);
     width:10px;
     height:10px;
     background:#FFFFFF;
     border-radius:50%;
-    box-shadow:none;
+    box-shadow:0 0 8px rgba(255,255,255,0.6);
 }
 .auth-orb-center{
     position:absolute;
@@ -455,7 +458,7 @@ border-color: var(--blue); }
 .sidebar-project-ctx {
   padding: 0.9rem 1.6rem;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   font-family: 'IBM Plex Mono', monospace;
   color: rgba(255,255,255,0.3);
   letter-spacing: 0.08em;
@@ -477,7 +480,7 @@ border-color: var(--blue); }
 }
 .sidebar-section-label {
   padding: 1rem 1.6rem 0.4rem;
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -505,7 +508,7 @@ border-color: var(--blue); }
 
 .sidebar-link .badge {
   margin-left: auto;
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   padding: 0.1rem 0.4rem;
   background: var(--blue);
   color: white;
@@ -541,7 +544,7 @@ border-color: var(--blue); }
 }
 .sidebar-user-info { flex: 1; min-width: 0; }
 .sidebar-user-name { font-size: 0.8rem; color: rgba(255,255,255,0.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-user-email { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-family: 'IBM Plex Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-email { font-size: 0.78rem; color: rgba(255,255,255,0.3); font-family: 'IBM Plex Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* MAIN CONTENT */
 .main {
@@ -563,7 +566,7 @@ border-color: var(--blue); }
 }
 .page-header-left {}
 .page-eyebrow {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -610,7 +613,7 @@ border-color: var(--blue); }
   border-color: var(--blue);
 }
 .btn-accent:hover { background: var(--navy); border-color: var(--navy); color: var(--white); }
-.btn-sm { padding: 0.45rem 0.9rem; font-size: 0.68rem; }
+.btn-sm { padding: 0.45rem 0.9rem; font-size: 0.8rem; }
 .btn-lg { padding: 0.9rem 2rem; font-size: 0.8rem; }
 
 /* CARDS */
@@ -620,7 +623,7 @@ border-color: var(--blue); }
   padding: 1.5rem;
 }
 .card-title {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -642,7 +645,7 @@ border-color: var(--blue); }
   padding: 1.4rem 1.6rem;
 }
 .stat-card-label {
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -690,7 +693,7 @@ border-color: var(--blue); }
 }
 .project-card:hover { border-color: var(--blue); box-shadow: 0 4px 20px rgba(40,112,148,0.08); }
 .project-card-status {
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -713,7 +716,7 @@ border-color: var(--blue); }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-family: 'IBM Plex Mono', monospace;
   color: rgba(2,50,70,0.35);
 }
@@ -721,7 +724,7 @@ border-color: var(--blue); }
 .progress-bar-label {
   display: flex;
   justify-content: space-between;
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   font-family: 'IBM Plex Mono', monospace;
   color: var(--muted);
   margin-bottom: 0.4rem;
@@ -771,7 +774,7 @@ border-color: var(--blue); }
   margin-top: 5px;
 }
 .activity-text { font-size: 0.8rem; color: var(--ink); line-height: 1.5; }
-.activity-time { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; color: var(--muted); margin-top: 0.2rem; }
+.activity-time { font-size: 0.78rem; font-family: 'IBM Plex Mono', monospace; color: var(--muted); margin-top: 0.2rem; }
 
 /* ─── NEW PROJECT PAGE ───────────────────────── */
 .new-project-form {
@@ -780,7 +783,7 @@ border-color: var(--blue); }
 }
 .form-section { margin-bottom: 2rem; }
 .form-section-title {
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -901,7 +904,7 @@ border-color: var(--blue); }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.6rem;
+  font-size: 0.74rem;
 }
 .analysis-step.done .step-check { background: var(--blue); border-color: var(--blue); color: white; }
 .analysis-step.active .step-check { border-color: var(--blue); animation: pulse 1s infinite; }
@@ -966,7 +969,7 @@ border-color: var(--blue); }
   font-weight: 700;
   color: var(--white);
 }
-.market-hero-stat-label { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.4rem; }
+.market-hero-stat-label { font-size: 0.78rem; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.4rem; }
 
 .trend-item {
   display: flex;
@@ -978,7 +981,7 @@ border-color: var(--blue); }
 .trend-item:last-child { border-bottom: none; }
 .trend-num {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   color: var(--blue);
   flex-shrink: 0;
   margin-top: 2px;
@@ -997,7 +1000,7 @@ border-color: var(--blue); }
 .competitor-table { width: 100%; border-collapse: collapse; }
 .competitor-table th {
   text-align: left;
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1019,7 +1022,7 @@ border-color: var(--blue); }
 .tag {
   display: inline-block;
   padding: 0.15rem 0.5rem;
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   font-family: 'IBM Plex Mono', monospace;
   margin: 0.15rem 0.1rem;
 }
@@ -1072,7 +1075,7 @@ border-color: var(--blue); }
 .persona-body { padding: 1.2rem 1.5rem; }
 .persona-section { margin-bottom: 1rem; }
 .persona-section-label {
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1081,7 +1084,7 @@ border-color: var(--blue); }
 }
 .persona-items { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .persona-tag {
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   padding: 0.2rem 0.6rem;
   background: var(--bg);
   border: 1px solid var(--border);
@@ -1107,7 +1110,7 @@ border-color: var(--blue); }
   justify-content: space-between;
 }
 .mvp-col-title {
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1115,7 +1118,7 @@ border-color: var(--blue); }
 }
 .mvp-col.must .mvp-col-title { color: var(--blue); }
 .mvp-col-count {
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   font-family: 'IBM Plex Mono', monospace;
   color: var(--muted);
 }
@@ -1127,7 +1130,7 @@ border-color: var(--blue); }
 }
 .mvp-item:last-child { border-bottom: none; }
 .mvp-priority {
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   font-family: 'IBM Plex Mono', monospace;
   padding: 0.15rem 0.4rem;
   flex-shrink: 0;
@@ -1198,7 +1201,7 @@ border-color: var(--blue); }
   gap: 0.6rem;
   margin-bottom: 0.4rem;
 }
-.user-story-id { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; color: var(--blue); }
+.user-story-id { font-size: 0.74rem; font-family: 'IBM Plex Mono', monospace; color: var(--blue); }
 .user-story-text { font-size: 0.82rem; color: var(--ink); }
 .user-story-ac { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px solid var(--border); }
 
@@ -1237,7 +1240,7 @@ border-color: var(--blue); }
   margin-bottom: 0.8rem;
 }
 .roadmap-phase-num {
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   font-family: 'IBM Plex Mono', monospace;
   letter-spacing: 0.1em;
   color: var(--blue);
@@ -1249,7 +1252,7 @@ border-color: var(--blue); }
   color: var(--navy);
 }
 .roadmap-phase-duration {
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   font-family: 'IBM Plex Mono', monospace;
   color: var(--muted);
   margin-left: auto;
@@ -1265,6 +1268,9 @@ border-color: var(--blue); }
   font-size: 0.8rem;
 }
 .task-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--silver); flex-shrink: 0; margin-top: 5px; }
+.roadmap-task input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+.roadmap-task.done { color: var(--muted); text-decoration: line-through; opacity: 0.7; }
+.roadmap-phase-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-bottom: 0.6rem; }
 
 /* ─── LEGAL ──────────────────────────────────── */
 .legal-score {
@@ -1292,7 +1298,7 @@ border-color: var(--blue); }
   color: var(--white);
   line-height: 1;
 }
-.legal-score-label { font-size: 0.55rem; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; }
+.legal-score-label { font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; }
 .legal-score-text h3 { font-family: 'Times New Roman', serif; font-size: 1rem; color: var(--white); margin-bottom: 0.3rem; }
 .legal-score-text p { font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.6; }
 
@@ -1323,7 +1329,7 @@ border-color: var(--blue); }
   transition: color 0.2s;
 }
 .report-toc-item:hover { color: var(--blue); }
-.report-toc-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--blue); width: 30px; flex-shrink: 0; }
+.report-toc-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--blue); width: 30px; flex-shrink: 0; }
 .report-preview {
   background: var(--white);
   border: 1px solid var(--border);
@@ -1346,7 +1352,7 @@ border-color: var(--blue); }
   border-bottom: 1px solid var(--border);
 }
 .report-preview p { font-size: 0.83rem; color: var(--ink); line-height: 1.8; margin-bottom: 0.8rem; }
-.report-meta { font-size: 0.68rem; font-family: 'IBM Plex Mono', monospace; color: var(--muted); margin-bottom: 2rem; display: flex; gap: 1.5rem; }
+.report-meta { font-size: 0.8rem; font-family: 'IBM Plex Mono', monospace; color: var(--muted); margin-bottom: 2rem; display: flex; gap: 1.5rem; }
 
 /* ─── PROFILE & SETTINGS ─────────────────────── */
 .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
@@ -1452,7 +1458,7 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  font-size: 0.62rem !important;
+  font-size: 0.76rem !important;
   letter-spacing: 0.18em !important;
   color: var(--blue) !important;
   margin-bottom: 0.6rem !important;
@@ -1491,7 +1497,7 @@ body::before {
 .sidebar-logo-text { font-size: 1.4rem !important; letter-spacing: -0.02em; }
 .sidebar-section-label {
   padding: 1.4rem 1.8rem 0.5rem !important;
-  font-size: 0.55rem !important;
+  font-size: 0.7rem !important;
   letter-spacing: 0.2em !important;
   color: rgba(255,255,255,0.18) !important;
 }
@@ -1527,9 +1533,9 @@ body::before {
   box-shadow: 0 1px 3px rgba(2,50,70,0.04) !important;
 }
 .card-title {
-  font-size: 0.58rem !important;
+  font-size: 0.72rem !important;
   letter-spacing: 0.18em !important;
-  color: rgba(107,126,135,0.7) !important;
+  color: rgba(77,94,103,0.95) !important;
   margin-bottom: 1.4rem !important;
 }
 
@@ -1543,9 +1549,9 @@ body::before {
 }
 .stat-card:hover { border-color: rgba(40,112,148,0.2) !important; box-shadow: 0 4px 20px rgba(40,112,148,0.06) !important; }
 .stat-card-label {
-  font-size: 0.58rem !important;
+  font-size: 0.72rem !important;
   letter-spacing: 0.18em !important;
-  color: rgba(107,126,135,0.7) !important;
+  color: rgba(77,94,103,0.95) !important;
   margin-bottom: 1rem !important;
 }
 .stat-card-value {
@@ -1647,7 +1653,7 @@ body::before {
 }
 .overview-hero h3 {
   font-family: 'Times New Roman', Georgia, serif !important;
-  font-size: 0.6rem !important;
+  font-size: 0.74rem !important;
   font-weight: 400 !important;
   letter-spacing: 0.2em !important;
   text-transform: uppercase !important;
@@ -1662,7 +1668,7 @@ body::before {
 .confidence-badge {
   border: 1px solid rgba(40,112,148,0.25) !important;
   color: var(--blue-light) !important;
-  font-size: 0.65rem !important;
+  font-size: 0.78rem !important;
   padding: 0.4rem 1rem !important;
   margin-top: 1.5rem !important;
   letter-spacing: 0.1em !important;
@@ -1672,16 +1678,22 @@ body::before {
 .btn {
   font-family: var(--font-body) !important;
   font-weight: 600 !important;
-  font-size: 0.68rem !important;
+  font-size: 0.8rem !important;
   letter-spacing: 0.1em !important;
   padding: 0.7rem 1.4rem !important;
   border: 1px solid rgba(2,50,70,0.15) !important;
-  color: var(--white) !important;
+  color: var(--ink) !important;
   transition: all 0.2s ease !important;
 }
 .btn:hover { border-color: var(--blue) !important; color: var(--blue) !important; }
 .btn-dark { background: var(--navy) !important; color: var(--white) !important; border-color: var(--navy) !important; }
 .btn-dark:hover { background: var(--blue) !important; border-color: var(--blue) !important; }
+.btn-accent { background: var(--blue) !important; color: var(--white) !important; border-color: var(--blue) !important; }
+.btn-accent:hover { background: var(--navy) !important; border-color: var(--navy) !important; }
+/* buttons explicitly placed on dark surfaces (welcome banner, etc.)
+   opt back into light text via this helper class */
+.btn-on-dark { color: rgba(255,255,255,0.8) !important; }
+.btn-on-dark:hover { color: var(--white) !important; }
 .btn-lg { padding: 0.9rem 2rem !important; font-size: 0.72rem !important; }
 
 /* ── ROADMAP TIMELINE ── */
@@ -1719,11 +1731,11 @@ body::before {
 
 /* ── COMPETITOR TABLE ── */
 .competitor-table th {
-  font-size: 0.58rem !important;
+  font-size: 0.72rem !important;
   letter-spacing: 0.18em !important;
   padding: 0.8rem 1.2rem !important;
   background: rgba(246,246,246,0.8) !important;
-  color: rgba(107,126,135,0.7) !important;
+  color: rgba(77,94,103,0.95) !important;
 }
 .competitor-table td { padding: 1.2rem !important; font-size: 0.82rem !important; }
 .gap-card { padding: 1.2rem 1.5rem !important; margin-bottom: 1rem !important; border-left-width: 2px !important; }
@@ -1732,7 +1744,7 @@ body::before {
 
 /* ── PRD ── */
 .prd-content { padding: 2.5rem !important; font-size: 0.9rem !important; line-height: 1.9 !important; border: 1px solid rgba(2,50,70,0.08) !important; }
-.prd-nav-item { padding: 0.8rem 1.4rem !important; font-size: 0.68rem !important; }
+.prd-nav-item { padding: 0.8rem 1.4rem !important; font-size: 0.8rem !important; }
 .user-story { padding: 1.2rem 1.4rem !important; border: 1px solid rgba(2,50,70,0.08) !important; background: rgba(246,246,246,0.6) !important; }
 
 /* ── LEGAL ── */
@@ -1764,7 +1776,7 @@ body::before {
 }
 .market-hero-stat { padding: 2rem 2.5rem !important; }
 .market-hero-stat-val { font-size: 2.8rem !important; font-weight: 300 !important; }
-.market-hero-stat-label { font-size: 0.58rem !important; letter-spacing: 0.18em !important; }
+.market-hero-stat-label { font-size: 0.72rem !important; letter-spacing: 0.18em !important; }
 
 /* ── ACTIVITY FEED ── */
 .activity-item { padding: 1rem 0 !important; border-bottom: 1px solid rgba(2,50,70,0.07) !important; }
@@ -1787,7 +1799,7 @@ body::before {
 .new-project-form { max-width: 680px !important; }
 
 /* ── PROFILE & SETTINGS ── */
-.settings-tab { padding: 0.8rem 1.4rem !important; font-size: 0.68rem !important; letter-spacing: 0.08em !important; }
+.settings-tab { padding: 0.8rem 1.4rem !important; font-size: 0.8rem !important; letter-spacing: 0.08em !important; }
 
 /* ── ANIMATION ── */
 @keyframes fade-up-d {
@@ -1799,7 +1811,7 @@ body::before {
 /* ── BAR CHART ── */
 .bar-track { height: 6px !important; background: rgba(2,50,70,0.06) !important; border: none !important; }
 .bar-fill { background: linear-gradient(to right, var(--blue), var(--blue-light)) !important; }
-.bar-label { font-size: 0.68rem !important; }
+.bar-label { font-size: 0.8rem !important; }
 
 /* ── TREND ITEMS ── */
 .trend-item { padding: 1.1rem 0 !important; border-bottom: 1px solid rgba(2,50,70,0.07) !important; }
@@ -1813,6 +1825,7 @@ body::before {
 
 </style>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -1864,11 +1877,6 @@ body::before {
       <div class="auth-card">
         <span class="auth-card-logo">AURA</span>
         <p class="auth-card-sub">Sign in to your account</p>
-        <button class="auth-google-btn" onclick="handleGoogleAuth()">
-          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.31z"/></svg>
-          Continue with Google
-        </button>
-        <div class="auth-divider">or</div>
         <div class="form-group">
           <label class="form-label">Email</label>
           <input class="form-input" type="email" id="login-email" placeholder="you@company.com">
@@ -1905,11 +1913,6 @@ body::before {
       <div class="auth-card">
         <span class="auth-card-logo">AURA</span>
         <p class="auth-card-sub">Create your free account</p>
-        <button class="auth-google-btn" onclick="handleGoogleAuth()">
-          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.31z"/></svg>
-          Continue with Google
-        </button>
-        <div class="auth-divider">or</div>
         <div class="form-input-row">
           <div class="form-group">
             <label class="form-label">First Name</label>
@@ -2024,8 +2027,8 @@ body::before {
           <h2>Welcome back, <em id="welcome-name">Priya</em>.</h2>
           <p>Continue building products with confidence. Your ideas are taking shape.</p>
           <div style="display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap;">
-            <button class="btn btn-lg" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.8);" onclick="navigate('new-project')">+ New Project</button>
-            <button class="btn btn-lg" style="background:transparent;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);" onclick="navigate('report')">View Reports</button>
+            <button class="btn btn-lg btn-on-dark" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);" onclick="navigate('new-project')">+ New Project</button>
+            <button class="btn btn-lg btn-on-dark" style="background:transparent;border:1px solid rgba(255,255,255,0.08);" onclick="navigate('report')">View Reports</button>
           </div>
         </div>
         <!-- Orbit visual -->
@@ -2045,23 +2048,23 @@ body::before {
         <div class="grid-4" style="margin-bottom:2.5rem;">
           <div class="stat-card">
             <div class="stat-card-label">Projects</div>
-            <div class="stat-card-value">4<span style="font-size:1.4rem;">+</span></div>
-            <div class="stat-card-sub">3 active · 1 complete</div>
+            <div class="stat-card-value" id="dash-stat-projects">—</div>
+            <div class="stat-card-sub" id="dash-stat-projects-sub">—</div>
           </div>
           <div class="stat-card">
             <div class="stat-card-label">Reports Generated</div>
-            <div class="stat-card-value">12</div>
-            <div class="stat-card-sub">Last: 2 days ago</div>
+            <div class="stat-card-value" id="dash-stat-reports">—</div>
+            <div class="stat-card-sub" id="dash-stat-reports-sub">—</div>
           </div>
           <div class="stat-card">
             <div class="stat-card-label">Personas Created</div>
-            <div class="stat-card-value">18</div>
+            <div class="stat-card-value" id="dash-stat-personas">—</div>
             <div class="stat-card-sub">Across all projects</div>
           </div>
           <div class="stat-card">
-            <div class="stat-card-label">Hours Saved</div>
-            <div class="stat-card-value">94<span style="font-size:1.4rem;">h</span></div>
-            <div class="stat-card-sub">vs. manual research</div>
+            <div class="stat-card-label">Avg Confidence Score</div>
+            <div class="stat-card-value" id="dash-stat-confidence">—</div>
+            <div class="stat-card-sub">Across all analyzed ideas</div>
           </div>
         </div>
 
@@ -2069,7 +2072,7 @@ body::before {
           <div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
               <div>
-                <div style="font-size:0.58rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;"><span style="display:inline-block;width:1rem;height:1px;background:var(--blue);"></span>Projects</div>
+                <div style="font-size:0.72rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;"><span style="display:inline-block;width:1rem;height:1px;background:var(--blue);"></span>Projects</div>
                 <h3 style="font-family:'Times New Roman',Georgia,serif;font-size:1.4rem;font-weight:300;color:var(--navy);letter-spacing:-0.01em;">Your Work</h3>
               </div>
               <button class="btn btn-sm" onclick="navigate('new-project')">+ New Project</button>
@@ -2078,45 +2081,11 @@ body::before {
           </div>
           <div>
             <div style="margin-bottom:1.5rem;">
-              <div style="font-size:0.58rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;"><span style="display:inline-block;width:1rem;height:1px;background:var(--blue);"></span>Timeline</div>
+              <div style="font-size:0.72rem;font-family:'IBM Plex Mono',monospace;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;"><span style="display:inline-block;width:1rem;height:1px;background:var(--blue);"></span>Timeline</div>
               <h3 style="font-family:'Times New Roman',Georgia,serif;font-size:1.4rem;font-weight:300;color:var(--navy);letter-spacing:-0.01em;">Recent Activity</h3>
             </div>
-            <div class="card">
-              <div class="activity-item">
-                <div class="activity-dot"></div>
-                <div>
-                  <div class="activity-text">Generated PRD for <strong>EduTrack AI</strong></div>
-                  <div class="activity-time">2 hours ago</div>
-                </div>
-              </div>
-              <div class="activity-item">
-                <div class="activity-dot"></div>
-                <div>
-                  <div class="activity-text">Completed competitor analysis — 6 competitors found</div>
-                  <div class="activity-time">Yesterday</div>
-                </div>
-              </div>
-              <div class="activity-item">
-                <div class="activity-dot"></div>
-                <div>
-                  <div class="activity-text">Created 4 user personas for <strong>HealthBridge</strong></div>
-                  <div class="activity-time">2 days ago</div>
-                </div>
-              </div>
-              <div class="activity-item">
-                <div class="activity-dot"></div>
-                <div>
-                  <div class="activity-text">New project created: <strong>AgriSense</strong></div>
-                  <div class="activity-time">3 days ago</div>
-                </div>
-              </div>
-              <div class="activity-item">
-                <div class="activity-dot"></div>
-                <div>
-                  <div class="activity-text">Exported Final Report — EduTrack AI</div>
-                  <div class="activity-time">4 days ago</div>
-                </div>
-              </div>
+            <div class="card" id="activity-feed">
+              <div class="activity-item" style="border:none;"><div class="activity-dot"></div><div><div class="activity-text">No activity yet. Create your first project to get started.</div></div></div>
             </div>
           </div>
         </div>
@@ -2233,6 +2202,7 @@ body::before {
       <div class="page-sub" id="po-subline">EdTech · College students in India · Confidence Score 87/100</div>
     </div>
     <div class="page-actions">
+      <button class="btn btn-sm" id="po-rerun-btn" onclick="handleRerunAnalysis()">↻ Re-run Analysis</button>
       <button class="btn" onclick="navigate('report')">View Report</button>
       <button class="btn btn-dark" onclick="navigate('report')">Export PDF</button>
     </div>
@@ -2310,15 +2280,15 @@ body::before {
       <div class="page-content">
         <div class="market-hero">
           <div class="market-hero-stat">
-            <div class="market-hero-stat-val">$8.2B</div>
+            <div class="market-hero-stat-val" id="mr-tam">—</div>
             <div class="market-hero-stat-label">TAM · Total Addressable</div>
           </div>
           <div class="market-hero-stat">
-            <div class="market-hero-stat-val">$2.1B</div>
+            <div class="market-hero-stat-val" id="mr-sam">—</div>
             <div class="market-hero-stat-label">SAM · Serviceable</div>
           </div>
           <div class="market-hero-stat">
-            <div class="market-hero-stat-val">$180M</div>
+            <div class="market-hero-stat-val" id="mr-som">—</div>
             <div class="market-hero-stat-label">SOM · Obtainable</div>
           </div>
         </div>
@@ -2326,44 +2296,22 @@ body::before {
         <div class="grid-2" style="margin-bottom:1.5rem;">
           <div class="card">
             <div class="card-title">Growth Rate by Segment</div>
-            <div class="bar-chart">
-              <div class="bar-row"><div class="bar-label">EdTech</div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><div class="bar-val">39% CAGR</div></div>
-              <div class="bar-row"><div class="bar-label">AI Tools</div><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div><div class="bar-val">47% CAGR</div></div>
-              <div class="bar-row"><div class="bar-label">Personalized</div><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><div class="bar-val">33% CAGR</div></div>
-              <div class="bar-row"><div class="bar-label">B2C SaaS</div><div class="bar-track"><div class="bar-fill" style="width:52%"></div></div><div class="bar-val">26% CAGR</div></div>
-              <div class="bar-row"><div class="bar-label">B2B Inst.</div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><div class="bar-val">22% CAGR</div></div>
-            </div>
+            <div class="bar-chart" id="mr-growth-chart"></div>
           </div>
           <div class="card">
             <div class="card-title">Industry Trends</div>
-            <div class="trend-item"><div class="trend-num">01</div><div class="trend-text">AI-powered personalized learning paths are seeing 3× higher engagement than static content</div></div>
-            <div class="trend-item"><div class="trend-num">02</div><div class="trend-text">Tier-2 city penetration growing at 55% YoY — massively underserved by current players</div></div>
-            <div class="trend-item"><div class="trend-num">03</div><div class="trend-text">Skill-gap tracking linked to job placement is the #1 requested feature in student surveys</div></div>
-            <div class="trend-item" style="border:none;"><div class="trend-num">04</div><div class="trend-text">Mobile-first learning adoption crossed 76% among 18–24 age group in 2024</div></div>
+            <div id="mr-trends"></div>
           </div>
         </div>
 
         <div class="grid-2">
           <div class="card">
             <div class="card-title">Opportunities</div>
-            <div class="gap-card"><div class="gap-card-title">Underserved Tier-2 Cities</div><div class="gap-card-desc">No major player has a strong tier-2/3 strategy. 68% of India's college students are outside top metros.</div></div>
-            <div class="gap-card"><div class="gap-card-title">Placement-Linked Learning</div><div class="gap-card-desc">Students are highly motivated by job outcomes. An AI that maps skills to job requirements commands premium pricing.</div></div>
-            <div class="gap-card" style="margin-bottom:0;"><div class="gap-card-title">Institutional B2B Play</div><div class="gap-card-desc">Universities pay ₹50K–₹5L/year for placement analytics. A white-label product extends addressable market significantly.</div></div>
+            <div id="mr-opportunities"></div>
           </div>
           <div class="card">
             <div class="card-title">Threats &amp; Risks</div>
-            <div class="gap-card" style="border-color:#c0392b;background:rgba(192,57,43,0.03);">
-              <div class="gap-card-title" style="color:#c0392b;">High Competition</div>
-              <div class="gap-card-desc">Byju's, Unacademy, and Coursera have massive marketing budgets and brand recognition. Differentiation is critical.</div>
-            </div>
-            <div class="gap-card" style="border-color:#e67e22;background:rgba(230,126,34,0.03);">
-              <div class="gap-card-title" style="color:#e67e22;">User Retention</div>
-              <div class="gap-card-desc">EdTech products have historically high churn (avg 68% after 30 days). Strong habit loops are essential.</div>
-            </div>
-            <div class="gap-card" style="border-color:#e67e22;background:rgba(230,126,34,0.03);margin-bottom:0;">
-              <div class="gap-card-title" style="color:#e67e22;">AI Data Dependency</div>
-              <div class="gap-card-desc">Model quality depends on quality training data. Cold-start problem in first 6 months may impact accuracy.</div>
-            </div>
+            <div id="mr-threats"></div>
           </div>
         </div>
       </div>
@@ -2373,9 +2321,9 @@ body::before {
     <section id="page-competitors" style="display:none;">
       <div class="page-header">
         <div class="page-header-left">
-          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-eyebrow" id="comp-eyebrow">Project</div>
           <div class="page-title">Competitive <em>Landscape</em></div>
-          <div class="page-sub">Consulting-grade competitor research. 6 direct competitors identified, 3 market gaps surfaced.</div>
+          <div class="page-sub" id="comp-page-sub">Consulting-grade competitor research.</div>
         </div>
         <div class="page-actions">
           <button class="btn btn-dark btn-sm" onclick="showToast('Exporting competitor report...')">Export</button>
@@ -2393,57 +2341,12 @@ body::before {
                 <th>Market Position</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td><div class="competitor-name">Byju's</div><div style="font-size:0.7rem;color:var(--muted);">India · VC-backed</div></td>
-                <td><span class="tag tag-blue">₹1,200/mo</span></td>
-                <td><span class="tag tag-gray">Brand recognition</span> <span class="tag tag-gray">Content library</span></td>
-                <td><span class="tag tag-red">Not AI-driven</span> <span class="tag tag-red">High churn</span></td>
-                <td>Market leader</td>
-              </tr>
-              <tr>
-                <td><div class="competitor-name">Unacademy</div><div style="font-size:0.7rem;color:var(--muted);">India · Public</div></td>
-                <td><span class="tag tag-blue">₹800/mo</span></td>
-                <td><span class="tag tag-gray">Live classes</span> <span class="tag tag-gray">Educator network</span></td>
-                <td><span class="tag tag-red">No personalization</span> <span class="tag tag-red">Exam-only focus</span></td>
-                <td>Strong #2</td>
-              </tr>
-              <tr>
-                <td><div class="competitor-name">Coursera</div><div style="font-size:0.7rem;color:var(--muted);">Global · Public</div></td>
-                <td><span class="tag tag-blue">$49/mo</span></td>
-                <td><span class="tag tag-gray">University certs</span> <span class="tag tag-gray">Global brand</span></td>
-                <td><span class="tag tag-red">Expensive</span> <span class="tag tag-red">Not India-specific</span></td>
-                <td>Premium segment</td>
-              </tr>
-              <tr>
-                <td><div class="competitor-name">Skill-Lync</div><div style="font-size:0.7rem;color:var(--muted);">India · Startup</div></td>
-                <td><span class="tag tag-blue">₹30K one-time</span></td>
-                <td><span class="tag tag-gray">Placement focus</span> <span class="tag tag-gray">Industry projects</span></td>
-                <td><span class="tag tag-red">High price</span> <span class="tag tag-red">Niche audience</span></td>
-                <td>Engineering niche</td>
-              </tr>
-              <tr>
-                <td><div class="competitor-name">Duolingo</div><div style="font-size:0.7rem;color:var(--muted);">Global · Public</div></td>
-                <td><span class="tag tag-blue">Free / $7/mo</span></td>
-                <td><span class="tag tag-gray">Gamification</span> <span class="tag tag-gray">Retention loops</span></td>
-                <td><span class="tag tag-red">Language only</span> <span class="tag tag-red">No depth</span></td>
-                <td>Language leader</td>
-              </tr>
-              <tr>
-                <td><div class="competitor-name">Khan Academy</div><div style="font-size:0.7rem;color:var(--muted);">Global · Non-profit</div></td>
-                <td><span class="tag tag-gray">Free</span></td>
-                <td><span class="tag tag-gray">Trusted brand</span> <span class="tag tag-gray">Quality content</span></td>
-                <td><span class="tag tag-red">No AI personalization</span> <span class="tag tag-red">US-centric</span></td>
-                <td>Academic base</td>
-              </tr>
-            </tbody>
+            <tbody id="competitor-tbody"></tbody>
           </table>
         </div>
 
         <div style="margin-bottom:0.8rem;font-family:'Times New Roman','Georgia',serif;font-weight:700;font-size:1rem;color:var(--navy);">Market Gap Analysis</div>
-        <div class="gap-card"><div class="gap-card-title">Gap 1 — AI-Driven Skill Gap Tracking</div><div class="gap-card-desc">No competitor offers real-time AI analysis of a student's skills vs live job market demand. This is your primary differentiator.</div></div>
-        <div class="gap-card"><div class="gap-card-title">Gap 2 — Affordable Placement Intelligence for Tier-2 India</div><div class="gap-card-desc">All major players are priced out of tier-2/3 city budgets. A ₹99–299/mo product targeting this segment has no real competition.</div></div>
-        <div class="gap-card" style="margin-bottom:0;"><div class="gap-card-title">Gap 3 — Institutional White-Label Analytics</div><div class="gap-card-desc">Universities and colleges lack tools to track student placement readiness at scale. No SaaS product fills this B2B gap affordably.</div></div>
+        <div id="competitor-gaps"></div>
       </div>
     </section>
 
@@ -2451,171 +2354,19 @@ body::before {
     <section id="page-personas" style="display:none;">
       <div class="page-header">
         <div class="page-header-left">
-          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-eyebrow" id="personas-eyebrow">Project</div>
           <div class="page-title">User <em>Personas</em></div>
-          <div class="page-sub">4 richly defined user archetypes, built from your target audience and market intelligence.</div>
+          <div class="page-sub" id="personas-page-sub">User archetypes, built from your target audience and market intelligence.</div>
         </div>
         <div class="page-actions">
           <button class="btn btn-dark btn-sm" onclick="showToast('Exporting personas...')">Export</button>
         </div>
       </div>
       <div class="page-content">
-        <div class="grid-2">
-          <!-- Persona 1 -->
-          <div class="persona-card">
-            <div class="persona-header">
-              <div class="persona-avatar">RK</div>
-              <div class="persona-name-block">
-                <div class="persona-name">Rahul Kumar</div>
-                <div class="persona-role">3rd Year CS Student · Tier-2 City · Age 21</div>
-              </div>
-            </div>
-            <div class="persona-body">
-              <div class="persona-section">
-                <div class="persona-section-label">Goals</div>
-                <div class="persona-items">
-                  <span class="persona-tag persona-goal">Land a product role</span>
-                  <span class="persona-tag persona-goal">Build a strong portfolio</span>
-                  <span class="persona-tag persona-goal">Beat campus competition</span>
-                </div>
-              </div>
-              <div class="persona-section">
-                <div class="persona-section-label">Pain Points</div>
-                <div class="persona-items">
-                  <span class="persona-tag persona-pain">Doesn't know skill gaps</span>
-                  <span class="persona-tag persona-pain">Scattered resources</span>
-                  <span class="persona-tag persona-pain">No mentor access</span>
-                </div>
-              </div>
-              <div class="persona-section">
-                <div class="persona-section-label">Tech Usage</div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Mobile</div><div class="tech-bar"><div class="tech-bar-fill" style="width:95%"></div></div></div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Laptop</div><div class="tech-bar"><div class="tech-bar-fill" style="width:70%"></div></div></div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Apps</div><div class="tech-bar"><div class="tech-bar-fill" style="width:85%"></div></div></div>
-              </div>
-              <div class="persona-section" style="margin-bottom:0;">
-                <div class="persona-section-label">Motivation</div>
-                <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"I want to know exactly what I need to learn to get hired — not just random YouTube tutorials."</div>
-              </div>
-            </div>
-          </div>
-          <!-- Persona 2 -->
-          <div class="persona-card">
-            <div class="persona-header">
-              <div class="persona-avatar">SP</div>
-              <div class="persona-name-block">
-                <div class="persona-name">Shreya Patel</div>
-                <div class="persona-role">Final Year MBA · Metro City · Age 24</div>
-              </div>
-            </div>
-            <div class="persona-body">
-              <div class="persona-section">
-                <div class="persona-section-label">Goals</div>
-                <div class="persona-items">
-                  <span class="persona-tag persona-goal">Switch to tech from finance</span>
-                  <span class="persona-tag persona-goal">Upskill efficiently</span>
-                  <span class="persona-tag persona-goal">Track progress visually</span>
-                </div>
-              </div>
-              <div class="persona-section">
-                <div class="persona-section-label">Pain Points</div>
-                <div class="persona-items">
-                  <span class="persona-tag persona-pain">Time-constrained</span>
-                  <span class="persona-tag persona-pain">No structured roadmap</span>
-                  <span class="persona-tag persona-pain">Course overload</span>
-                </div>
-              </div>
-              <div class="persona-section">
-                <div class="persona-section-label">Tech Usage</div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Mobile</div><div class="tech-bar"><div class="tech-bar-fill" style="width:75%"></div></div></div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Laptop</div><div class="tech-bar"><div class="tech-bar-fill" style="width:90%"></div></div></div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Apps</div><div class="tech-bar"><div class="tech-bar-fill" style="width:65%"></div></div></div>
-              </div>
-              <div class="persona-section" style="margin-bottom:0;">
-                <div class="persona-section-label">Motivation</div>
-                <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"Give me a clear 3-month plan and I'll execute it. I just need someone to cut through the noise."</div>
-              </div>
-            </div>
-          </div>
-          <!-- Persona 3 -->
-          <div class="persona-card">
-            <div class="persona-header">
-              <div class="persona-avatar">AV</div>
-              <div class="persona-name-block">
-                <div class="persona-name">Arjun Verma</div>
-                <div class="persona-role">Placement Officer · College · Age 38</div>
-              </div>
-            </div>
-            <div class="persona-body">
-              <div class="persona-section">
-                <div class="persona-section-label">Goals</div>
-                <div class="persona-items">
-                  <span class="persona-tag persona-goal">Improve placement %</span>
-                  <span class="persona-tag persona-goal">Track student readiness</span>
-                  <span class="persona-tag persona-goal">Report to management</span>
-                </div>
-              </div>
-              <div class="persona-section">
-                <div class="persona-section-label">Pain Points</div>
-                <div class="persona-items">
-                  <span class="persona-tag persona-pain">No data visibility</span>
-                  <span class="persona-tag persona-pain">Manual tracking</span>
-                  <span class="persona-tag persona-pain">No early warning</span>
-                </div>
-              </div>
-              <div class="persona-section">
-                <div class="persona-section-label">Tech Usage</div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Desktop</div><div class="tech-bar"><div class="tech-bar-fill" style="width:88%"></div></div></div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Excel</div><div class="tech-bar"><div class="tech-bar-fill" style="width:95%"></div></div></div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Mobile</div><div class="tech-bar"><div class="tech-bar-fill" style="width:40%"></div></div></div>
-              </div>
-              <div class="persona-section" style="margin-bottom:0;">
-                <div class="persona-section-label">Motivation</div>
-                <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"I need a dashboard that tells me which students are at risk of not getting placed — before companies visit."</div>
-              </div>
-            </div>
-          </div>
-          <!-- Persona 4 -->
-          <div class="persona-card">
-            <div class="persona-header">
-              <div class="persona-avatar">NM</div>
-              <div class="persona-name-block">
-                <div class="persona-name">Neha Malhotra</div>
-                <div class="persona-role">Working Professional · Self-learner · Age 27</div>
-              </div>
-            </div>
-            <div class="persona-body">
-              <div class="persona-section">
-                <div class="persona-section-label">Goals</div>
-                <div class="persona-items">
-                  <span class="persona-tag persona-goal">Senior promotion</span>
-                  <span class="persona-tag persona-goal">Learn AI/ML basics</span>
-                  <span class="persona-tag persona-goal">Budget under ₹500/mo</span>
-                </div>
-              </div>
-              <div class="persona-section">
-                <div class="persona-section-label">Pain Points</div>
-                <div class="persona-items">
-                  <span class="persona-tag persona-pain">No time evenings</span>
-                  <span class="persona-tag persona-pain">Generic content</span>
-                  <span class="persona-tag persona-pain">No accountability</span>
-                </div>
-              </div>
-              <div class="persona-section">
-                <div class="persona-section-label">Tech Usage</div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Mobile</div><div class="tech-bar"><div class="tech-bar-fill" style="width:92%"></div></div></div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Laptop</div><div class="tech-bar"><div class="tech-bar-fill" style="width:60%"></div></div></div>
-                <div class="tech-bar-row"><div class="tech-bar-label">Audio</div><div class="tech-bar"><div class="tech-bar-fill" style="width:78%"></div></div></div>
-              </div>
-              <div class="persona-section" style="margin-bottom:0;">
-                <div class="persona-section-label">Motivation</div>
-                <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"I learn in 15-minute slots. I need content that fits my life, not a full bootcamp I'll never finish."</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="grid-2" id="personas-grid"></div>
       </div>
     </section>
+
 
     <!-- ─── MVP ───────────────────────────── -->
     <section id="page-mvp" style="display:none;">
@@ -2634,39 +2385,23 @@ body::before {
           <div class="mvp-col must">
             <div class="mvp-col-header">
               <div class="mvp-col-title">Must Have</div>
-              <div class="mvp-col-count">8 features</div>
+              <div class="mvp-col-count" id="mvp-must-count">— features</div>
             </div>
-            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">AI Skill Gap Analyzer</div><div class="mvp-item-detail">Maps student profile to job listings in real-time</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Personalized Study Path Generator</div><div class="mvp-item-detail">Week-by-week learning plan based on gap analysis</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Progress Dashboard</div><div class="mvp-item-detail">Visual competency tracker with completion %</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Job Role Matching</div><div class="mvp-item-detail">Match student to top 5 roles based on current skill level</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Resource Curator</div><div class="mvp-item-detail">Surfaces free + paid resources for each skill</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Streak & Habit System</div><div class="mvp-item-detail">Daily learning goals and streak tracking</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Profile Builder</div><div class="mvp-item-detail">Exportable skill resume for job applications</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p1">P1</span><div><div class="mvp-item-text">Mobile-First Interface</div><div class="mvp-item-detail">PWA or native app for on-the-go learning</div></div></div>
+            <div id="mvp-must-list"></div>
           </div>
           <div class="mvp-col">
             <div class="mvp-col-header">
               <div class="mvp-col-title">Should Have</div>
-              <div class="mvp-col-count">6 features</div>
+              <div class="mvp-col-count" id="mvp-should-count">— features</div>
             </div>
-            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Peer Benchmark Mode</div><div class="mvp-item-detail">See how you compare vs similar students</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Mock Interview Prep</div><div class="mvp-item-detail">AI-generated questions for target role</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">College Integration</div><div class="mvp-item-detail">Placement officer dashboard for institutions</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Notification Engine</div><div class="mvp-item-detail">Daily nudges, deadline alerts, streak reminders</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Certification Tracker</div><div class="mvp-item-detail">Track and verify completed certifications</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p2">P2</span><div><div class="mvp-item-text">Referral Program</div><div class="mvp-item-detail">Growth loop: invite friends, unlock features</div></div></div>
+            <div id="mvp-should-list"></div>
           </div>
           <div class="mvp-col">
             <div class="mvp-col-header">
-              <div class="mvp-col-title">Future Features</div>
-              <div class="mvp-col-count">5 features</div>
+              <div class="mvp-col-title">Launch Checklist</div>
+              <div class="mvp-col-count" id="mvp-future-count">— items</div>
             </div>
-            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">Mentorship Marketplace</div><div class="mvp-item-detail">Book 1:1 calls with industry professionals</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">Live Cohort Classes</div><div class="mvp-item-detail">Group sessions with peers and instructors</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">Employer Portal</div><div class="mvp-item-detail">Companies discover pre-screened talent</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">AI Content Generator</div><div class="mvp-item-detail">Auto-generate quizzes and practice problems</div></div></div>
-            <div class="mvp-item"><span class="mvp-priority priority-p3">P3</span><div><div class="mvp-item-text">Global Expansion</div><div class="mvp-item-detail">Multi-language support for SEA markets</div></div></div>
+            <div id="mvp-future-list"></div>
           </div>
         </div>
       </div>
@@ -2676,7 +2411,7 @@ body::before {
     <section id="page-prd" style="display:none;">
       <div class="page-header">
         <div class="page-header-left">
-          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-eyebrow" id="prd-eyebrow">Project</div>
           <div class="page-title">Product Requirements <em>Document</em></div>
           <div class="page-sub">A living product specification document. Click any section to edit and make it your own.</div>
         </div>
@@ -2697,185 +2432,72 @@ body::before {
         <div class="prd-section active" id="prd-summary">
           <div class="prd-content" contenteditable="true">
             <h3>Executive Summary</h3>
-            <p>EduTrack AI is an AI-powered learning companion designed to help Indian college students identify skill gaps, receive personalized study roadmaps, and track their placement readiness in real-time. The platform targets the underserved tier-2 and tier-3 city student population, offering an affordable subscription (₹99–299/mo) with measurable placement outcomes.</p>
-            <p>The product addresses a critical pain point: students know they need to upskill but lack clarity on what to learn, in what order, and whether they're progressing. EduTrack AI solves this with job-market-linked AI that translates ambition into a structured, trackable action plan.</p>
-            <p><strong>Target Launch:</strong> Q3 2025 · <strong>Initial Market:</strong> India Tier-2 cities · <strong>Revenue Model:</strong> B2C subscription + B2B institutional licensing</p>
+            <div id="prd-summary-content"><p>—</p></div>
           </div>
         </div>
         <div class="prd-section" id="prd-objectives">
           <div class="prd-content" contenteditable="true">
             <h3>Product Objectives</h3>
-            <ul>
-              <li>Achieve 10,000 active users within 6 months of launch</li>
-              <li>Maintain 30-day retention above 45% (vs industry avg 32%)</li>
-              <li>Generate ₹1Cr ARR by month 12</li>
-              <li>Onboard 20 colleges on the institutional dashboard by Q4 2025</li>
-              <li>Measure and report measurable skill improvement for 80% of active users</li>
-            </ul>
+            <ul id="prd-objectives-list"></ul>
             <h3>Out of Scope (v1)</h3>
-            <ul>
-              <li>Live instructor-led classes</li>
-              <li>Job application management</li>
-              <li>Employer-facing hiring tools</li>
-            </ul>
+            <ul id="prd-out-of-scope-list"></ul>
           </div>
         </div>
         <div class="prd-section" id="prd-features">
           <div class="prd-content" contenteditable="true">
             <h3>Core Features — v1</h3>
-            <ul>
-              <li><strong>AI Skill Gap Analyzer:</strong> NLP-based analysis of student profile vs top 50 job descriptions in target role</li>
-              <li><strong>Personalized Study Path:</strong> Week-by-week plan generated from gap score, available time, and deadline</li>
-              <li><strong>Progress Dashboard:</strong> Radar chart of competency areas, completion tracking, streak counter</li>
-              <li><strong>Job Role Matching:</strong> Top 5 matched roles with fit % and gap breakdown per role</li>
-              <li><strong>Resource Curator:</strong> Curated free + paid resources for each skill, ranked by quality and student ratings</li>
-              <li><strong>Mobile PWA:</strong> Offline-capable progressive web app for Android and iOS</li>
-            </ul>
+            <ul id="prd-features-list"></ul>
           </div>
         </div>
         <div class="prd-section" id="prd-stories">
           <div class="prd-content" style="padding-bottom:1rem;">
             <h3 style="margin-bottom:1.2rem;">User Stories</h3>
-            <div class="user-story">
-              <div class="user-story-header"><span class="user-story-id">US-001</span></div>
-              <div class="user-story-text">As a <strong>student</strong>, I want to see which skills I'm missing for my target role, so I know exactly what to learn first.</div>
-              <div class="user-story-ac">AC: Given a student profile and target role, when analysis runs, then display top 5 skill gaps ranked by impact with resource links.</div>
-            </div>
-            <div class="user-story">
-              <div class="user-story-header"><span class="user-story-id">US-002</span></div>
-              <div class="user-story-text">As a <strong>student</strong>, I want a weekly study plan tailored to my schedule, so I can learn consistently without overwhelm.</div>
-              <div class="user-story-ac">AC: Given availability and deadline, generate a day-by-day plan with estimated completion time per task.</div>
-            </div>
-            <div class="user-story">
-              <div class="user-story-header"><span class="user-story-id">US-003</span></div>
-              <div class="user-story-text">As a <strong>placement officer</strong>, I want to see which students are at risk of not being placement-ready, so I can intervene early.</div>
-              <div class="user-story-ac">AC: Dashboard shows red/amber/green status for all enrolled students with drill-down to individual skill reports.</div>
-            </div>
-            <div class="user-story">
-              <div class="user-story-header"><span class="user-story-id">US-004</span></div>
-              <div class="user-story-text">As a <strong>student</strong>, I want to see my progress over time as a visual chart, so I feel motivated by my improvement.</div>
-              <div class="user-story-ac">AC: Show weekly competency radar chart that evolves as students complete modules. Show % growth vs onboarding baseline.</div>
-            </div>
+            <div id="prd-stories-list"></div>
           </div>
         </div>
         <div class="prd-section" id="prd-metrics">
           <div class="prd-content" contenteditable="true">
             <h3>Success Metrics</h3>
-            <ul>
-              <li><strong>Activation:</strong> % of signups who complete skill assessment within 24hrs → Target: 60%</li>
-              <li><strong>Engagement:</strong> Daily Active Users / Monthly Active Users → Target: 0.35</li>
-              <li><strong>Retention:</strong> 30-day retention → Target: 45%</li>
-              <li><strong>Revenue:</strong> MRR at month 6 → Target: ₹8L</li>
-              <li><strong>Placement Impact:</strong> % of active users reporting improved placement outcomes → Target: 70%</li>
-              <li><strong>NPS:</strong> Net Promoter Score → Target: 45+</li>
-            </ul>
+            <ul id="prd-metrics-list"></ul>
           </div>
         </div>
       </div>
     </section>
 
+
     <!-- ─── ROADMAP ────────────────────────── -->
     <section id="page-roadmap" style="display:none;">
       <div class="page-header">
         <div class="page-header-left">
-          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-eyebrow" id="roadmap-eyebrow">Project</div>
           <div class="page-title">Product <em>Roadmap</em></div>
-          <div class="page-sub">A 5-phase strategic execution plan — from initial research through to market scale.</div>
+          <div class="page-sub">A strategic execution plan — from initial research through to market scale. Check off tasks as you complete them.</div>
         </div>
         <div class="page-actions">
-          <button class="btn btn-sm" onclick="showToast('Roadmap exported.')">Export Roadmap</button>
-          <button class="btn btn-dark btn-sm" onclick="showToast('Downloading PDF...')">Download PDF</button>
+          <button class="btn btn-sm" onclick="downloadRoadmapPDF()">Export Roadmap</button>
+          <button class="btn btn-dark btn-sm" onclick="downloadRoadmapPDF()">Download PDF</button>
         </div>
       </div>
       <div class="page-content">
-        <div class="grid-2">
-          <div class="roadmap-timeline">
-            <div class="roadmap-phase">
-              <div class="roadmap-phase-header">
-                <div class="roadmap-phase-num">PHASE 01</div>
-                <div class="roadmap-phase-title">Research & Validation</div>
-                <div class="roadmap-phase-duration">Weeks 1–4</div>
-              </div>
-              <div class="roadmap-tasks">
-                <div class="roadmap-task"><div class="task-dot"></div>Conduct 50+ user interviews with students and placement officers</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Validate problem-solution fit with 3 colleges</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Finalize tech stack and architecture decisions</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Set up analytics and tracking infrastructure</div>
-              </div>
-            </div>
-            <div class="roadmap-phase">
-              <div class="roadmap-phase-header">
-                <div class="roadmap-phase-num">PHASE 02</div>
-                <div class="roadmap-phase-title">MVP Build</div>
-                <div class="roadmap-phase-duration">Weeks 5–12</div>
-              </div>
-              <div class="roadmap-tasks">
-                <div class="roadmap-task"><div class="task-dot"></div>Build AI skill gap analyzer (v1 model)</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Develop personalized study path engine</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Design and build progress dashboard</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Mobile PWA development and testing</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Payment integration (Razorpay)</div>
-              </div>
-            </div>
-            <div class="roadmap-phase">
-              <div class="roadmap-phase-header">
-                <div class="roadmap-phase-num">PHASE 03</div>
-                <div class="roadmap-phase-title">Closed Beta</div>
-                <div class="roadmap-phase-duration">Weeks 13–16</div>
-              </div>
-              <div class="roadmap-tasks">
-                <div class="roadmap-task"><div class="task-dot"></div>Onboard 500 beta users from 3 partner colleges</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Gather feedback and iterate on core AI accuracy</div>
-                <div class="roadmap-task"><div class="task-dot"></div>A/B test onboarding flows for activation</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Stabilize infrastructure for 5,000 concurrent users</div>
-              </div>
-            </div>
-            <div class="roadmap-phase">
-              <div class="roadmap-phase-header">
-                <div class="roadmap-phase-num">PHASE 04</div>
-                <div class="roadmap-phase-title">Public Launch</div>
-                <div class="roadmap-phase-duration">Month 5</div>
-              </div>
-              <div class="roadmap-tasks">
-                <div class="roadmap-task"><div class="task-dot"></div>Product Hunt + LinkedIn launch campaign</div>
-                <div class="roadmap-task"><div class="task-dot"></div>College ambassador program rollout</div>
-                <div class="roadmap-task"><div class="task-dot"></div>PR outreach to EdTech media</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Target: 5,000 signups in month 1</div>
-              </div>
-            </div>
-            <div class="roadmap-phase" style="margin-bottom:0;">
-              <div class="roadmap-phase-header">
-                <div class="roadmap-phase-num">PHASE 05</div>
-                <div class="roadmap-phase-title">Scale & Institutional</div>
-                <div class="roadmap-phase-duration">Month 6–12</div>
-              </div>
-              <div class="roadmap-tasks">
-                <div class="roadmap-task"><div class="task-dot"></div>Launch placement officer dashboard (B2B)</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Sign 20 institutional contracts</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Peer benchmarking and referral program</div>
-                <div class="roadmap-task"><div class="task-dot"></div>Fundraising: Series A preparation</div>
-              </div>
-            </div>
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem;">
+            <div class="card-title" style="margin-bottom:0;">Execution Progress</div>
+            <div style="font-family:'Times New Roman',serif;font-size:1.3rem;color:var(--navy);" id="roadmap-progress-pct">0%</div>
           </div>
+          <div class="progress-bar"><div class="progress-bar-fill" id="roadmap-progress-fill" style="width:0%"></div></div>
+          <div class="field-hint" style="margin-top:0.6rem;" id="roadmap-progress-sub">0 of 0 tasks complete</div>
+        </div>
+        <div class="grid-2">
+          <div class="roadmap-timeline" id="roadmap-phases-container"></div>
 
           <div>
             <div class="card" style="margin-bottom:1.2rem;">
-              <div class="card-title">Timeline Overview</div>
-              <div class="bar-chart">
-                <div class="bar-row"><div class="bar-label">Research</div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><div class="bar-val">4w</div></div>
-                <div class="bar-row"><div class="bar-label">Build</div><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><div class="bar-val">8w</div></div>
-                <div class="bar-row"><div class="bar-label">Beta</div><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><div class="bar-val">4w</div></div>
-                <div class="bar-row"><div class="bar-label">Launch</div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><div class="bar-val">2w</div></div>
-                <div class="bar-row"><div class="bar-label">Scale</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="bar-val">24w+</div></div>
-              </div>
+              <div class="card-title">Resource Plan</div>
+              <div id="roadmap-resource-plan"></div>
             </div>
             <div class="card">
               <div class="card-title">Key Milestones</div>
-              <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Week 4 — Problem-solution fit validated</div></div></div>
-              <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Week 12 — MVP complete and live</div></div></div>
-              <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Week 16 — 500 beta users onboarded</div></div></div>
-              <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Month 5 — Public launch</div></div></div>
-              <div class="activity-item" style="border:none;"><div class="activity-dot"></div><div><div class="activity-text">Month 12 — ₹1Cr ARR milestone</div></div></div>
+              <div id="roadmap-milestones"></div>
             </div>
           </div>
         </div>
@@ -2886,7 +2508,7 @@ body::before {
     <section id="page-legal" style="display:none;">
       <div class="page-header">
         <div class="page-header-left">
-          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-eyebrow" id="legal-eyebrow">Project</div>
           <div class="page-title">Legal <em>Readiness</em></div>
           <div class="page-sub">IP protection overview, trademark checklist, copyright assessment and patent readiness scoring.</div>
         </div>
@@ -2894,33 +2516,27 @@ body::before {
       <div class="page-content">
         <div class="legal-score" style="margin-bottom:1.5rem;">
           <div class="legal-score-circle">
-            <div class="legal-score-num">74</div>
+            <div class="legal-score-num" id="legal-score-num">—</div>
             <div class="legal-score-label">/ 100</div>
           </div>
           <div class="legal-score-text">
-            <h3>IP Readiness Score: Good</h3>
-            <p>Your product has a solid legal foundation with a few action items to address before launch. Priority: trademark registration and privacy policy.</p>
+            <h3 id="legal-score-label">IP Readiness Score: —</h3>
+            <p id="legal-summary">—</p>
           </div>
         </div>
 
         <div class="grid-2">
           <div class="card">
             <div class="card-title">Trademark Checklist</div>
-            <div class="checklist-item"><div class="checklist-icon ok">✓</div><div><div class="checklist-text">Brand name "EduTrack AI" — No conflicts found</div><div class="checklist-note">Searched Indian trademark database. Clear to file.</div></div></div>
-            <div class="checklist-item"><div class="checklist-icon warn">!</div><div><div class="checklist-text">Logo trademark — Not yet filed</div><div class="checklist-note">File with IP India before public launch. Estimated cost: ₹4,500 per class.</div></div></div>
-            <div class="checklist-item"><div class="checklist-icon warn">!</div><div><div class="checklist-text">Domain variants — Not secured</div><div class="checklist-note">Secure .in, .co, and common misspellings.</div></div></div>
+            <div id="legal-trademark-list"></div>
           </div>
           <div class="card">
             <div class="card-title">Copyright Checklist</div>
-            <div class="checklist-item"><div class="checklist-icon ok">✓</div><div><div class="checklist-text">Original content — Copyright exists automatically</div><div class="checklist-note">All original code, copy, and design is protected from creation.</div></div></div>
-            <div class="checklist-item"><div class="checklist-icon ok">✓</div><div><div class="checklist-text">Third-party resources — Verify licenses</div><div class="checklist-note">Ensure all curated resources are linked (not hosted) or licensed.</div></div></div>
-            <div class="checklist-item"><div class="checklist-icon risk">✕</div><div><div class="checklist-text">Privacy Policy — Missing</div><div class="checklist-note">Required before collecting any user data. Critical blocker.</div></div></div>
+            <div id="legal-copyright-list"></div>
           </div>
           <div class="card">
             <div class="card-title">Patent Readiness</div>
-            <div class="checklist-item"><div class="checklist-icon ok">✓</div><div><div class="checklist-text">Core AI methodology — Potentially patentable</div><div class="checklist-note">The skill-gap-to-job-match algorithm may qualify. Consult a patent attorney.</div></div></div>
-            <div class="checklist-item"><div class="checklist-icon warn">!</div><div><div class="checklist-text">Prior art search — Not completed</div><div class="checklist-note">Conduct search before investing in patent filing.</div></div></div>
-            <div class="checklist-item" style="border:none;"><div class="checklist-icon warn">!</div><div><div class="checklist-text">Provisional patent — Consider filing early</div><div class="checklist-note">Secures your priority date for 12 months while you refine the product.</div></div></div>
+            <div id="legal-patent-list"></div>
           </div>
           <div class="card">
             <div class="card-title">Useful Resources</div>
@@ -2932,52 +2548,41 @@ body::before {
       </div>
     </section>
 
+
     <!-- ─── REPORT ────────────────────────── -->
     <section id="page-report" style="display:none;">
       <div class="page-header">
         <div class="page-header-left">
-          <div class="page-eyebrow">Project · EduTrack AI</div>
+          <div class="page-eyebrow" id="report-eyebrow">Project</div>
           <div class="page-title">The Final <em>Blueprint</em></div>
           <div class="page-sub">Your complete product strategy — market research, personas, MVP, PRD, roadmap and legal readiness in one executive document.</div>
         </div>
         <div class="page-actions">
-          <button class="btn btn-sm" onclick="showToast('Link copied to clipboard.')">Share</button>
-          <button class="btn btn-sm" onclick="showToast('Downloading Roadmap...')">Download Roadmap</button>
-          <button class="btn btn-dark btn-sm" onclick="showToast('Generating PDF...')">Download PDF</button>
+          <button class="btn btn-sm" onclick="handleShareReport()">Share</button>
+          <button class="btn btn-sm" onclick="downloadRoadmapPDF()">Download Roadmap</button>
+          <button class="btn btn-dark btn-sm" onclick="downloadReportPDF()">Download PDF</button>
         </div>
       </div>
       <div class="page-content">
         <div style="display:grid;grid-template-columns:200px 1fr;gap:2rem;">
           <div>
-         
             <div class="card-title" style="margin-bottom:0.6rem;">Contents</div>
-            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">01</div> Executive Summary</div>
-            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">02</div> Market Research</div>
-            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">03</div> Competitor Analysis</div>
-            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">04</div> User Personas</div>
-            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">05</div> MVP Plan</div>
-            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">06</div> PRD</div>
-            <div class="report-toc-item" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">07</div> Roadmap</div>
-            <div class="report-toc-item" style="border:none;" onclick="showToast('Scrolling to section...')"><div class="report-toc-num">08</div> Legal</div>
+            <div class="report-toc-item" onclick="scrollToReportSection('report-sec-01')"><div class="report-toc-num">01</div> Executive Summary</div>
+            <div class="report-toc-item" onclick="scrollToReportSection('report-sec-02')"><div class="report-toc-num">02</div> Market Research</div>
+            <div class="report-toc-item" onclick="scrollToReportSection('report-sec-03')"><div class="report-toc-num">03</div> Competitor Analysis</div>
+            <div class="report-toc-item" onclick="scrollToReportSection('report-sec-04')"><div class="report-toc-num">04</div> User Personas</div>
+            <div class="report-toc-item" onclick="scrollToReportSection('report-sec-05')"><div class="report-toc-num">05</div> MVP Plan</div>
+            <div class="report-toc-item" onclick="scrollToReportSection('report-sec-06')"><div class="report-toc-num">06</div> PRD</div>
+            <div class="report-toc-item" onclick="scrollToReportSection('report-sec-07')"><div class="report-toc-num">07</div> Roadmap</div>
+            <div class="report-toc-item" style="border:none;" onclick="scrollToReportSection('report-sec-08')"><div class="report-toc-num">08</div> Legal</div>
           </div>
-          <div class="report-preview">
-            <div class="report-meta"><span>EduTrack AI</span><span>Generated by AURA</span><span>June 2025</span></div>
-            <h1>EduTrack AI — Product Strategy Report</h1>
-            <h2>01 — Executive Summary</h2>
-            <p>EduTrack AI is an AI-driven learning companion for Indian college students, designed to identify skill gaps, deliver personalized study plans, and track placement readiness in real time. The platform addresses a $8.2B market growing at 39% CAGR, with significant whitespace in tier-2 cities and institutional analytics.</p>
-            <h2>02 — Market Research</h2>
-            <p>The India EdTech market is projected to reach $8.2B by 2025. AI personalization tools are growing at 47% CAGR. Key opportunities exist in tier-2 city penetration, placement-linked learning, and institutional B2B analytics — all underserved by current players.</p>
-            <h2>03 — Competitor Analysis</h2>
-            <p>Six direct competitors analyzed: Byju's (market leader, no AI personalization), Unacademy (strong distribution, exam-only focus), Coursera (premium, US-centric), Skill-Lync (placement focus, high cost), Duolingo (retention excellence, language only), Khan Academy (trusted, no AI). Three clear market gaps identified.</p>
-            <h2>04 — User Personas</h2>
-            <p>Four primary personas identified: Rahul Kumar (tier-2 CS student seeking placement clarity), Shreya Patel (MBA career-switcher needing structure), Arjun Verma (placement officer needing data), and Neha Malhotra (working professional with limited time).</p>
-            <h2>05 — MVP Plan</h2>
-            <p>8 must-have features for v1: AI Skill Gap Analyzer, Personalized Study Path, Progress Dashboard, Job Role Matching, Resource Curator, Streak System, Profile Builder, and Mobile PWA. Total estimated build time: 8 weeks with a 3-person team.</p>
-            <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--muted);font-family:'IBM Plex Mono',monospace;">Generated by AURA · AI Unified Roadmap Assistant · aura.ai</div>
+          <div class="report-preview" id="report-preview-content">
+            <div style="color:var(--muted);">No data available. Run "Analyze Idea" for this project first.</div>
           </div>
         </div>
       </div>
     </section>
+
 
     <!-- ─── PROFILE ────────────────────────── -->
     <section id="page-profile" style="display:none;">
@@ -2987,7 +2592,7 @@ body::before {
           <div class="page-title">Your <em>Profile</em></div>
         </div>
         <div class="page-actions">
-          <button class="btn btn-dark btn-sm" onclick="showToast('Profile saved.')">Save Changes</button>
+          <button class="btn btn-dark btn-sm" onclick="handleSaveProfile()">Save Changes</button>
         </div>
       </div>
       <div class="page-content">
@@ -2995,16 +2600,18 @@ body::before {
           <div class="card">
             <div class="card-title">Profile Information</div>
             <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;">
-              <div class="avatar" style="width:56px;height:56px;font-size:1rem;">PS</div>
-              <button class="btn btn-sm">Change Photo</button>
+              <div class="avatar" style="width:56px;height:56px;font-size:1rem;" id="profile-avatar">—</div>
+              <button class="btn btn-sm" onclick="showToast('Photo uploads aren\'t supported yet.')">Change Photo</button>
             </div>
-            <div class="form-field"><label>First Name</label><input type="text" value="Priya"></div>
-            <div class="form-field"><label>Last Name</label><input type="text" value="Sharma"></div>
-            <div class="form-field"><label>Email</label><input type="email" value="priya@example.com"></div>
-            <div class="form-field"><label>Organization</label><input type="text" value="AURA Technologies"></div>
+            <div class="form-field"><label>First Name</label><input type="text" id="profile-first-name" value=""></div>
+            <div class="form-field"><label>Last Name</label><input type="text" id="profile-last-name" value=""></div>
+            <div class="form-field"><label>Email</label><input type="email" id="profile-email" value="" readonly style="opacity:0.7;cursor:not-allowed;"></div>
+            <div class="field-hint" style="margin-top:-0.6rem;margin-bottom:1rem;">Email is tied to your login and can't be changed here.</div>
+            <div class="form-field"><label>Organization</label><input type="text" id="profile-org" placeholder="Not set"></div>
             <div class="form-field" style="margin-bottom:0;"><label>Role</label>
-              <select><option selected>Product Manager</option><option>Founder</option><option>Developer</option><option>Designer</option></select>
+              <select id="profile-role"><option>Product Manager</option><option>Founder</option><option>Developer</option><option>Designer</option></select>
             </div>
+            <div class="field-hint" style="margin-top:0.8rem;">Organization and Role aren't saved to your account yet — they're local to this session only.</div>
           </div>
 
           <div>
@@ -3013,19 +2620,19 @@ body::before {
               <div class="grid-2">
                 <div class="stat-card" style="border:none;padding:0.5rem 0;">
                   <div class="stat-card-label">Projects Created</div>
-                  <div class="stat-card-value" style="font-size:1.5rem;">4</div>
+                  <div class="stat-card-value" style="font-size:1.5rem;" id="profile-stat-projects">—</div>
                 </div>
                 <div class="stat-card" style="border:none;padding:0.5rem 0;">
                   <div class="stat-card-label">Reports Generated</div>
-                  <div class="stat-card-value" style="font-size:1.5rem;">12</div>
+                  <div class="stat-card-value" style="font-size:1.5rem;" id="profile-stat-reports">—</div>
                 </div>
                 <div class="stat-card" style="border:none;padding:0.5rem 0;">
                   <div class="stat-card-label">Personas Created</div>
-                  <div class="stat-card-value" style="font-size:1.5rem;">18</div>
+                  <div class="stat-card-value" style="font-size:1.5rem;" id="profile-stat-personas">—</div>
                 </div>
                 <div class="stat-card" style="border:none;padding:0.5rem 0;">
                   <div class="stat-card-label">Last Active</div>
-                  <div class="stat-card-value" style="font-size:1.5rem;">2h</div>
+                  <div class="stat-card-value" style="font-size:1.5rem;">Now</div>
                 </div>
               </div>
             </div>
@@ -3034,16 +2641,17 @@ body::before {
               <div class="card-title">Connected Accounts</div>
               <div class="checklist-item">
                 <div style="width:24px;height:24px;"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.31z"/></svg></div>
-                <div><div class="checklist-text">Google Account — priya@example.com</div><div class="checklist-note">Connected · Used for login</div></div>
-                <button class="btn btn-sm" style="margin-left:auto;">Disconnect</button>
+                <div><div class="checklist-text" id="profile-google-email">Google Account</div><div class="checklist-note">Connected · Used for login</div></div>
+                <button class="btn btn-sm" style="margin-left:auto;" onclick="showToast('Disconnecting your only login method isn\'t supported yet.')">Disconnect</button>
               </div>
             </div>
 
             <div class="card">
               <div class="card-title">Security</div>
               <div style="display:flex;flex-direction:column;gap:0.8rem;">
-                <button class="btn" onclick="showToast('Password reset email sent.')">Change Password</button>
-                <button class="btn" style="color:#c0392b;border-color:rgba(192,57,43,0.2);" onclick="showToast('Account deletion requires email confirmation.')">Delete Account</button>
+                <button class="btn" onclick="showToast('Password reset isn\'t wired up yet.')">Change Password</button>
+                <button class="btn" onclick="handleLogoutClick()">Log Out</button>
+                <button class="btn" style="color:#c0392b;border-color:rgba(192,57,43,0.2);" onclick="showToast('Account deletion isn\'t wired up yet.')">Delete Account</button>
               </div>
             </div>
           </div>
@@ -3059,7 +2667,8 @@ body::before {
           <div class="page-title">Workspace <em>Settings</em></div>
         </div>
         <div class="page-actions">
-          <button class="btn btn-dark btn-sm" onclick="showToast('Settings saved.')">Save Changes</button>
+          <button class="btn btn-sm" style="color:#c0392b;border-color:rgba(192,57,43,0.2);" onclick="handleLogoutClick()">Log Out</button>
+          <button class="btn btn-dark btn-sm" onclick="handleSaveSettings()">Save Changes</button>
         </div>
       </div>
       <div class="page-content">
@@ -3072,10 +2681,11 @@ body::before {
         </div>
 
         <div class="settings-section active" id="settings-general" style="max-width:540px;">
-          <div class="form-field"><label>Display Name</label><input type="text" value="Priya Sharma"></div>
+          <div class="form-field"><label>Display Name</label><input type="text" id="settings-display-name" value=""></div>
           <div class="form-field"><label>Default Industry</label><select><option>EdTech</option><option>HealthTech</option><option>FinTech</option></select></div>
           <div class="form-field"><label>Default Currency</label><select><option>INR (₹)</option><option>USD ($)</option><option>EUR (€)</option></select></div>
           <div class="form-field"><label>Language</label><select><option>English</option><option>Hindi</option></select></div>
+          <div class="field-hint">Industry, Currency and Language preferences aren't saved to your account yet — local to this session only.</div>
         </div>
         <div class="settings-section" id="settings-notifications" style="max-width:540px;">
           <div class="card" style="margin-bottom:1rem;">
@@ -3174,6 +2784,9 @@ function navigate(page) {
   });
   document.getElementById('project-nav-label').style.display = isProjectPage || state.currentProject ? 'block' : 'none';
   document.getElementById('sidebar-project-ctx').style.display = isProjectPage || state.currentProject ? 'block' : 'none';
+
+  if (page === 'profile') renderProfile();
+  if (page === 'settings') renderSettings();
 
   state.currentPage = page;
 }
@@ -3352,12 +2965,6 @@ async function handleSignup() {
   }
 }
 
-function handleGoogleAuth() {
-  // Keep defaults, just log in
-  saveSession();
-  loginSuccess();
-}
-
 function saveSession() {
   try {
     sessionStorage.setItem('aura_session', JSON.stringify({
@@ -3378,7 +2985,7 @@ function getStoredUser() {
 
 function logout() {
   try { sessionStorage.removeItem('aura_session'); } catch(e) {}
-  // Fade out and go back to landing page
+  try { localStorage.removeItem('token'); } catch(e) {}
   document.body.style.transition = 'opacity 0.4s';
   document.body.style.opacity = '0';
   setTimeout(() => { window.location.href = 'landing.html'; }, 420);
@@ -3424,26 +3031,34 @@ async function loadProjects() {
       await response.json();
 
     state.projects =
-      ideas.map(idea => ({
+  ideas.map(idea => {
+    let ai = {};
+    try {
+      ai = idea.ai_results
+        ? (typeof idea.ai_results === 'string' ? JSON.parse(idea.ai_results) : idea.ai_results)
+        : {};
+    } catch (e) { ai = {}; }
+    const d = ai.data || {};
 
-        id: idea.id,
+    return {
+      id: idea.id,
+      name: idea.title,
+      desc: d.idea?.problem_statement || idea.solution,
+      status: "active",
+      progress: Object.keys(d).length ? 25 : 0,
+      updated: new Date(idea.created_at).toLocaleDateString(),
+      industry: idea.industry || "Startup",
+      aiIdea: d.idea || {},
+      aiMarket: d.market || {},
+      aiCompetitor: d.competitor || {},
+      aiRoadmap: d.roadmap || {},
+      aiPersonas: d.personas || {},
+      aiPRD: d.prd || {},
+      aiLegal: d.legal || {}
+    };
+  });
 
-        name: idea.title,
-
-        desc: idea.solution,
-
-        status: "active",
-
-        progress: 0,
-
-        updated: new Date(
-          idea.created_at
-        ).toLocaleDateString(),
-
-        industry: "Startup"
-
-      }));
-
+    state.projects.forEach(p => computeRoadmapProgress(p));
     renderProjectGrid();
 
   } catch (error) {
@@ -3481,6 +3096,68 @@ function renderProjectGrid() {
   np.onclick = () => navigate('new-project');
   np.innerHTML = `<div class="plus">+</div><span>Start a new project</span>`;
   grid.appendChild(np);
+
+  renderDashboardStats();
+  renderActivityFeed();
+}
+
+function renderDashboardStats() {
+  const projects = state.projects || [];
+  const active = projects.filter(p => p.status === 'active').length;
+  const complete = projects.length - active;
+
+  const reportsCount = projects.filter(p => p.progress > 0).length;
+  const personasCount = projects.reduce((sum, p) => sum + ((p.aiPersonas?.personas || []).length), 0);
+
+  const confidenceScores = projects
+    .map(p => p.aiIdea?.confidence_score)
+    .filter(v => typeof v === 'number');
+  const avgConfidence = confidenceScores.length
+    ? Math.round(confidenceScores.reduce((a, b) => a + b, 0) / confidenceScores.length)
+    : null;
+
+  document.getElementById('dash-stat-projects').textContent = projects.length;
+  document.getElementById('dash-stat-projects-sub').textContent =
+    projects.length ? `${active} active · ${complete} complete` : 'No projects yet';
+
+  document.getElementById('dash-stat-reports').textContent = reportsCount;
+  const mostRecent = projects.find(p => p.progress > 0);
+  document.getElementById('dash-stat-reports-sub').textContent =
+    mostRecent ? `Last: ${mostRecent.updated}` : 'None yet';
+
+  document.getElementById('dash-stat-personas').textContent = personasCount;
+
+  document.getElementById('dash-stat-confidence').innerHTML =
+    avgConfidence !== null ? `${avgConfidence}<span style="font-size:1.4rem;">/100</span>` : '—';
+}
+
+function renderActivityFeed() {
+  const projects = state.projects || [];
+  const feed = document.getElementById('activity-feed');
+
+  if (!projects.length) {
+    feed.innerHTML = `<div class="activity-item" style="border:none;"><div class="activity-dot"></div><div><div class="activity-text">No activity yet. Create your first project to get started.</div></div></div>`;
+    return;
+  }
+
+  // Most recently created/updated projects first (higher id = newer)
+  const sorted = [...projects].sort((a, b) => (b.id || 0) - (a.id || 0));
+
+  const items = sorted.map(p => {
+    if (p.progress > 0) {
+      return { text: `Generated full analysis for <strong>${p.name}</strong>`, time: p.updated };
+    }
+    return { text: `New project created: <strong>${p.name}</strong>`, time: p.updated };
+  });
+
+  feed.innerHTML = items.map((item, i) => `
+    <div class="activity-item" ${i === items.length - 1 ? 'style="border:none;"' : ''}>
+      <div class="activity-dot"></div>
+      <div>
+        <div class="activity-text">${item.text}</div>
+        <div class="activity-time">${item.time}</div>
+      </div>
+    </div>`).join('');
 }
 
 // ─── OPEN PROJECT ─────────────────────────────────
@@ -3488,7 +3165,6 @@ function openProject(project) {
   state.currentProject = project;
   document.getElementById('sidebar-project-name').textContent = project.name;
 
-  // Show all project nav items
   ['project-overview','market-research','competitors','personas','mvp','prd','roadmap','legal','report'].forEach(id => {
     const el = document.getElementById('slink-' + id);
     if (el) el.style.display = 'flex';
@@ -3496,6 +3172,7 @@ function openProject(project) {
   document.getElementById('project-nav-label').style.display = 'block';
   document.getElementById('sidebar-project-ctx').style.display = 'block';
 
+  injectAIResults(project);   // ← this line was missing
   navigate('project-overview');
 }
 
@@ -3541,7 +3218,7 @@ async function startAnalysis() {
   // Step 1 — Save idea to DB
   let ideaId = null;
   try {
-    const saveRes = await fetch(`http://localhost:5000/api/ideas`, {
+    const saveRes = await fetch(`${API_BASE}/ideas`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3576,7 +3253,7 @@ async function startAnalysis() {
   let aiData = null;
 
   try {
-    const aiResponse = await fetch(`http://localhost:5000/api/ai/run`, {
+    const aiResponse = await fetch(`${API_BASE}/ai/run`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3620,6 +3297,9 @@ async function startAnalysis() {
       aiMarket: d.market || {},
       aiCompetitor: d.competitor || {},
       aiRoadmap: d.roadmap || {},
+      aiPersonas: d.personas || {},
+      aiPRD: d.prd || {},
+      aiLegal: d.legal || {},
     };
 
     state.currentProject = newProject;
@@ -3664,6 +3344,89 @@ function runAnalysisSteps(callback) {
   next();
 }
 
+// ─── RE-RUN ANALYSIS (existing project) ───────────
+async function handleRerunAnalysis() {
+  const project = state.currentProject;
+  if (!project) { showToast('No project open.'); return; }
+
+  if (!confirm(`Re-run AI analysis for "${project.name}"? This will overwrite its current market research, competitors, roadmap, personas, PRD, and legal data with a fresh result.`)) {
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+
+  showView('app');
+  showPage('analysis');
+  document.querySelectorAll('[id^="astep-"]').forEach(s => {
+    s.className = 'analysis-step';
+    s.querySelector('.step-check').textContent = '○';
+  });
+
+  let aiData = null;
+
+  try {
+    const aiResponse = await fetch(`${API_BASE}/ai/run`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ ideaId: project.id })
+    });
+
+    if (!aiResponse.ok) {
+      const errData = await aiResponse.json().catch(() => ({}));
+      showToast('AI backend error: ' + (errData.error || aiResponse.status));
+      navigate('project-overview');
+      return;
+    }
+
+    aiData = await aiResponse.json();
+    if (!aiData.success) {
+      showToast('AI analysis failed: ' + (aiData.error || 'unknown'));
+      navigate('project-overview');
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Cannot reach backend.');
+    navigate('project-overview');
+    return;
+  }
+
+  runAnalysisSteps(() => {
+    const d = aiData.data || {};
+
+    // Clear stale checkbox progress from the previous version of this
+    // roadmap — phase/task indexes may no longer line up with the new
+    // tasks, so starting fresh avoids incorrect checkmarks.
+    try { localStorage.removeItem(getRoadmapChecksKey(project.id)); } catch (e) {}
+
+    project.desc = d.idea?.problem_statement || project.desc;
+    project.aiIdea = d.idea || {};
+    project.aiMarket = d.market || {};
+    project.aiCompetitor = d.competitor || {};
+    project.aiRoadmap = d.roadmap || {};
+    project.aiPersonas = d.personas || {};
+    project.aiPRD = d.prd || {};
+    project.aiLegal = d.legal || {};
+    project.updated = 'just now';
+
+    computeRoadmapProgress(project);
+
+    const idx = (state.projects || []).findIndex(p => p.id === project.id);
+    if (idx !== -1) state.projects[idx] = project;
+
+    injectAIResults(project);
+    renderProjectGrid();
+
+    showView('app');
+    showPage('project-overview');
+    updateSidebarActive('project-overview');
+    showToast('✅ Analysis refreshed!');
+  });
+}
+
 function injectAIResults(project) {
   const idea = project.aiIdea || {};
 
@@ -3705,6 +3468,584 @@ function injectAIResults(project) {
   } else {
     stepsContainer.innerHTML = `<div class="activity-item" style="border:none;"><div class="activity-dot"></div><div class="activity-text">—</div></div>`;
   }
+
+  renderMarketResearch(project);
+  renderCompetitors(project);
+  renderMVP(project);
+  renderRoadmap(project);
+  renderPersonas(project);
+  renderPRD(project);
+  renderLegal(project);
+  renderReport(project);
+}
+
+// ─── MARKET RESEARCH (dynamic) ────────────────────
+function renderMarketResearch(project) {
+  const m = project.aiMarket || {};
+
+  document.getElementById('mr-tam').textContent = m.tam || '—';
+  document.getElementById('mr-sam').textContent = m.sam || '—';
+  document.getElementById('mr-som').textContent = m.som || '—';
+
+  const growth = m.growth_rate_by_segment || [];
+  const growthEl = document.getElementById('mr-growth-chart');
+  growthEl.innerHTML = growth.length ? growth.map(g => {
+    const pct = parseInt(g.growth_rate) || 30;
+    return `
+      <div class="bar-row">
+        <div class="bar-label">${g.segment || '—'}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.min(pct, 100)}%"></div></div>
+        <div class="bar-val">${g.growth_rate || '—'}</div>
+      </div>`;
+  }).join('') : `<div style="font-size:0.82rem;color:var(--muted);">No growth data available.</div>`;
+
+  const trends = m.industry_trends || [];
+  const trendsEl = document.getElementById('mr-trends');
+  trendsEl.innerHTML = trends.length ? trends.map((t, i) => `
+    <div class="trend-item" ${i === trends.length - 1 ? 'style="border:none;"' : ''}>
+      <div class="trend-num">${String(i + 1).padStart(2, '0')}</div>
+      <div class="trend-text">${t}</div>
+    </div>`).join('') : `<div style="font-size:0.82rem;color:var(--muted);">No trend data available.</div>`;
+
+  const opps = m.market_opportunities || [];
+  const oppsEl = document.getElementById('mr-opportunities');
+  oppsEl.innerHTML = opps.length ? opps.map((o, i) => `
+    <div class="gap-card" ${i === opps.length - 1 ? 'style="margin-bottom:0;"' : ''}>
+      <div class="gap-card-title">${o.title || '—'}</div>
+      <div class="gap-card-desc">${o.description || ''}</div>
+    </div>`).join('') : `<div style="font-size:0.82rem;color:var(--muted);">No opportunity data available.</div>`;
+
+  const threats = m.threats_and_risks || [];
+  const threatsEl = document.getElementById('mr-threats');
+  threatsEl.innerHTML = threats.length ? threats.map((t, i) => `
+    <div class="gap-card" style="border-color:#e67e22;background:rgba(230,126,34,0.03);${i === threats.length - 1 ? 'margin-bottom:0;' : ''}">
+      <div class="gap-card-title" style="color:#e67e22;">${t.title || '—'}</div>
+      <div class="gap-card-desc">${t.description || ''}</div>
+    </div>`).join('') : `<div style="font-size:0.82rem;color:var(--muted);">No threat data available.</div>`;
+}
+
+// ─── COMPETITORS (dynamic) ────────────────────────
+function renderCompetitors(project) {
+  const c = project.aiCompetitor || {};
+  const competitors = c.competitors || [];
+  const gaps = c.market_gap_analysis || [];
+
+  document.getElementById('comp-eyebrow').textContent = `Project · ${project.name}`;
+  document.getElementById('comp-page-sub').textContent =
+    `Consulting-grade competitor research. ${competitors.length} direct competitors identified, ${gaps.length} market gaps surfaced.`;
+
+  const tbody = document.getElementById('competitor-tbody');
+  tbody.innerHTML = competitors.length ? competitors.map(comp => `
+    <tr>
+      <td><div class="competitor-name">${comp.name || '—'}</div><div style="font-size:0.7rem;color:var(--muted);">${comp.region || '—'}</div></td>
+      <td><span class="tag tag-blue">${comp.pricing || '—'}</span></td>
+      <td>${(comp.strengths || []).map(s => `<span class="tag tag-gray">${s}</span>`).join(' ')}</td>
+      <td>${(comp.weaknesses || []).map(w => `<span class="tag tag-red">${w}</span>`).join(' ')}</td>
+      <td>${comp.market_position || '—'}</td>
+    </tr>`).join('') : `<tr><td colspan="5" style="color:var(--muted);">No competitor data available.</td></tr>`;
+
+  const gapsEl = document.getElementById('competitor-gaps');
+  gapsEl.innerHTML = gaps.length ? gaps.map((g, i) => `
+    <div class="gap-card" ${i === gaps.length - 1 ? 'style="margin-bottom:0;"' : ''}>
+      <div class="gap-card-title">Gap ${i + 1} — ${g.title || '—'}</div>
+      <div class="gap-card-desc">${g.description || ''}</div>
+    </div>`).join('') : `<div style="font-size:0.82rem;color:var(--muted);">No market gap data available.</div>`;
+}
+
+// ─── MVP (dynamic — sourced from roadmap agent) ───
+function renderMVP(project) {
+  const r = project.aiRoadmap || {};
+  const must = r.mvp_features || [];
+  const should = r.post_mvp_features || [];
+  const checklist = r.launch_checklist || [];
+
+  const renderCol = (items, priorityClass, label) => items.length ? items.map(item => {
+    const text = item.feature || item.value || (typeof item === 'string' ? item : '—');
+    const detail = item.description || '';
+    return `
+      <div class="mvp-item">
+        <span class="mvp-priority ${priorityClass}">${label}</span>
+        <div><div class="mvp-item-text">${text}</div>${detail ? `<div class="mvp-item-detail">${detail}</div>` : ''}</div>
+      </div>`;
+  }).join('') : `<div style="padding:1rem 1.2rem;font-size:0.8rem;color:var(--muted);">No data available.</div>`;
+
+  document.getElementById('mvp-must-count').textContent = `${must.length} features`;
+  document.getElementById('mvp-must-list').innerHTML = renderCol(must, 'priority-p1', 'P1');
+
+  document.getElementById('mvp-should-count').textContent = `${should.length} features`;
+  document.getElementById('mvp-should-list').innerHTML = renderCol(should, 'priority-p2', 'P2');
+
+  document.getElementById('mvp-future-count').textContent = `${checklist.length} items`;
+  document.getElementById('mvp-future-list').innerHTML = renderCol(checklist, 'priority-p3', 'P3');
+}
+
+// ─── ROADMAP (dynamic) ────────────────────────────
+// ─── ROADMAP PROGRESS (checkbox tracking) ─────────
+// Checked task state is stored client-side in localStorage, keyed by
+// project id. There's no backend column for this yet, so it won't
+// sync across browsers/devices — only this session's checks persist.
+function getRoadmapChecksKey(projectId) {
+  return `aura_roadmap_checks_${projectId}`;
+}
+
+function loadRoadmapChecks(projectId) {
+  try {
+    const raw = localStorage.getItem(getRoadmapChecksKey(projectId));
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function saveRoadmapChecks(projectId, checkedSet) {
+  try {
+    localStorage.setItem(getRoadmapChecksKey(projectId), JSON.stringify([...checkedSet]));
+  } catch (e) {}
+}
+
+// Computes {completed, total, pct, overall} and updates project.progress
+// in place. Overall project progress = 25% (analysis complete) + up to
+// 75% scaled by roadmap task completion.
+function computeRoadmapProgress(project) {
+  const r = project.aiRoadmap || {};
+  const phases = r.development_phases || [];
+  let total = 0;
+  phases.forEach(p => { total += (p.tasks || []).length; });
+
+  const checked = loadRoadmapChecks(project.id);
+  const completed = Math.min(checked.size, total);
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  const hasAnalysis = Object.keys(project.aiIdea || {}).length > 0;
+  const overall = total > 0
+    ? Math.round(25 + (pct / 100) * 75)
+    : (hasAnalysis ? 25 : 0);
+
+  project.progress = overall;
+  return { completed, total, pct, overall };
+}
+
+function toggleRoadmapTask(key, isChecked) {
+  const project = state.currentProject;
+  if (!project) return;
+
+  const checked = loadRoadmapChecks(project.id);
+  if (isChecked) checked.add(key); else checked.delete(key);
+  saveRoadmapChecks(project.id, checked);
+
+  const taskEl = document.getElementById(`roadmap-task-${key}`);
+  if (taskEl) taskEl.classList.toggle('done', isChecked);
+
+  const stats = computeRoadmapProgress(project);
+  document.getElementById('roadmap-progress-pct').textContent = `${stats.pct}%`;
+  document.getElementById('roadmap-progress-fill').style.width = `${stats.pct}%`;
+  document.getElementById('roadmap-progress-sub').textContent =
+    stats.total > 0 ? `${stats.completed} of ${stats.total} tasks complete` : 'No tasks available yet';
+
+  // Keep the dashboard project card in sync too
+  const idx = (state.projects || []).findIndex(p => p.id === project.id);
+  if (idx !== -1) state.projects[idx].progress = stats.overall;
+  if (document.getElementById('project-grid')) renderProjectGrid();
+}
+
+function renderRoadmap(project) {
+  const r = project.aiRoadmap || {};
+  const phases = r.development_phases || [];
+  const milestones = r.milestones || [];
+  const resource = r.resource_plan || {};
+
+  document.getElementById('roadmap-eyebrow').textContent = `Project · ${project.name}`;
+
+  const checked = loadRoadmapChecks(project.id);
+
+  const phasesEl = document.getElementById('roadmap-phases-container');
+  phasesEl.innerHTML = phases.length ? phases.map((p, pi) => {
+    const tasks = p.tasks || [];
+    const desc = p.description ? `<div class="roadmap-phase-desc">${p.description}</div>` : '';
+
+    const taskItems = tasks.length ? tasks.map((t, ti) => {
+      const key = `${pi}-${ti}`;
+      const isChecked = checked.has(key);
+      return `
+        <div class="roadmap-task ${isChecked ? 'done' : ''}" id="roadmap-task-${key}">
+          <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleRoadmapTask('${key}', this.checked)">
+          <div>${t}</div>
+        </div>`;
+    }).join('') : `<div class="roadmap-task"><div class="task-dot"></div>${p.description || 'No tasks provided.'}</div>`;
+
+    return `
+    <div class="roadmap-phase" ${pi === phases.length - 1 ? 'style="margin-bottom:0;"' : ''}>
+      <div class="roadmap-phase-header">
+        <div class="roadmap-phase-num">PHASE ${p.phase ?? pi + 1}</div>
+        <div class="roadmap-phase-title">${p.name || p.value || '—'}</div>
+        <div class="roadmap-phase-duration">${(p.start_date && p.end_date) ? `${p.start_date} – ${p.end_date}` : ''}</div>
+      </div>
+      ${desc}
+      <div class="roadmap-tasks">${taskItems}</div>
+    </div>`;
+  }).join('') : `<div style="font-size:0.82rem;color:var(--muted);">No roadmap phases available.</div>`;
+
+  const resourceEl = document.getElementById('roadmap-resource-plan');
+  const team = resource.team || {};
+  const teamRows = Object.keys(team).length ? Object.entries(team).map(([role, count]) => `
+    <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">${role.replace(/_/g, ' ')}: ${count}</div></div></div>
+  `).join('') : '';
+  const budgetRow = resource.budget ? `<div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Budget: ${typeof resource.budget === 'number' ? '$' + resource.budget.toLocaleString() : resource.budget}</div></div></div>` : '';
+  resourceEl.innerHTML = (teamRows || budgetRow) ? (teamRows + budgetRow) : `<div style="font-size:0.82rem;color:var(--muted);">No resource plan available.</div>`;
+
+  const milestonesEl = document.getElementById('roadmap-milestones');
+  milestonesEl.innerHTML = milestones.length ? milestones.map((m, i) => `
+    <div class="activity-item" ${i === milestones.length - 1 ? 'style="border:none;"' : ''}>
+      <div class="activity-dot"></div><div><div class="activity-text">Week ${m.week ?? '—'} — ${m.name || '—'}</div></div>
+    </div>`).join('') : `<div style="font-size:0.82rem;color:var(--muted);">No milestones available.</div>`;
+
+  const stats = computeRoadmapProgress(project);
+  document.getElementById('roadmap-progress-pct').textContent = `${stats.pct}%`;
+  document.getElementById('roadmap-progress-fill').style.width = `${stats.pct}%`;
+  document.getElementById('roadmap-progress-sub').textContent =
+    stats.total > 0 ? `${stats.completed} of ${stats.total} tasks complete` : 'No tasks available yet';
+}
+
+// ─── PERSONAS (dynamic) ───────────────────────────
+function renderPersonas(project) {
+  const p = project.aiPersonas || {};
+  const personas = p.personas || [];
+
+  document.getElementById('personas-eyebrow').textContent = `Project · ${project.name}`;
+  document.getElementById('personas-page-sub').textContent =
+    `${personas.length} richly defined user archetype${personas.length === 1 ? '' : 's'}, built from your target audience and market intelligence.`;
+
+  const grid = document.getElementById('personas-grid');
+
+  if (!personas.length) {
+    grid.innerHTML = `<div class="card" style="grid-column:1/-1;color:var(--muted);">No persona data available.</div>`;
+    return;
+  }
+
+  grid.innerHTML = personas.map(persona => {
+    const initials = (persona.name || '??').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    const goals = (persona.goals || []).map(g => `<span class="persona-tag persona-goal">${g}</span>`).join('');
+    const pains = (persona.pain_points || []).map(pp => `<span class="persona-tag persona-pain">${pp}</span>`).join('');
+    return `
+      <div class="persona-card">
+        <div class="persona-header">
+          <div class="persona-avatar">${initials}</div>
+          <div class="persona-name-block">
+            <div class="persona-name">${persona.name || '—'}</div>
+            <div class="persona-role">${persona.role || '—'} · ${persona.context || ''} · Age ${persona.age ?? '—'}</div>
+          </div>
+        </div>
+        <div class="persona-body">
+          <div class="persona-section">
+            <div class="persona-section-label">Goals</div>
+            <div class="persona-items">${goals || '<span class="persona-tag">—</span>'}</div>
+          </div>
+          <div class="persona-section">
+            <div class="persona-section-label">Pain Points</div>
+            <div class="persona-items">${pains || '<span class="persona-tag">—</span>'}</div>
+          </div>
+          <div class="persona-section" style="margin-bottom:0;">
+            <div class="persona-section-label">Motivation</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-style:italic;">"${persona.motivation_quote || '—'}"</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ─── PRD (dynamic) ────────────────────────────────
+function renderPRD(project) {
+  const prd = project.aiPRD || {};
+
+  document.getElementById('prd-eyebrow').textContent = `Project · ${project.name}`;
+
+  document.getElementById('prd-summary-content').innerHTML =
+    prd.executive_summary ? `<p>${prd.executive_summary}</p>` : '<p>—</p>';
+
+  const objectives = prd.objectives || [];
+  document.getElementById('prd-objectives-list').innerHTML =
+    objectives.length ? objectives.map(o => `<li>${o}</li>`).join('') : '<li>—</li>';
+
+  const outOfScope = prd.out_of_scope || [];
+  document.getElementById('prd-out-of-scope-list').innerHTML =
+    outOfScope.length ? outOfScope.map(o => `<li>${o}</li>`).join('') : '<li>—</li>';
+
+  const features = prd.features || [];
+  document.getElementById('prd-features-list').innerHTML =
+    features.length ? features.map(f => `<li>${f}</li>`).join('') : '<li>—</li>';
+
+  const stories = prd.user_stories || [];
+  document.getElementById('prd-stories-list').innerHTML = stories.length ? stories.map(s => `
+    <div class="user-story">
+      <div class="user-story-header"><span class="user-story-id">${s.id || '—'}</span></div>
+      <div class="user-story-text">${s.story || '—'}</div>
+      <div class="user-story-ac">AC: ${s.acceptance_criteria || '—'}</div>
+    </div>`).join('') : `<div style="color:var(--muted);">No user stories available.</div>`;
+
+  const metrics = prd.success_metrics || [];
+  document.getElementById('prd-metrics-list').innerHTML =
+    metrics.length ? metrics.map(m => `<li>${m}</li>`).join('') : '<li>—</li>';
+}
+
+// ─── LEGAL (dynamic) ──────────────────────────────
+function renderLegal(project) {
+  const legal = project.aiLegal || {};
+
+  document.getElementById('legal-eyebrow').textContent = `Project · ${project.name}`;
+  document.getElementById('legal-score-num').textContent = legal.readiness_score ?? '—';
+  document.getElementById('legal-score-label').textContent = `IP Readiness Score: ${legal.readiness_label || '—'}`;
+  document.getElementById('legal-summary').textContent = legal.summary || '—';
+
+  const iconFor = (status) => status === 'ok' ? '✓' : (status === 'risk' ? '✕' : '!');
+  const classFor = (status) => status === 'ok' ? 'ok' : (status === 'risk' ? 'risk' : 'warn');
+
+  const renderList = (items) => items.length ? items.map((item, i) => `
+    <div class="checklist-item" ${i === items.length - 1 ? 'style="border:none;"' : ''}>
+      <div class="checklist-icon ${classFor(item.status)}">${iconFor(item.status)}</div>
+      <div><div class="checklist-text">${item.text || '—'}</div><div class="checklist-note">${item.note || ''}</div></div>
+    </div>`).join('') : `<div style="color:var(--muted);font-size:0.82rem;">No data available.</div>`;
+
+  document.getElementById('legal-trademark-list').innerHTML = renderList(legal.trademark_checklist || []);
+  document.getElementById('legal-copyright-list').innerHTML = renderList(legal.copyright_checklist || []);
+  document.getElementById('legal-patent-list').innerHTML = renderList(legal.patent_checklist || []);
+}
+
+// ─── FINAL REPORT (dynamic) ───────────────────────
+function renderReport(project) {
+  const idea = project.aiIdea || {};
+  const market = project.aiMarket || {};
+  const competitor = project.aiCompetitor || {};
+  const personas = (project.aiPersonas || {}).personas || [];
+  const roadmap = project.aiRoadmap || {};
+  const prd = project.aiPRD || {};
+  const legal = project.aiLegal || {};
+
+  document.getElementById('report-eyebrow').textContent = `Project · ${project.name}`;
+
+  const hasAnyData = Object.keys(idea).length || Object.keys(market).length;
+  const container = document.getElementById('report-preview-content');
+
+  if (!hasAnyData) {
+    container.innerHTML = `<div style="color:var(--muted);">No data available. Run "Analyze Idea" for this project first.</div>`;
+    return;
+  }
+
+  const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
+  const competitorNames = (competitor.competitors || []).map(c => c.name).join(', ');
+  const personaNames = personas.map(p => `${p.name || '—'} (${p.role || '—'})`).join(', ');
+  const mustHaveFeatures = (roadmap.mvp_features || []).map(f => f.feature || f.value).join(', ');
+  const phaseCount = (roadmap.development_phases || []).length;
+  const teamSize = (roadmap.executive_summary || {}).team_size || '—';
+
+  container.innerHTML = `
+    <div class="report-meta"><span>${idea.product_name || project.name}</span><span>Generated by AURA</span><span>${today}</span></div>
+    <h1>${idea.product_name || project.name} — Product Strategy Report</h1>
+
+    <h2 id="report-sec-01">01 — Executive Summary</h2>
+    <p>${idea.recommended_solution || '—'} ${idea.market_size ? `The platform addresses a ${idea.market_size}` : ''}${idea.market_opportunity_summary ? ` ${idea.market_opportunity_summary}` : ''}</p>
+
+    <h2 id="report-sec-02">02 — Market Research</h2>
+    <p>${market.market_intelligence_summary || 'No market intelligence summary available.'} ${market.tam ? `TAM: ${market.tam}, SAM: ${market.sam || '—'}, SOM: ${market.som || '—'}.` : ''}</p>
+
+    <h2 id="report-sec-03">03 — Competitor Analysis</h2>
+    <p>${(competitor.competitors || []).length} direct competitor${(competitor.competitors || []).length === 1 ? '' : 's'} analyzed${competitorNames ? `: ${competitorNames}` : '.'} ${(competitor.market_gap_analysis || []).length} market gap${(competitor.market_gap_analysis || []).length === 1 ? '' : 's'} identified.</p>
+
+    <h2 id="report-sec-04">04 — User Personas</h2>
+    <p>${personas.length} primary persona${personas.length === 1 ? '' : 's'} identified${personaNames ? `: ${personaNames}` : '.'}</p>
+
+    <h2 id="report-sec-05">05 — MVP Plan</h2>
+    <p>${(roadmap.mvp_features || []).length} must-have features for v1${mustHaveFeatures ? `: ${mustHaveFeatures}` : '.'} Estimated build: ${(roadmap.executive_summary || {}).estimated_duration || '—'} with a ${teamSize} team.</p>
+
+    <h2 id="report-sec-06">06 — PRD</h2>
+    <p>${prd.executive_summary || 'No PRD summary available.'}</p>
+
+    <h2 id="report-sec-07">07 — Roadmap</h2>
+    <p>${phaseCount} development phase${phaseCount === 1 ? '' : 's'} planned, launch strategy: ${(roadmap.executive_summary || {}).launch_strategy || '—'}.</p>
+
+    <h2 id="report-sec-08">08 — Legal</h2>
+    <p>IP Readiness Score: ${legal.readiness_score ?? '—'}/100 (${legal.readiness_label || '—'}). ${legal.summary || ''}</p>
+
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--muted);font-family:'IBM Plex Mono',monospace;">Generated by AURA · AI Unified Roadmap Assistant · aura.ai</div>
+  `;
+}
+
+// ─── PROFILE (real user data + real project stats) ─
+function renderProfile() {
+  const u = state.user || {};
+  const nameParts = (u.name || '').split(' ');
+  const first = nameParts[0] || '';
+  const last = nameParts.slice(1).join(' ') || '';
+
+  document.getElementById('profile-avatar').textContent = u.initials || '—';
+  document.getElementById('profile-first-name').value = first;
+  document.getElementById('profile-last-name').value = last;
+  document.getElementById('profile-email').value = u.email || '';
+  document.getElementById('profile-google-email').textContent = `Google Account — ${u.email || '—'}`;
+
+  // Real, derived from actual project data (not tracked separately, so
+  // "Reports Generated" is treated as 1 per project that has a Final
+  // Report available, i.e. has any AI data at all)
+  const projects = state.projects || [];
+  document.getElementById('profile-stat-projects').textContent = projects.length;
+  document.getElementById('profile-stat-reports').textContent =
+    projects.filter(p => p.progress > 0).length;
+  document.getElementById('profile-stat-personas').textContent =
+    projects.reduce((sum, p) => sum + ((p.aiPersonas?.personas || []).length), 0);
+}
+
+function renderSettings() {
+  const u = state.user || {};
+  const el = document.getElementById('settings-display-name');
+  if (el) el.value = u.name || '';
+}
+
+function applyNameUpdate(newName) {
+  if (!newName) return;
+  state.user.name = newName;
+  state.user.firstName = newName.split(' ')[0];
+  state.user.initials = newName.substring(0, 2).toUpperCase();
+  saveSession();
+
+  // Reflect the change everywhere it's shown
+  document.getElementById('sidebar-uname').textContent = state.user.name;
+  document.getElementById('sidebar-avatar').textContent = state.user.initials;
+  document.getElementById('welcome-name').textContent = state.user.firstName;
+}
+
+function handleSaveProfile() {
+  const first = document.getElementById('profile-first-name')?.value?.trim() || '';
+  const last = document.getElementById('profile-last-name')?.value?.trim() || '';
+  const fullName = `${first} ${last}`.trim();
+
+  if (!fullName) {
+    showToast('Please enter at least a first name.');
+    return;
+  }
+
+  applyNameUpdate(fullName);
+  renderProfile();
+  showToast('Profile updated for this session. (Organization/Role aren\'t saved to your account yet.)');
+}
+
+function handleSaveSettings() {
+  const newName = document.getElementById('settings-display-name')?.value?.trim();
+
+  if (!newName) {
+    showToast('Please enter a display name.');
+    return;
+  }
+
+  applyNameUpdate(newName);
+  showToast('Settings updated for this session.');
+}
+
+function handleLogoutClick() {
+  if (confirm('Log out of AURA?')) {
+    logout();
+  }
+}
+
+function scrollToReportSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function handleShareReport() {
+  const project = state.currentProject;
+  if (!project) { showToast('Open a project first.'); return; }
+  const idea = project.aiIdea || {};
+  const summary = `${idea.product_name || project.name} — ${idea.recommended_solution || 'Product strategy generated by AURA.'}`;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(summary)
+      .then(() => showToast('Summary copied to clipboard.'))
+      .catch(() => showToast('Could not copy to clipboard.'));
+  } else {
+    showToast('Clipboard not available in this browser.');
+  }
+}
+
+function downloadReportPDF() {
+  const project = state.currentProject;
+  if (!project) { showToast('Open a project first.'); return; }
+  const el = document.getElementById('report-preview-content');
+  if (!el || typeof html2pdf === 'undefined') {
+    showToast('PDF library not loaded. Check your internet connection.');
+    return;
+  }
+  showToast('Generating PDF...');
+  const filename = `${(project.name || 'AURA-Report').replace(/[^a-z0-9]/gi, '_')}_Report.pdf`;
+  html2pdf().set({
+    margin: 0.5,
+    filename,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  }).from(el).save();
+}
+
+function downloadRoadmapPDF() {
+  const project = state.currentProject;
+  if (!project) { showToast('Open a project first.'); return; }
+  const roadmap = project.aiRoadmap || {};
+  if (typeof html2pdf === 'undefined') {
+    showToast('PDF library not loaded. Check your internet connection.');
+    return;
+  }
+
+  const phases = roadmap.development_phases || [];
+  const milestones = roadmap.milestones || [];
+  const resource = roadmap.resource_plan || {};
+  const checked = loadRoadmapChecks(project.id);
+
+  const phasesHtml = phases.length ? phases.map((p, pi) => {
+    const tasks = p.tasks || [];
+    const taskListHtml = tasks.length
+      ? `<ul style="margin:0.4rem 0 0.8rem 1.2rem;padding:0;">${tasks.map((t, ti) => {
+          const isDone = checked.has(`${pi}-${ti}`);
+          return `<li style="font-size:0.85rem;color:#333;margin-bottom:0.3rem;${isDone ? 'text-decoration:line-through;color:#888;' : ''}">${isDone ? '☑' : '☐'} ${t}</li>`;
+        }).join('')}</ul>`
+      : `<p style="font-size:0.85rem;color:#333;margin-top:0.2rem;">${p.description || 'No tasks provided.'}</p>`;
+
+    return `
+      <div style="margin-bottom:1rem;">
+        <strong style="font-size:0.95rem;">Phase ${p.phase ?? pi + 1} — ${p.name || p.value || '—'}</strong>
+        ${p.description ? `<p style="font-size:0.85rem;color:#555;margin:0.2rem 0 0.3rem;font-style:italic;">${p.description}</p>` : ''}
+        ${taskListHtml}
+      </div>`;
+  }).join('') : '<p>No phases available.</p>';
+
+  const team = resource.team || {};
+  const teamHtml = Object.keys(team).length
+    ? `<ul style="margin:0.4rem 0 0.6rem 1.2rem;padding:0;">${Object.entries(team).map(([role, count]) => `<li style="font-size:0.85rem;color:#333;">${role.replace(/_/g, ' ')}: ${count}</li>`).join('')}</ul>`
+    : '';
+  const budgetHtml = resource.budget
+    ? `<p style="font-size:0.85rem;color:#333;">Budget: ${typeof resource.budget === 'number' ? '$' + resource.budget.toLocaleString() : resource.budget}</p>`
+    : '';
+  const resourceHtml = (teamHtml || budgetHtml) ? (teamHtml + budgetHtml) : '<p style="font-size:0.85rem;color:#333;">No resource plan available.</p>';
+
+  const temp = document.createElement('div');
+  temp.style.padding = '2rem';
+  temp.style.fontFamily = 'Times New Roman, serif';
+  temp.innerHTML = `
+    <h1 style="font-size:1.6rem;color:#023246;margin-bottom:1rem;">${project.name} — Roadmap</h1>
+    <h2 style="font-size:1.1rem;color:#023246;margin:1.2rem 0 0.6rem;">Development Phases</h2>
+    ${phasesHtml}
+    <h2 style="font-size:1.1rem;color:#023246;margin:1.2rem 0 0.6rem;">Resource Plan</h2>
+    ${resourceHtml}
+    <h2 style="font-size:1.1rem;color:#023246;margin:1.2rem 0 0.6rem;">Milestones</h2>
+    ${milestones.length ? `<ul style="margin:0 0 0 1.2rem;padding:0;">${milestones.map(m => `<li style="font-size:0.85rem;color:#333;">Week ${m.week ?? '—'} — ${m.name || '—'}</li>`).join('')}</ul>` : '<p style="font-size:0.85rem;color:#333;">No milestones available.</p>'}
+  `;
+
+  showToast('Generating Roadmap PDF...');
+  const filename = `${(project.name || 'AURA-Roadmap').replace(/[^a-z0-9]/gi, '_')}_Roadmap.pdf`;
+  html2pdf().set({
+    margin: 0.5,
+    filename,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  }).from(temp).save();
 }
 // ─── PRD TABS ─────────────────────────────────────
 function switchPRD(id, el) {
@@ -3745,7 +4086,19 @@ window.onload = async function() {
     }
   } catch(e) {}
 
-  // normal routing
+  if (stored) {
+    // Valid token — restore the session instead of forcing re-login
+    state.user = {
+      name: stored.name || stored.email,
+      firstName: (stored.name || stored.email).split(" ")[0],
+      email: stored.email,
+      initials: (stored.name || stored.email).substring(0, 2).toUpperCase()
+    };
+    saveSession();
+    await loginSuccess();
+    return;
+  }
+
   if (hash === 'signup') {
     showEntryAnimation(() => navigate('signup'));
   } else {
