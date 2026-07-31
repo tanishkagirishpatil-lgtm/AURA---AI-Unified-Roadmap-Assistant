@@ -68,12 +68,23 @@ graph.add_node("prd", prd_node)
 graph.add_node("legal", legal_node)
 
 graph.set_entry_point("idea")
+
+# ── PARALLEL FAN-OUT ──────────────────────────────────────────
+# persona and legal only need idea_result, so they run concurrently
+# with the market -> competitor -> roadmap -> prd chain instead of
+# waiting for it to finish. This cuts wall-clock time noticeably
+# since persona + legal (2 LLM calls) now overlap with the 4-call
+# chain instead of adding 2 more sequential calls after it.
 graph.add_edge("idea", "market")
+graph.add_edge("idea", "persona")
+graph.add_edge("idea", "legal")
+
 graph.add_edge("market", "competitor")
 graph.add_edge("competitor", "roadmap")
-graph.add_edge("roadmap", "persona")
-graph.add_edge("persona", "prd")
-graph.add_edge("prd", "legal")
+graph.add_edge("roadmap", "prd")
+
+graph.add_edge("prd", END)
+graph.add_edge("persona", END)
 graph.add_edge("legal", END)
 
 workflow = graph.compile()

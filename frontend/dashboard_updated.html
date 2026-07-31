@@ -1829,13 +1829,23 @@ body::before {
 </head>
 <body>
 
+<!-- BOOT LOADER — covers the page while we check if you're already
+     logged in, so refreshing doesn't flash the login form before
+     landing back on the dashboard -->
+<div id="boot-loader" style="position:fixed;inset:0;background:#023246;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <div style="position:relative;width:90px;height:90px;margin-bottom:1.2rem;">
+    <div style="position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(255,255,255,0.25);animation:spin 1.4s linear infinite;border-top-color:#287094;"></div>
+  </div>
+  <div style="font-family:'Times New Roman',Georgia,serif;font-size:1rem;color:rgba(255,255,255,0.5);letter-spacing:0.05em;">Loading AURA…</div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <!-- ═══════════════════════════════════════════ -->
 <!--  LOGIN VIEW                                 -->
 <!-- ═══════════════════════════════════════════ -->
-<div class="view active" id="view-login">
+<div class="view" id="view-login">
   <div class="auth-layout">
     <div class="auth-left">
       <div class="auth-orb">
@@ -4096,15 +4106,26 @@ window.onload = async function() {
     };
     saveSession();
     await loginSuccess();
+    hideBootLoader();
     return;
   }
 
   if (hash === 'signup') {
+    hideBootLoader();
     showEntryAnimation(() => navigate('signup'));
   } else {
     navigate('login');
+    hideBootLoader();
   }
 };
+
+function hideBootLoader() {
+  const el = document.getElementById('boot-loader');
+  if (!el) return;
+  el.style.transition = 'opacity 0.3s ease';
+  el.style.opacity = '0';
+  setTimeout(() => el.remove(), 320);
+}
 
 function showEntryAnimation(callback) {
   const el = document.createElement('div');
