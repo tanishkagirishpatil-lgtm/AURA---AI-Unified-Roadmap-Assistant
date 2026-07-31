@@ -3186,7 +3186,7 @@ body::before {
 
 <script>
 // ─── STATE ────────────────────────────────────────
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://aura-backend-566d.onrender.com";
 const state = {
   currentView: 'login',
   currentPage: '',
@@ -3576,7 +3576,7 @@ async function startAnalysis() {
   // Step 1 — Save idea to DB
   let ideaId = null;
   try {
-    const saveRes = await fetch(`http://localhost:5000/api/ideas`, {
+    const saveRes = await fetch(`https://aura-backend-566d.onrender.com`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3611,7 +3611,7 @@ async function startAnalysis() {
   let aiData = null;
 
   try {
-    const aiResponse = await fetch(`http://localhost:5000/api/ai/run`, {
+    const aiResponse = await fetch(`https://aura-backend-566d.onrender.com/api/ai/run`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
