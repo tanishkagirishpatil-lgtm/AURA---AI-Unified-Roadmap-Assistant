@@ -11,49 +11,61 @@ from ai_agents.agents.legal_agent import run_legal_agent
 
 
 def idea_node(state):
+    print("🚀 Running Idea Agent...", flush=True)
     result = run_idea_agent(state["idea"])
+    print("✅ Idea Agent Finished", flush=True)
     return {"idea_result": result}
 
 
 def market_node(state):
-    # run_market_agent expects the raw idea text (a string),
-    # not the idea_result object
+    print("🚀 Running Market Agent...", flush=True)
     result = run_market_agent(state["idea"])
+    print("✅ Market Agent Finished", flush=True)
     return {"market_result": result}
 
 
 def competitor_node(state):
+    print("🚀 Running Competitor Agent...", flush=True)
     result = run_competitor_agent(
         state["idea_result"],
         state["market_result"]
     )
+    print("✅ Competitor Agent Finished", flush=True)
     return {"competitor_result": result}
 
 
 def roadmap_node(state):
+    print("🚀 Running Roadmap Agent...", flush=True)
     result = run_roadmap_agent(
         state["idea_result"],
         state["market_result"],
         state["competitor_result"]
     )
+    print("✅ Roadmap Agent Finished", flush=True)
     return {"roadmap_result": result}
 
 
 def persona_node(state):
+    print("🚀 Running Persona Agent...", flush=True)
     result = run_persona_agent(state["idea_result"])
+    print("✅ Persona Agent Finished", flush=True)
     return {"persona_result": result}
 
 
 def prd_node(state):
+    print("🚀 Running PRD Agent...", flush=True)
     result = run_prd_agent(
         state["idea_result"],
         state["roadmap_result"]
     )
+    print("✅ PRD Agent Finished", flush=True)
     return {"prd_result": result}
 
 
 def legal_node(state):
+    print("🚀 Running Legal Agent...", flush=True)
     result = run_legal_agent(state["idea_result"])
+    print("✅ Legal Agent Finished", flush=True)
     return {"legal_result": result}
 
 
@@ -88,3 +100,4 @@ graph.add_edge("persona", END)
 graph.add_edge("legal", END)
 
 workflow = graph.compile()
+
