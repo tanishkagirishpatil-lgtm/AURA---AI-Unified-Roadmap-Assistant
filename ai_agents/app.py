@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from workflow import workflow
+from ai_agents.workflow import workflow
 app = Flask(__name__)
 
 @app.get("/")

@@ -5,7 +5,7 @@ import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
-from workflow import workflow
+from ai_agents.workflow import workflow
 
 def main():
     idea = sys.argv[1] if len(sys.argv) > 1 else input("Enter your startup idea: ")
