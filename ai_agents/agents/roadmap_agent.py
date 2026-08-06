@@ -192,7 +192,7 @@ MANDATORY
   restatements of the phase name — real to-do items someone could
   check off, e.g. "Set up CI/CD pipeline", "Conduct 10 user interviews",
   "Finalize payment gateway integration")
-- minimum 5 MVP features
+- minimum 3 MVP features
 - minimum 3 post-MVP features
 - CONSISTENCY REQUIREMENT (critical): the roadmap and the MVP plan you
   generate in this same response must describe ONE coherent execution
@@ -258,13 +258,13 @@ def is_bad_output(data: dict):
         if len(phase.get("tasks", []) or []) < 2:
             return True
 
-    if len(data.get("sprints", [])) < 3:
+    if len(data.get("sprints", [])) < 2:
         return True
 
-    if len(data.get("mvp_features", [])) < 5:
+    if len(data.get("mvp_features", [])) < 3:
         return True
 
-    if len(data.get("post_mvp_features", [])) < 3:
+    if len(data.get("post_mvp_features", [])) < 2:
         return True
 
     if len(data.get("launch_checklist", [])) < 3:
@@ -321,8 +321,8 @@ def run_roadmap_agent(
     }
 
     competitor_context = {
-        "competitors": getattr(competitor_result, "competitors", []),
-        "market_gap_analysis": getattr(competitor_result, "market_gap_analysis", []),
+        "competitors": getattr(competitor_result, "competitors", [][:3]),
+        "market_gap_analysis": getattr(competitor_result, "market_gap_analysis", [][:3]),
     }
 
     prompt = ROADMAP_PROMPT.format(
@@ -333,7 +333,7 @@ def run_roadmap_agent(
 
     data = {}
 
-    for attempt in range(5):
+    for attempt in range(2):
 
         current_prompt = prompt
 
