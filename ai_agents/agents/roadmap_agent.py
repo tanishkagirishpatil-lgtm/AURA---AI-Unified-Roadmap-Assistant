@@ -43,13 +43,34 @@ WHAT CHANGED HERE
 
 import json
 import re
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
 
 from ai_agents.llm import llm
 from ai_agents.models.roadmap_schema import RoadmapOutput
 from ai_agents.utils.file_writer import save_output
 from ai_agents.utils.safe_llm import extract_json_safe, safe_validate
 
-MAX_ATTEMPTS = 2  # 1 initial call + at most 1 short retry
+MAX_ATTEMPTS = 2      # 1 initial call + at most 1 short retry
+LLM_CALL_TIMEOUT = 15  # seconds -- hard local cap per Groq call
+
+# By the time this agent runs, Idea/Market/Competitor have already used
+# part of the Gunicorn worker's total request timeout. A hung Groq call
+# here can silently burn the rest of that budget and get the whole
+# worker SIGKILLed (as opposed to a clean, catchable error). This
+# wrapper runs the call in a background thread and gives up locally
+# after LLM_CALL_TIMEOUT seconds, so a stall degrades to the fallback
+# roadmap instead of taking the process down.
+# NOTE: this is a safety net, not a substitute for giving Gunicorn a
+# large enough --timeout to cover all four sequential agent calls.
+_executor = ThreadPoolExecutor(max_workers=4)
+
+
+def _invoke_with_timeout(prompt: str, timeout: int = LLM_CALL_TIMEOUT):
+    future = _executor.submit(llm.invoke, prompt)
+    try:
+        return future.result(timeout=timeout)
+    except FutureTimeoutError:
+        raise TimeoutError(f"Groq call exceeded {timeout}s local timeout")
 
 
 # =====================================================================
@@ -397,10 +418,11 @@ def run_roadmap_agent(idea_result, market_result, competitor_result):
         prompt = base_prompt + (RETRY_SUFFIX if attempt > 0 else "")
 
         try:
-            response = llm.invoke(prompt)
+            response = _invoke_with_timeout(prompt)
         except Exception as exc:
-            # API failure (rate limit, timeout, etc.) -- do NOT retry the
-            # network call. Fall back locally so the pipeline stays up.
+            # API failure, rate limit, or local timeout -- do NOT retry
+            # the network call. Fall back locally so the pipeline stays up
+            # and the Gunicorn worker never has to wait indefinitely.
             print(f"[roadmap_agent] LLM call failed on attempt {attempt + 1}: {exc}")
             data = {}
             used_fallback = True
