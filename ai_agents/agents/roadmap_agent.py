@@ -1,12 +1,196 @@
+"""
+roadmap_agent.py
+
+Drop-in replacement for the Roadmap Agent.
+
+WHY THE OLD VERSION HIT 429s / WORKER TIMEOUTS
+------------------------------------------------
+1. It forwarded the *entire* idea_result / market_result / competitor_result
+   objects into the prompt, instead of the handful of fields actually
+   needed to write a roadmap.
+2. The prompt embedded a full example JSON payload (dozens of lines) on
+   every single call, plus a long block of STRICT/MANDATORY prose.
+3. On a bad first attempt, it re-sent that entire oversized prompt again
+   PLUS an additional "IMPORTANT: previous response was rejected..."
+   block -- i.e. the retry was *more* expensive than the original call.
+4. On malformed JSON, it made a SECOND full LLM call just to "repair"
+   the JSON -- doubling token spend and latency on the unhappy path,
+   which is exactly when you're already closest to a rate limit.
+5. All of this ran against llama-3.1-8b-instant on Groq, which has a
+   fairly tight tokens-per-minute ceiling -- so a single bad request
+   (retry + repair) could burn through several multiples of the tokens
+   a healthy request would use, tripping 429s and, since the worker sat
+   waiting on 2-3 sequential LLM round trips, eventually SIGKILL from
+   Render's timeout.
+
+WHAT CHANGED HERE
+------------------------------------------------
+- Inputs are trimmed to only the fields specified (product name, problem
+  statement, target users, revenue model / top trends, opportunities,
+  risks / top 3 competitors, market gap, key strengths & weaknesses).
+- The prompt no longer contains a full JSON example -- just a compact
+  key-by-key spec of the required shape.
+- JSON parsing/repair is done LOCALLY (regex + json.loads), never via a
+  second LLM call.
+- At most one retry, and the retry prompt is a short delta, not a
+  duplicate of the full context.
+- API failures (including 429s) are handled by falling back to a
+  locally-generated minimal-but-valid roadmap instead of retrying the
+  network call -- so a rate-limited request never compounds itself.
+- Output shape (RoadmapOutput, function signature, return value) is
+  unchanged, so nothing else in the project needs to change.
+"""
+
+import json
+import re
+
 from ai_agents.llm import llm
 from ai_agents.models.roadmap_schema import RoadmapOutput
 from ai_agents.utils.file_writer import save_output
 from ai_agents.utils.safe_llm import extract_json_safe, safe_validate
 
+MAX_ATTEMPTS = 2  # 1 initial call + at most 1 short retry
 
-# -----------------------------
-# NORMALIZER
-# -----------------------------
+
+# =====================================================================
+# CONTEXT TRIMMING
+# Only the fields we actually use go into the prompt. This is the
+# single biggest lever for cutting token usage.
+# =====================================================================
+def _top_n(value, n=3):
+    """Return at most n items from a list-like field, tolerating
+    non-list values (strings, None, etc.) from upstream agents."""
+    if isinstance(value, list):
+        return value[:n]
+    if value:
+        return [value]
+    return []
+
+
+def _trim_idea(idea_result):
+    return {
+        "product": getattr(idea_result, "product_name", "") or "Unnamed Product",
+        "problem": getattr(idea_result, "problem_statement", ""),
+        "users": getattr(idea_result, "target_users", ""),
+        "revenue_model": getattr(idea_result, "revenue_model", ""),
+    }
+
+
+def _trim_market(market_result):
+    return {
+        "trends": _top_n(getattr(market_result, "industry_trends", []), 3),
+        "opportunities": _top_n(getattr(market_result, "market_opportunities", []), 3),
+        "risks": _top_n(getattr(market_result, "threats_and_risks", []), 3),
+    }
+
+
+def _competitor_name(c):
+    if isinstance(c, dict):
+        return c.get("name") or c.get("competitor") or str(c)
+    return getattr(c, "name", None) or str(c)
+
+
+def _trim_competitor(competitor_result):
+    competitors = getattr(competitor_result, "competitors", []) or []
+    top = competitors[:3]
+
+    gaps = getattr(competitor_result, "market_gap_analysis", []) or []
+    gap = gaps[0] if isinstance(gaps, list) and gaps else (gaps if gaps else "")
+
+    strengths, weaknesses = [], []
+    for c in top:
+        if isinstance(c, dict):
+            strengths += (c.get("strengths") or [])[:2]
+            weaknesses += (c.get("weaknesses") or [])[:2]
+
+    return {
+        "top_competitors": [_competitor_name(c) for c in top],
+        "market_gap": gap,
+        "key_strengths": strengths[:3],
+        "key_weaknesses": weaknesses[:3],
+    }
+
+
+# =====================================================================
+# PROMPT (compact -- no full JSON example, no repeated instructions)
+# =====================================================================
+ROADMAP_PROMPT = """You are a Senior Startup Product Manager. Write a startup
+execution roadmap SPECIFIC to this product -- no generic filler, every task
+must name a real feature or activity from the context below.
+
+IDEA: {idea}
+MARKET: {market}
+COMPETITOR: {competitor}
+
+Return ONLY valid JSON (no markdown, no prose) with EXACTLY these top-level
+keys, nothing else:
+
+executive_summary: {{product, estimated_duration, team_size, launch_strategy}}
+development_phases: [>=3 items: {{phase, name, description, start_date, end_date, tasks:[3-6 specific tasks]}}]
+sprints: [>=3 items: {{sprint, duration, goals:[]}}]
+feature_dependencies: [{{feature, depends_on:[]}}]
+milestones: [{{name, week}}]
+resource_plan: {{...}}
+risk_plan: [>=3 strings]
+mvp_features: [>=3 strings]
+post_mvp_features: [>=3 strings]
+launch_checklist: [>=3 strings]
+timeline: {{...}}
+priority_matrix: [>=3 items: {{feature, priority, impact, complexity}}]
+
+Rules:
+- Every mvp_features item must also appear as a phase task worded "Build <feature>".
+- Every post_mvp_features item must appear as a task in a later phase.
+- No empty strings, arrays, or objects. No extra/renamed keys.
+"""
+
+RETRY_SUFFIX = (
+    "\nYour previous reply was invalid or incomplete JSON. "
+    "Return corrected, complete JSON only, following the same spec."
+)
+
+
+# =====================================================================
+# LOCAL JSON EXTRACTION / REPAIR (no LLM call)
+# =====================================================================
+def _local_json_repair(text: str):
+    """Best-effort local recovery of a JSON object from noisy LLM
+    output (stray markdown fences, leading/trailing prose, etc.).
+    Never calls the LLM -- purely local string handling."""
+    if not text:
+        return {}
+
+    cleaned = text.strip()
+    cleaned = re.sub(r"^```(?:json)?", "", cleaned).strip()
+    cleaned = re.sub(r"```$", "", cleaned).strip()
+
+    start = cleaned.find("{")
+    end = cleaned.rfind("}")
+    if start == -1 or end == -1 or end <= start:
+        return {}
+
+    candidate = cleaned[start:end + 1]
+    try:
+        return json.loads(candidate)
+    except Exception:
+        return {}
+
+
+def _parse_llm_json(raw_text: str):
+    """Try the shared safe extractor first, then fall back to local
+    repair. Never triggers a second LLM call."""
+    try:
+        data = extract_json_safe(raw_text)
+        if isinstance(data, dict) and data:
+            return data
+    except Exception:
+        pass
+    return _local_json_repair(raw_text)
+
+
+# =====================================================================
+# NORMALIZER (unchanged shape guarantees, kept lightweight)
+# =====================================================================
 def normalize_roadmap(data: dict):
     if not isinstance(data, dict):
         return {}
@@ -26,10 +210,7 @@ def normalize_roadmap(data: dict):
         phases = safe_list(value)
         for phase in phases:
             tasks = phase.get("tasks")
-            if not isinstance(tasks, list) or not tasks:
-                phase["tasks"] = []
-            else:
-                phase["tasks"] = [str(t) for t in tasks]
+            phase["tasks"] = [str(t) for t in tasks] if isinstance(tasks, list) else []
         return phases
 
     return {
@@ -48,17 +229,14 @@ def normalize_roadmap(data: dict):
     }
 
 
-# -----------------------------
-# CONSISTENCY GUARANTEE
-# -----------------------------
+# =====================================================================
+# CONSISTENCY GUARANTEE (unchanged logic, no LLM involved)
+# =====================================================================
 def reconcile_mvp_with_phases(fixed: dict):
-    """
-    Guarantees the Roadmap and MVP plan describe one coherent execution
-    plan, even if the model didn't perfectly follow the prompt's
-    consistency instructions. Any mvp_feature / post_mvp_feature that
-    isn't already named in some phase's tasks gets appended as a task
-    to the most appropriate phase.
-    """
+    """Ensures the roadmap and MVP plan describe one coherent execution
+    plan even if the model didn't perfectly follow the prompt: any
+    mvp/post-mvp feature not already named in a phase's tasks gets
+    appended as a task to the most appropriate phase."""
     phases = fixed.get("development_phases", [])
     if not phases:
         return fixed
@@ -75,14 +253,8 @@ def reconcile_mvp_with_phases(fixed: dict):
                 return p
         return fallback
 
-    build_phase = find_phase(
-        ["develop", "build", "mvp"],
-        phases[1] if len(phases) > 1 else phases[0]
-    )
-    scale_phase = find_phase(
-        ["scale", "launch", "growth"],
-        phases[-1]
-    )
+    build_phase = find_phase(["develop", "build", "mvp"], phases[1] if len(phases) > 1 else phases[0])
+    scale_phase = find_phase(["scale", "launch", "growth"], phases[-1])
 
     def ensure_tasks(p):
         if not isinstance(p.get("tasks"), list):
@@ -105,301 +277,152 @@ def reconcile_mvp_with_phases(fixed: dict):
 
     return fixed
 
-# -----------------------------
-# PROMPT
-# -----------------------------
-ROADMAP_PROMPT = """
-You are a Senior Startup Product Manager.
 
-Generate a complete startup execution roadmap SPECIFIC to the idea, market, and
-competitor information given below. Do not produce generic filler — every phase,
-task, sprint, feature, and risk should clearly relate to this specific product.
-
-JSON FORMAT MUST FOLLOW EXACTLY:
-
-{{
-  "executive_summary": {{
-    "product": "string",
-    "estimated_duration": "string",
-    "team_size": "string",
-    "launch_strategy": "string"
-  }},
-  "development_phases": [
-    {{
-      "phase": 1,
-      "name": "string",
-      "description": "string (1-2 sentence summary of this phase's goal)",
-      "start_date": "string",
-      "end_date": "string",
-      "tasks": ["Build <specific MVP feature name>", "Implement <specific MVP feature name>", "other concrete task"]
-    }}
-  ],
-  "sprints": [
-    {{
-      "sprint": 1,
-      "duration": "2 weeks",
-      "goals": ["goal1", "goal2"]
-    }}
-  ],
-  "feature_dependencies": [
-    {{
-      "feature": "string",
-      "depends_on": ["string"]
-    }}
-  ],
-  "milestones": [
-    {{
-      "name": "string",
-      "week": 1
-    }}
-  ],
-  "resource_plan": {{}},
-  "risk_plan": [],
-  "mvp_features": [],
-  "post_mvp_features": [],
-  "launch_checklist": [],
-  "timeline": {{}},
-  "priority_matrix": [
-    {{
-      "feature": "string",
-      "priority": "High",
-      "impact": "High",
-      "complexity": "Medium"
-    }}
-  ]
-}}
-
-STRICT REQUIREMENTS
-
-- Return ONLY valid JSON
-- No markdown
-- No explanations
-- Use EXACT field names shown above
-- Do NOT create product_name
-- Do NOT create summary
-- Do NOT create sprint_name
-- Do NOT create milestone_name
-- No empty strings
-- No empty arrays
-- No empty objects
-
-MANDATORY
-
-- executive_summary fully populated
-- minimum 3 development phases
-- EVERY development phase must include a "tasks" array with 3 to 6
-  concrete, specific, actionable tasks for that phase (not vague
-  restatements of the phase name — real to-do items someone could
-  check off, e.g. "Set up CI/CD pipeline", "Conduct 10 user interviews",
-  "Finalize payment gateway integration")
-- minimum 3 MVP features
-- minimum 3 post-MVP features
-- CONSISTENCY REQUIREMENT (critical): the roadmap and the MVP plan you
-  generate in this same response must describe ONE coherent execution
-  plan, not two unrelated lists.
-  * Every single item in "mvp_features" MUST appear as a task in one
-    of the development phases (typically the build/development phase),
-    phrased as an implementation task — e.g. if mvp_features includes
-    "AI Skill Gap Analyzer", a phase task must say something like
-    "Build AI Skill Gap Analyzer" or "Implement AI Skill Gap Analyzer
-    (core algorithm + UI)".
-  * Every item in "post_mvp_features" should similarly map to a task
-    in a later phase (e.g. the scale/post-launch phase).
-  * Do not invent generic phase tasks (like "build core features")
-    that don't name a specific feature from your own mvp_features or
-    post_mvp_features lists — name the actual feature in the task.
-- minimum 3 sprints
-- minimum 3 launch checklist items
-- minimum 3 risks
-- non-empty resource_plan
-- non-empty timeline
-- non-empty priority_matrix
-
-IDEA:
-{idea}
-
-MARKET:
-{market}
-
-COMPETITOR:
-{competitor}
-
-Return ONLY JSON.
-"""
-
-# -----------------------------
-# QUALITY CHECK
-# -----------------------------
+# =====================================================================
+# QUALITY CHECK (cheap, local, no LLM)
+# =====================================================================
 def is_bad_output(data: dict):
-
     if not isinstance(data, dict):
         return True
 
     executive = data.get("executive_summary", {})
-
     required_exec = [
         executive.get("product"),
         executive.get("estimated_duration"),
         executive.get("team_size"),
         executive.get("launch_strategy"),
     ]
-
     if any(not value for value in required_exec):
         return True
 
     phases = data.get("development_phases", [])
-
     if len(phases) < 3:
         return True
-
     for phase in phases:
-        if not isinstance(phase, dict):
-            return True
-        if len(phase.get("tasks", []) or []) < 2:
+        if not isinstance(phase, dict) or len(phase.get("tasks", []) or []) < 2:
             return True
 
-    if len(data.get("sprints", [])) < 2:
+    checks = [
+        (data.get("sprints", []), 2),
+        (data.get("mvp_features", []), 3),
+        (data.get("post_mvp_features", []), 2),
+        (data.get("launch_checklist", []), 3),
+        (data.get("risk_plan", []), 3),
+        (data.get("priority_matrix", []), 3),
+    ]
+    if any(len(items) < minimum for items, minimum in checks):
         return True
 
-    if len(data.get("mvp_features", [])) < 3:
-        return True
-
-    if len(data.get("post_mvp_features", [])) < 2:
-        return True
-
-    if len(data.get("launch_checklist", [])) < 3:
-        return True
-
-    if len(data.get("risk_plan", [])) < 3:
-        return True
-
-    if len(data.get("priority_matrix", [])) < 3:
-        return True
-
-    if not data.get("resource_plan"):
-        return True
-
-    if not data.get("timeline"):
+    if not data.get("resource_plan") or not data.get("timeline"):
         return True
 
     return False
 
 
-# -----------------------------
+# =====================================================================
+# FALLBACK (used only if the LLM call/parse fails entirely -- keeps
+# the pipeline alive without ever making another network call)
+# =====================================================================
+def _fallback_roadmap(idea_context: dict):
+    product = idea_context.get("product") or "the product"
+    return {
+        "executive_summary": {
+            "product": product,
+            "estimated_duration": "12 weeks",
+            "team_size": "Small cross-functional team (3-5 people)",
+            "launch_strategy": "Phased rollout starting with a limited beta",
+        },
+        "development_phases": [
+            {
+                "phase": 1, "name": "Discovery & Setup",
+                "description": "Validate requirements and prepare infrastructure.",
+                "start_date": "Week 1", "end_date": "Week 2",
+                "tasks": ["Finalize requirements", "Set up project infrastructure", "Define success metrics"],
+            },
+            {
+                "phase": 2, "name": "MVP Development",
+                "description": "Build and integrate the core MVP feature set.",
+                "start_date": "Week 3", "end_date": "Week 8",
+                "tasks": ["Build core MVP features", "Integrate backend services", "Internal QA pass"],
+            },
+            {
+                "phase": 3, "name": "Launch & Scale",
+                "description": "Ship the beta and prepare post-MVP work.",
+                "start_date": "Week 9", "end_date": "Week 12",
+                "tasks": ["Run closed beta", "Collect user feedback", "Plan post-MVP features"],
+            },
+        ],
+        "sprints": [
+            {"sprint": 1, "duration": "2 weeks", "goals": ["Requirements & setup"]},
+            {"sprint": 2, "duration": "2 weeks", "goals": ["Core feature build"]},
+            {"sprint": 3, "duration": "2 weeks", "goals": ["QA and beta launch"]},
+        ],
+        "feature_dependencies": [],
+        "milestones": [
+            {"name": "MVP feature-complete", "week": 8},
+            {"name": "Beta launch", "week": 9},
+        ],
+        "resource_plan": {"engineering": "2-3 engineers", "design": "1 designer", "product": "1 PM"},
+        "risk_plan": ["Scope creep during MVP build", "Delayed third-party integrations", "Low beta signup rate"],
+        "mvp_features": ["Core workflow", "User onboarding", "Basic analytics"],
+        "post_mvp_features": ["Advanced analytics", "Integrations marketplace"],
+        "launch_checklist": ["QA sign-off", "Beta users onboarded", "Monitoring/alerts live"],
+        "timeline": {"start": "Week 1", "launch": "Week 9"},
+        "priority_matrix": [
+            {"feature": "Core workflow", "priority": "High", "impact": "High", "complexity": "Medium"},
+            {"feature": "User onboarding", "priority": "High", "impact": "High", "complexity": "Low"},
+            {"feature": "Basic analytics", "priority": "Medium", "impact": "Medium", "complexity": "Low"},
+        ],
+    }
+
+
+# =====================================================================
 # MAIN AGENT
-# -----------------------------
-def run_roadmap_agent(
-    idea_result,
-    market_result,
-    competitor_result
-):
+# =====================================================================
+def run_roadmap_agent(idea_result, market_result, competitor_result):
+    idea_context = _trim_idea(idea_result)
+    market_context = _trim_market(market_result)
+    competitor_context = _trim_competitor(competitor_result)
 
-    # These use the REAL field names from each schema (idea_schema,
-    # market_schema, competitor_schema) — earlier versions of this
-    # function referenced nonexistent fields like "summary",
-    # "market_gaps", "risks", "opportunity_gaps", "weaknesses", which
-    # always returned empty defaults and left this agent working
-    # almost blind.
-    idea_context = {
-        "product_name": getattr(idea_result, "product_name", ""),
-        "category": getattr(idea_result, "category", ""),
-        "problem_statement": getattr(idea_result, "problem_statement", ""),
-        "recommended_solution": getattr(idea_result, "recommended_solution", ""),
-        "target_users": getattr(idea_result, "target_users", ""),
-        "revenue_model": getattr(idea_result, "revenue_model", ""),
-        "mvp_features_count": getattr(idea_result, "mvp_features_count", 0),
-        "next_steps": getattr(idea_result, "next_steps", []),
-    }
-
-    market_context = {
-        "tam": getattr(market_result, "tam", ""),
-        "sam": getattr(market_result, "sam", ""),
-        "som": getattr(market_result, "som", ""),
-        "industry_trends": getattr(market_result, "industry_trends", []),
-        "market_opportunities": getattr(market_result, "market_opportunities", []),
-        "threats_and_risks": getattr(market_result, "threats_and_risks", []),
-    }
-
-    competitor_context = {
-        "competitors": getattr(competitor_result, "competitors", [][:3]),
-        "market_gap_analysis": getattr(competitor_result, "market_gap_analysis", [][:3]),
-    }
-
-    prompt = ROADMAP_PROMPT.format(
-        idea=str(idea_context),
-        market=str(market_context),
-        competitor=str(competitor_context)
+    base_prompt = ROADMAP_PROMPT.format(
+        idea=idea_context,
+        market=market_context,
+        competitor=competitor_context,
     )
 
     data = {}
+    used_fallback = False
 
-    for attempt in range(2):
-
-        current_prompt = prompt
-
-        if attempt > 0:
-            current_prompt += """
-
-IMPORTANT:
-
-Previous response was rejected.
-
-You MUST:
-- fill every field
-- return at least 3 phases
-- give EVERY phase a "tasks" array with 3-6 specific, actionable tasks
-- make sure every mvp_feature and post_mvp_feature is named explicitly
-  inside a phase task (e.g. "Build <feature name>") — the roadmap and
-  MVP plan must be ONE consistent plan, not two unrelated lists
-- return at least 3 sprints
-- return at least 5 MVP features
-- return at least 3 post-MVP features
-- return at least 3 launch checklist items
-- return at least 3 risks
-- return resource_plan
-- return timeline
-- return priority_matrix
-
-No empty strings.
-No empty arrays.
-No empty objects.
-
-Return ONLY valid JSON.
-"""
-
-        response = llm.invoke(current_prompt)
+    for attempt in range(MAX_ATTEMPTS):
+        prompt = base_prompt + (RETRY_SUFFIX if attempt > 0 else "")
 
         try:
-            data = extract_json_safe(response.content)
+            response = llm.invoke(prompt)
+        except Exception as exc:
+            # API failure (rate limit, timeout, etc.) -- do NOT retry the
+            # network call. Fall back locally so the pipeline stays up.
+            print(f"[roadmap_agent] LLM call failed on attempt {attempt + 1}: {exc}")
+            data = {}
+            used_fallback = True
+            break
 
-        except Exception:
-
-            repaired = llm.invoke(
-                f"Convert the following into valid JSON only:\n\n{response.content}"
-            )
-
-            data = extract_json_safe(
-                repaired.content
-            )
+        data = _parse_llm_json(getattr(response, "content", "") or "")
 
         if not is_bad_output(data):
             break
+    else:
+        # Loop finished without a `break` from a good result.
+        used_fallback = not data or is_bad_output(data)
+
+    if used_fallback or not data or is_bad_output(data):
+        print("[roadmap_agent] Using local fallback roadmap (no further LLM calls).")
+        data = _fallback_roadmap(idea_context)
 
     fixed = normalize_roadmap(data)
     fixed = reconcile_mvp_with_phases(fixed)
 
-    print("\n===== RAW ROADMAP DATA =====")
-    print(fixed)
-    print("===========================\n")
+    validated = safe_validate(RoadmapOutput, fixed)
 
-    validated = safe_validate(
-        RoadmapOutput,
-        fixed
-    )
-
-    save_output(
-        validated.model_dump(),
-        "roadmap_output.json"
-    )
+    save_output(validated.model_dump(), "roadmap_output.json")
 
     return validated
